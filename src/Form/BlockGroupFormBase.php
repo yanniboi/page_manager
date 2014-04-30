@@ -7,12 +7,45 @@
 
 namespace Drupal\block_group\Form;
 
+use Drupal\block\BlockManagerInterface;
 use Drupal\Core\Entity\EntityForm;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @todo.
+ * Provides a base form for editing and adding a block group.
  */
 abstract class BlockGroupFormBase extends EntityForm {
+
+  /**
+   * @var \Drupal\block_group\BlockGroupInterface
+   */
+  protected $entity;
+
+  /**
+   * The block manager.
+   *
+   * @var \Drupal\block\BlockManagerInterface
+   */
+  protected $blockManager;
+
+  /**
+   * Constructs a new BlockGroupFormBase.
+   *
+   * @param \Drupal\block\BlockManagerInterface $block_manager
+   *   The block manager.
+   */
+  public function __construct(BlockManagerInterface $block_manager) {
+    $this->blockManager = $block_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('plugin.manager.block')
+    );
+  }
 
   /**
    * {@inheritdoc}

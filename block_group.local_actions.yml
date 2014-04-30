@@ -1,0 +1,5 @@
+block_group.add:
+  route_name: block_group.add
+  title: 'Add block group'
+  appears_on:
+    - 'block_group.list'

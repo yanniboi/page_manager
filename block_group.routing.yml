@@ -6,6 +6,14 @@ block_group.list:
   requirements:
     _permission: 'administer block groups'
 
+block_group.view:
+  path: '/block_group/{block_group}'
+  defaults:
+    _entity_view: block_group
+    _title: 'Block group'
+  requirements:
+    _entity_access: block_group.view
+
 block_group.add:
   path: '/admin/structure/block_group/add'
   defaults:
@@ -29,3 +37,19 @@ block_group.delete:
     _title: 'Delete block group'
   requirements:
     _entity_access: block_group.delete
+
+block_group.add_block:
+  path: '/admin/structure/block_group/manage/{block_group}/add/{plugin_id}'
+  defaults:
+    _form: 'Drupal\block_group\Form\BlockGroupAddBlockForm'
+    _title: 'Add block to block group'
+  requirements:
+    _entity_access: block_group.update
+
+block_group.edit_block:
+  path: '/admin/structure/block_group/manage/{block_group}/edit/{block_id}'
+  defaults:
+    _form: 'Drupal\block_group\Form\BlockGroupEditBlockForm'
+    _title: 'Edit block in block group'
+  requirements:
+    _entity_access: block_group.update

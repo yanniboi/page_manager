@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityConfirmFormBase;
 use Drupal\Core\Url;
 
 /**
- * @todo.
+ * Provides a form for deleting a block group.
  */
 class BlockGroupDeleteForm extends EntityConfirmFormBase {
 
