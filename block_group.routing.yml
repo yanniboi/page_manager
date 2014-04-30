@@ -1,0 +1,31 @@
+block_group.list:
+  path: '/admin/structure/block_group'
+  defaults:
+    _entity_list: 'block_group'
+    _title: 'Block Groups'
+  requirements:
+    _permission: 'administer block groups'
+
+block_group.add:
+  path: '/admin/structure/block_group/add'
+  defaults:
+    _entity_form: 'block_group.add'
+    _title: 'Add new block group'
+  requirements:
+    _entity_create_access: block_group
+
+block_group.edit:
+  path: '/admin/structure/block_group/manage/{block_group}'
+  defaults:
+    _entity_form: 'block_group.edit'
+    _title: 'Edit block group'
+  requirements:
+    _entity_access: block_group.update
+
+block_group.delete:
+  path: '/admin/structure/block_group/manage/{block_group}/delete'
+  defaults:
+    _entity_form: 'block_group.delete'
+    _title: 'Delete block group'
+  requirements:
+    _entity_access: block_group.delete
