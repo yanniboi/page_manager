@@ -2,25 +2,60 @@
 
 /**
  * @file
- * Contains \Drupal\block_group\Form\BlockGroupEditForm.
+ * Contains \Drupal\block_page\Form\PageVariantEditForm.
  */
 
-namespace Drupal\block_group\Form;
+namespace Drupal\block_page\Form;
 
+use Drupal\block\BlockManagerInterface;
+use Drupal\block_page\BlockPageInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\String;
-use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides a form for editing a block group.
+ * Provides a form for editing a page variant.
  */
-class BlockGroupEditForm extends BlockGroupFormBase {
+class PageVariantEditForm extends PageVariantFormBase {
+
+  /**
+   * The block manager.
+   *
+   * @var \Drupal\block\BlockManagerInterface
+   */
+  protected $blockManager;
+
+  /**
+   * Constructs a new PageVariantEditForm.
+   *
+   * @param \Drupal\block\BlockManagerInterface $block_manager
+   *   The block manager.
+   */
+  public function __construct(BlockManagerInterface $block_manager) {
+    $this->blockManager = $block_manager;
+  }
 
   /**
    * {@inheritdoc}
    */
-  public function form(array $form, array &$form_state) {
-    $form = parent::form($form, $form_state);
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('plugin.manager.block')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+    return 'block_page_page_variant_edit_form';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant = NULL) {
+    $form = parent::buildForm($form, $form_state, $block_page, $page_variant);
 
     $attributes = array(
       'class' => array('use-ajax'),
@@ -35,7 +70,8 @@ class BlockGroupEditForm extends BlockGroupFormBase {
       '#header' => array($this->t('Label'), $this->t('Plugin ID'), $this->t('Region'), $this->t('Weight'), $this->t('Operations')),
       '#empty' => $this->t('There are no regions for blocks.')
     );
-    foreach ($this->entity->getRegionAssignments() as $region => $blocks) {
+    $form['actions']['submit']['#value'] = $this->t('Update page variant');
+    foreach ($this->pageVariant->getRegionAssignments() as $region => $blocks) {
       $form['blocks']['#tabledrag'][] = array(
         'action' => 'match',
         'relationship' => 'sibling',
@@ -56,7 +92,7 @@ class BlockGroupEditForm extends BlockGroupFormBase {
         ),
       );
       $form['blocks'][$region]['title'] = array(
-        '#markup' => $this->entity->getRegionName($region),
+        '#markup' => $this->pageVariant->getRegionName($region),
         '#wrapper_attributes' => array(
           'colspan' => 5,
         ),
@@ -77,7 +113,7 @@ class BlockGroupEditForm extends BlockGroupFormBase {
         ),
       );
 
-      $weight_delta = round($this->entity->getBlockCount() / 2);
+      $weight_delta = round($this->pageVariant->getBlockCount() / 2);
       foreach ($blocks as $block_id => $block) {
         $row = array(
           '#attributes' => array(
@@ -91,8 +127,8 @@ class BlockGroupEditForm extends BlockGroupFormBase {
           '#title' => $this->t('Region'),
           '#title_display' => 'invisible',
           '#type' => 'select',
-          '#options' => $this->entity->getRegionNames(),
-          '#default_value' => $this->entity->getRegionAssignment($block_id),
+          '#options' => $this->pageVariant->getRegionNames(),
+          '#default_value' => $this->pageVariant->getRegionAssignment($block_id),
           '#attributes' => array(
             'class' => array('block-region-select', 'block-region-' . $region),
           ),
@@ -100,9 +136,10 @@ class BlockGroupEditForm extends BlockGroupFormBase {
         $operations = array();
         $operations['edit'] = array(
           'title' => $this->t('Edit'),
-          'route_name' => 'block_group.edit_block',
+          'route_name' => 'block_page.page_variant_edit_block',
           'route_parameters' => array(
-            'block_group' => $this->entity->id(),
+            'block_page' => $this->blockPage->id(),
+            'page_variant' => $this->pageVariant->id(),
             'block_id' => $block_id,
           ),
           'attributes' => $attributes,
@@ -149,9 +186,10 @@ class BlockGroupEditForm extends BlockGroupFormBase {
       }
       $form['available_blocks'][$category_key]['content']['#links'][$plugin_id] = array(
         'title' => $plugin_definition['admin_label'],
-        'route_name' => 'block_group.add_block',
+        'route_name' => 'block_page.page_variant_add_block',
         'route_parameters' => array(
-          'block_group' => $this->entity->id(),
+          'block_page' => $this->blockPage->id(),
+          'page_variant' => $this->pageVariant->id(),
           'plugin_id' => $plugin_id,
         ),
         'attributes' => $attributes,
@@ -164,13 +202,20 @@ class BlockGroupEditForm extends BlockGroupFormBase {
   /**
    * {@inheritdoc}
    */
-  public function save(array $form, array &$form_state) {
+  public function submitForm(array &$form, array &$form_state) {
+    parent::submitForm($form, $form_state);
+    drupal_set_message($this->t('The %label page variant has been added.', array('%label' => $this->pageVariant->label())));
+    $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
     foreach ($form_state['values']['blocks'] as $block_id => $block_values) {
-      $this->entity->setRegionAssignment($block_id, $block_values['region']);
+      $this->pageVariant->setRegionAssignment($block_id, $block_values['region']);
     };
-    parent::save($form, $form_state);
-    drupal_set_message($this->t('The %label block group has been updated.', array('%label' => $this->entity->label())));
-    $form_state['redirect_route'] = new Url('block_group.list');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function preparePageVariant($page_variant) {
+    return $this->blockPage->getPageVariant($page_variant);
   }
 
 }

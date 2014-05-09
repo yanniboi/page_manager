@@ -1,0 +1,13 @@
+<?php
+
+
+/**
+ * Implements hook_permission().
+ */
+function block_page_permission() {
+  return array(
+    'administer block pages' => array(
+      'title' => t('Administer block pages'),
+    ),
+  );
+}

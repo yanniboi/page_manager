@@ -2,31 +2,31 @@
 
 /**
  * @file
- * Contains \Drupal\block_group\Form\BlockGroupDeleteForm.
+ * Contains \Drupal\block_page\Form\BlockPageDeleteForm.
  */
 
-namespace Drupal\block_group\Form;
+namespace Drupal\block_page\Form;
 
 use Drupal\Core\Entity\EntityConfirmFormBase;
 use Drupal\Core\Url;
 
 /**
- * Provides a form for deleting a block group.
+ * Provides a form for deleting a block page.
  */
-class BlockGroupDeleteForm extends EntityConfirmFormBase {
+class BlockPageDeleteForm extends EntityConfirmFormBase {
 
   /**
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the block group %name?', array('%name' => $this->entity->label()));
+    return $this->t('Are you sure you want to delete the block page %name?', array('%name' => $this->entity->label()));
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return new Url('block_group.list');
+    return new Url('block_page.page_list');
   }
 
   /**
@@ -41,7 +41,7 @@ class BlockGroupDeleteForm extends EntityConfirmFormBase {
    */
   public function submit(array $form, array &$form_state) {
     $this->entity->delete();
-    drupal_set_message($this->t('The block group %name has been removed.', array('%name' => $this->entity->label())));
+    drupal_set_message($this->t('The block page %name has been removed.', array('%name' => $this->entity->label())));
     $form_state['redirect_route'] = $this->getCancelRoute();
   }
 

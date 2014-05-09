@@ -2,26 +2,28 @@
 
 /**
  * @file
- * Contains \Drupal\block_group\Form\BlockGroupConfigureBlockFormBase.
+ * Contains \Drupal\block_page\Form\PageVariantConfigureBlockFormBase.
  */
 
-namespace Drupal\block_group\Form;
+namespace Drupal\block_page\Form;
 
-use Drupal\block_group\BlockGroupInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Url;
 
 /**
- * Provides a base form for configuring a block as part of a block group.
+ * Provides a base form for configuring a block as part of a page variant.
  */
-abstract class BlockGroupConfigureBlockFormBase extends FormBase {
+abstract class PageVariantConfigureBlockFormBase extends FormBase {
 
   /**
-   * The block group.
-   *
-   * @var \Drupal\block_group\BlockGroupInterface
+   * @var \Drupal\block_page\BlockPageInterface
    */
-  protected $entity;
+  protected $blockPage;
+
+  /**
+   * @var \Drupal\block_page\Plugin\PageVariantInterface
+   */
+  protected $pageVariant;
 
   /**
    * The plugin being configured.
@@ -40,8 +42,7 @@ abstract class BlockGroupConfigureBlockFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockGroupInterface $block_group = NULL, $block_id = NULL) {
-    $this->entity = $block_group;
+  public function buildForm(array $form, array &$form_state, $block_id = NULL) {
     $this->blockId = $block_id;
 
     $form['#tree'] = TRUE;
@@ -53,8 +54,8 @@ abstract class BlockGroupConfigureBlockFormBase extends FormBase {
     $form['region'] = array(
       '#title' => $this->t('Region'),
       '#type' => 'select',
-      '#options' => $this->entity->getRegionNames(),
-      '#default_value' => $this->entity->getRegionAssignment($this->blockId),
+      '#options' => $this->pageVariant->getRegionNames(),
+      '#default_value' => $this->pageVariant->getRegionAssignment($this->blockId),
       '#required' => TRUE,
     );
 
@@ -88,11 +89,12 @@ abstract class BlockGroupConfigureBlockFormBase extends FormBase {
 
     // Call the plugin submit handler.
     $this->plugin->submitConfigurationForm($form, $settings);
-    $this->entity->setRegionAssignment($this->blockId, $form_state['values']['region']);
-    $this->entity->save();
+    $this->pageVariant->setRegionAssignment($this->blockId, $form_state['values']['region']);
+    $this->blockPage->save();
 
-    $form_state['redirect_route'] = new Url('block_group.edit', array(
-      'block_group' => $this->entity->id(),
+    $form_state['redirect_route'] = new Url('block_page.page_variant_edit', array(
+      'block_page' => $this->blockPage->id(),
+      'page_variant' => $this->pageVariant->id(),
     ));
   }
 

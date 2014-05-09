@@ -1,0 +1,76 @@
+#### Block Pages
+
+block_page.page_list:
+  path: '/admin/structure/block_page'
+  defaults:
+    _entity_list: 'block_page'
+    _title: 'Block Pages'
+  requirements:
+    _permission: 'administer block pages'
+
+block_page.page_add:
+  path: '/admin/structure/block_page/add'
+  defaults:
+    _entity_form: 'block_page.add'
+    _title: 'Add new block page'
+  requirements:
+    _entity_create_access: block_page
+
+block_page.page_edit:
+  path: '/admin/structure/block_page/manage/{block_page}'
+  defaults:
+    _entity_form: 'block_page.edit'
+    _title: 'Edit block page'
+  requirements:
+    _entity_access: block_page.update
+
+block_page.page_delete:
+  path: '/admin/structure/block_page/manage/{block_page}/delete'
+  defaults:
+    _entity_form: 'block_page.delete'
+    _title: 'Delete block page'
+  requirements:
+    _entity_access: block_page.delete
+
+#### Page Variants
+
+block_page.page_variant_add:
+  path: '/admin/structure/block_page/manage/{block_page}/add'
+  defaults:
+    _form: '\Drupal\block_page\Form\PageVariantAddForm'
+    _title: 'Add new page variant'
+    page_variant: 'default'
+  requirements:
+    _entity_access: block_page.update
+
+block_page.page_variant_edit:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}'
+  defaults:
+    _form: '\Drupal\block_page\Form\PageVariantEditForm'
+    _title: 'Edit page variant'
+  requirements:
+    _entity_access: block_page.update
+
+block_page.page_variant_delete:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}/delete'
+  defaults:
+    _form: '\Drupal\block_page\Form\PageVariantDeleteForm'
+    _title: 'Delete page variant'
+  requirements:
+    _entity_access: block_page.delete
+
+block_page.page_variant_add_block:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}/add/{plugin_id}'
+  defaults:
+    _form: 'Drupal\block_page\Form\PageVariantAddBlockForm'
+    _title: 'Add block to page variant'
+  requirements:
+    _entity_access: block_page.update
+
+block_page.page_variant_edit_block:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}/edit/{block_id}'
+  defaults:
+    _form: 'Drupal\block_page\Form\PageVariantEditBlockForm'
+    _title: 'Edit block in page variant'
+  requirements:
+    _entity_access: block_page.update

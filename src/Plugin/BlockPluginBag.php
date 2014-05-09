@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_group\BlockPluginBag.
+ * Contains \Drupal\block_page\Plugin\BlockPluginBag.
  */
 
-namespace Drupal\block_group;
+namespace Drupal\block_page\Plugin;
 
 use Drupal\block\BlockPluginInterface;
 use Drupal\Core\Plugin\DefaultPluginBag;

@@ -2,21 +2,52 @@
 
 /**
  * @file
- * Contains \Drupal\block_group\BlockGroupInterface.
+ * Contains \Drupal\block_page\Plugin\PageVariantInterface.
  */
 
-namespace Drupal\block_group;
+namespace Drupal\block_page\Plugin;
 
-use Drupal\Core\Config\Entity\ConfigEntityInterface;
-use Drupal\Core\Config\Entity\EntityWithPluginBagInterface;
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\PluginInspectionInterface;
+use Drupal\Core\Plugin\PluginFormInterface;
 
 /**
- * Provides an interface for block group objects.
+ * @todo.
  */
-interface BlockGroupInterface extends ConfigEntityInterface, EntityWithPluginBagInterface {
+interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
 
   /**
-   * Adds a block to this block group.
+   * Returns the user-facing page variant label.
+   *
+   * @return string
+   *   The page variant label.
+   */
+  public function label();
+
+  /**
+   * @todo.
+   */
+  public function id();
+
+  /**
+   * @todo.
+   */
+  public function getWeight();
+
+  /**
+   * @todo.
+   *
+   * @param int $weight
+   */
+  public function setWeight($weight);
+
+  /**
+   * @todo.
+   */
+  public function getBlock($block_id);
+
+  /**
+   * Adds a block to this page variant.
    *
    * @param array $configuration
    *   An array of block configuration.
@@ -24,7 +55,7 @@ interface BlockGroupInterface extends ConfigEntityInterface, EntityWithPluginBag
    * @return string
    *   The block ID.
    */
-  public function addBlockToGroup(array $configuration);
+  public function addBlock(array $configuration);
 
   /**
    * Returns the region a specific block is assigned to.
@@ -83,5 +114,12 @@ interface BlockGroupInterface extends ConfigEntityInterface, EntityWithPluginBag
    * @return int
    */
   public function getBlockCount();
+
+  /**
+   * @todo.
+   *
+   * @return bool
+   */
+  public function access();
 
 }

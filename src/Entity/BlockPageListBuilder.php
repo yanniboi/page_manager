@@ -2,18 +2,18 @@
 
 /**
  * @file
- * Contains \Drupal\block_group\Entity\BlockGroupListBuilder.
+ * Contains \Drupal\block_page\Entity\BlockPageListBuilder.
  */
 
-namespace Drupal\block_group\Entity;
+namespace Drupal\block_page\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Provides a list builder for block groups.
+ * Provides a list builder for block pages.
  */
-class BlockGroupListBuilder extends ConfigEntityListBuilder {
+class BlockPageListBuilder extends ConfigEntityListBuilder {
 
   /**
    * {@inheritdoc}
@@ -21,8 +21,7 @@ class BlockGroupListBuilder extends ConfigEntityListBuilder {
   public function buildHeader() {
     $header['label'] = $this->t('Label');
     $header['id'] = $this->t('Machine name');
-    $header['regions'] = $this->t('Regions');
-    $header['count'] = $this->t('Number of blocks');
+    $header['path'] = $this->t('Path');
     return $header + parent::buildHeader();
   }
 
@@ -30,14 +29,14 @@ class BlockGroupListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /** @var $entity \Drupal\block_group\BlockGroupInterface */
+    /** @var $entity \Drupal\block_page\BlockPageInterface */
     $row['label'] = $this->getLabel($entity);
     $row['id'] = $entity->id();
-    $row['regions'] = array('data' => array(
-      '#theme' => 'item_list',
-      '#items' => $entity->getRegionNames(),
-    ));
-    $row['count'] = $entity->getBlockCount();
+    $row['path']['data'] = array(
+      '#type' => 'link',
+      '#href' => $entity->getPath(),
+      '#title' => $entity->getPath(),
+    );
     return $row + parent::buildRow($entity);
   }
 
