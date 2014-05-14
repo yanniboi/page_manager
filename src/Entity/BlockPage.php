@@ -108,6 +108,22 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   /**
    * {@inheritdoc}
    */
+  public function postCreate(EntityStorageInterface $storage) {
+    parent::postCreate($storage);
+    // Ensure there is at least one page variant.
+    if (!$this->getPluginBag()->count()) {
+      $this->addPageVariant(array(
+        'id' => 'default',
+        'label' => 'Default',
+        // @todo This should not be needed.
+        'blocks' => array(),
+      ));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
     $this->routeBuilder()->setRebuildNeeded();
