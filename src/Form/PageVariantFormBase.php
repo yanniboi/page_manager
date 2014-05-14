@@ -40,6 +40,11 @@ abstract class PageVariantFormBase extends FormBase {
   abstract protected function preparePageVariant($page_variant_id);
 
   /**
+   * @return string
+   */
+  abstract protected function submitText();
+
+  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
@@ -53,6 +58,7 @@ abstract class PageVariantFormBase extends FormBase {
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(
       '#type' => 'submit',
+      '#value' => $this->submitText(),
       '#button_type' => 'primary',
     );
 

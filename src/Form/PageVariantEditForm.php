@@ -54,10 +54,15 @@ class PageVariantEditForm extends PageVariantFormBase {
   /**
    * {@inheritdoc}
    */
+  protected function submitText() {
+    return $this->t('Update page variant');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
     $form = parent::buildForm($form, $form_state, $block_page, $page_variant_id);
-
-    $form['actions']['submit']['#value'] = $this->t('Update page variant');
 
     // Set up the attributes used by a modal to prevent duplication later.
     $attributes = array(

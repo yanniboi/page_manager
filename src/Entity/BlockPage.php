@@ -165,6 +165,13 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   /**
    * {@inheritdoc}
    */
+  public function getPageVariants() {
+    return $this->getPluginBag();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getPluginBag() {
     if (!$this->pluginBag) {
       $this->pluginBag = new PageVariantBag(\Drupal::service('plugin.manager.page_variant'), $this->get($this->pluginConfigKey));
@@ -177,8 +184,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    * {@inheritdoc}
    */
   public function selectPageVariant() {
-    foreach ($this->getPluginBag() as $page_variant) {
-      /** @var $page_variant \Drupal\block_page\Plugin\PageVariantInterface */
+    foreach ($this->getPageVariants() as $page_variant) {
       if ($page_variant->access()) {
         return $page_variant;
       }

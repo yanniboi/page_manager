@@ -50,6 +50,11 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagI
   public function removePageVariant($page_variant_id);
 
   /**
+   * @return \Drupal\block_page\Plugin\PageVariantInterface[]
+   */
+  public function getPageVariants();
+
+  /**
    * @todo.
    *
    * @return \Drupal\block_page\Plugin\PageVariantInterface|null

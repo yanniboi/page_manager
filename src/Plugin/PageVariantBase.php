@@ -7,7 +7,6 @@
 
 namespace Drupal\block_page\Plugin;
 
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Plugin\PluginDependencyTrait;
 

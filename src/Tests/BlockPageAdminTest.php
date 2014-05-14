@@ -149,11 +149,13 @@ class BlockPageAdminTest extends WebTestBase {
    */
   protected function findBlockByLabel($block_page_id, $page_variant_label, $block_label) {
     $block_page = \Drupal::entityManager()->getStorage('block_page')->load($block_page_id);
-    foreach ($block_page->getPluginBag() as $page_variant) {
+    /** @var $block_page \Drupal\block_page\BlockPageInterface */
+    foreach ($block_page->getPageVariants() as $page_variant) {
       if ($page_variant->label() != $page_variant_label) {
         continue;
       }
       foreach ($page_variant->getRegionAssignments() as $blocks) {
+        /** @var $blocks \Drupal\block\BlockPluginInterface[] */
         foreach ($blocks as $block) {
           if ($block->label() == $block_label) {
             return $block;
@@ -161,6 +163,7 @@ class BlockPageAdminTest extends WebTestBase {
         }
       }
     }
+    return NULL;
   }
 
 }

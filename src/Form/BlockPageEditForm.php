@@ -61,13 +61,12 @@ class BlockPageEditForm extends BlockPageFormBase {
         'group' => 'page-variant-weight',
       )),
     );
-    foreach ($this->entity->getPluginBag() as $page_variant_id => $page_variant) {
+    foreach ($this->entity->getPageVariants() as $page_variant_id => $page_variant) {
       $row = array(
         '#attributes' => array(
           'class' => array('draggable'),
         ),
       );
-      /** @var $page_variant \Drupal\block_page\Plugin\PageVariantInterface */
       $row['label']['#markup'] = $page_variant->label();
       $row['id']['#markup'] = $page_variant->getPluginId();
       $row['regions'] = array('data' => array(

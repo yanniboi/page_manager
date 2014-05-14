@@ -7,7 +7,6 @@
 
 namespace Drupal\block_page\Form;
 
-use Drupal\block_page\BlockPageInterface;
 use Drupal\block_page\Plugin\PageVariantManager;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -53,10 +52,8 @@ class PageVariantAddForm extends PageVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
-    $form = parent::buildForm($form, $form_state, $block_page, $page_variant_id);
-    $form['actions']['submit']['#value'] = $this->t('Add page variant');
-    return $form;
+  protected function submitText() {
+    return $this->t('Add page variant');
   }
 
   /**
