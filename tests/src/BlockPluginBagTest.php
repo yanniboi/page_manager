@@ -88,31 +88,4 @@ class BlockPluginBagTest extends UnitTestCase {
     $this->assertSame($expected, $block_plugin_bag->getAllByRegion());
   }
 
-  /**
-   * @covers ::getBlockRegion
-   *
-   * @dataProvider providerTestGetBlockRegion
-   */
-  public function testGetBlockRegion($expected, $configuration = array()) {
-    $plugin = $this->getMock('Drupal\block\BlockPluginInterface');
-    $plugin->expects($this->once())
-      ->method('getConfiguration')
-      ->will($this->returnValue($configuration));
-    $block_manager = $this->getMock('Drupal\block\BlockManagerInterface');
-    $block_manager->expects($this->once())
-      ->method('createInstance')
-      ->with('foo')
-      ->will($this->returnValue($plugin));
-
-    $block_plugin_bag = new BlockPluginBag($block_manager, array('foo' => array('id' => 'foo')));
-    $this->assertSame($expected, $block_plugin_bag->getBlockRegion('foo'));
-  }
-
-  public function providerTestGetBlockRegion() {
-    return array(
-      array(NULL),
-      array('top', array('region' => 'top')),
-    );
-  }
-
 }

@@ -27,24 +27,13 @@ class BlockPluginBag extends DefaultPluginBag {
   /**
    * @todo.
    *
-   * @param string $block_id
-   *
-   * @return string|null
-   */
-  public function getBlockRegion($block_id) {
-    $configuration = $this->get($block_id)->getConfiguration();
-    return isset($configuration['region']) ? $configuration['region'] : NULL;
-  }
-
-  /**
-   * @todo.
-   *
    * @return array
    */
   public function getAllByRegion() {
     $region_assignments = array();
     foreach ($this as $block_id => $block) {
-      $region = $this->getBlockRegion($block_id);
+      $configuration = $block->getConfiguration();
+      $region = isset($configuration['region']) ? $configuration['region'] : NULL;
       $region_assignments[$region][$block_id] = $block;
     }
     foreach ($region_assignments as $region => $region_assignment) {

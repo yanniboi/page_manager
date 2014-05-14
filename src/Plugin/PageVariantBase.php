@@ -167,7 +167,8 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    * {@inheritdoc}
    */
   public function getRegionAssignment($block_id) {
-    return $this->getBlockBag()->getBlockRegion($block_id);
+    $configuration = $this->getBlock($block_id)->getConfiguration();
+    return isset($configuration['region']) ? $configuration['region'] : NULL;
   }
 
   /**
