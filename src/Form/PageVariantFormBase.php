@@ -73,8 +73,6 @@ abstract class PageVariantFormBase extends FormBase {
       // Save the page variant and update the instance.
       $this->pageVariant = $this->blockPage->addPageVariant($this->pageVariant->getConfiguration());
     }
-    else {
-    }
     $this->blockPage->save();
   }
 

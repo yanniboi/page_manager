@@ -129,7 +129,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   public function addPageVariant(array $configuration) {
     $configuration['uuid'] = $this->uuidGenerator()->generate();
     $this->getPluginBag()->addInstanceId($configuration['uuid'], $configuration);
-    return $this->getPluginBag()->get($configuration['uuid']);
+    return $this->getPageVariant($configuration['uuid']);
   }
 
   /**
