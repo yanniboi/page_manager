@@ -39,12 +39,12 @@ block_page.page_variant_add:
   defaults:
     _form: '\Drupal\block_page\Form\PageVariantAddForm'
     _title: 'Add new page variant'
-    page_variant: 'default'
+    page_variant_id: 'default'
   requirements:
     _entity_access: block_page.update
 
 block_page.page_variant_edit:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}'
   defaults:
     _form: '\Drupal\block_page\Form\PageVariantEditForm'
     _title_callback: '\Drupal\block_page\Controller\BlockPageController::editPageVariantTitle'
@@ -52,7 +52,7 @@ block_page.page_variant_edit:
     _entity_access: block_page.update
 
 block_page.page_variant_delete:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}/delete'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/delete'
   defaults:
     _form: '\Drupal\block_page\Form\PageVariantDeleteForm'
     _title: 'Delete page variant'
@@ -60,7 +60,7 @@ block_page.page_variant_delete:
     _entity_access: block_page.delete
 
 block_page.page_variant_add_block:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}/add/{plugin_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/add/{block_id}'
   defaults:
     _form: 'Drupal\block_page\Form\PageVariantAddBlockForm'
     _title: 'Add block to page variant'
@@ -68,7 +68,7 @@ block_page.page_variant_add_block:
     _entity_access: block_page.update
 
 block_page.page_variant_edit_block:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}/edit/{block_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/edit/{block_id}'
   defaults:
     _form: 'Drupal\block_page\Form\PageVariantEditBlockForm'
     _title: 'Edit block in page variant'

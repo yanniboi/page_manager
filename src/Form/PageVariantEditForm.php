@@ -54,8 +54,8 @@ class PageVariantEditForm extends PageVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant = NULL) {
-    $form = parent::buildForm($form, $form_state, $block_page, $page_variant);
+  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
+    $form = parent::buildForm($form, $form_state, $block_page, $page_variant_id);
 
     $form['actions']['submit']['#value'] = $this->t('Update page variant');
 
@@ -157,7 +157,7 @@ class PageVariantEditForm extends PageVariantFormBase {
           'route_name' => 'block_page.page_variant_edit_block',
           'route_parameters' => array(
             'block_page' => $this->blockPage->id(),
-            'page_variant' => $this->pageVariant->id(),
+            'page_variant_id' => $this->pageVariant->id(),
             'block_id' => $block_id,
           ),
           'attributes' => $attributes,
@@ -198,8 +198,8 @@ class PageVariantEditForm extends PageVariantFormBase {
         'route_name' => 'block_page.page_variant_add_block',
         'route_parameters' => array(
           'block_page' => $this->blockPage->id(),
-          'page_variant' => $this->pageVariant->id(),
-          'plugin_id' => $plugin_id,
+          'page_variant_id' => $this->pageVariant->id(),
+          'block_id' => $plugin_id,
         ),
         'attributes' => $attributes,
       );

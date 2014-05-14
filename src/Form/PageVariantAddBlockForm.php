@@ -7,7 +7,6 @@
 
 namespace Drupal\block_page\Form;
 
-use Drupal\block_page\BlockPageInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -49,16 +48,17 @@ class PageVariantAddBlockForm extends PageVariantConfigureBlockFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant = NULL, $plugin_id = NULL) {
-    $this->blockPage = $block_page;
-    $this->pageVariant = $block_page->getPageVariant($page_variant);
-    $this->plugin = $this->blockManager->createInstance($plugin_id);
-    $block_id = $this->pageVariant->addBlock($this->plugin->getConfiguration());
+  protected function prepareBlock($plugin_id) {
+    $block = $this->blockManager->createInstance($plugin_id);
+    $block_id = $this->pageVariant->addBlock($block->getConfiguration());
+    return $this->pageVariant->getBlock($block_id);
+  }
 
-    $form = parent::buildForm($form, $form_state, $block_id);
-
-    $form['actions']['submit']['#value'] = $this->t('Add block');
-    return $form;
+  /**
+   * {@inheritdoc}
+   */
+  protected function submitText() {
+    return $this->t('Add block');
   }
 
 }

@@ -33,15 +33,15 @@ class BlockPageController extends ControllerBase {
    *
    * @param \Drupal\block_page\BlockPageInterface $block_page
    *   The block page.
-   * @param string $page_variant
+   * @param string $page_variant_id
    *   The page variant.
    *
    * @return string
    *   The title for the page variant edit form.
    */
-  public function editPageVariantTitle(BlockPageInterface $block_page, $page_variant) {
-    $page_variant = $block_page->getPageVariant($page_variant);
-    return $this->t('Edit %label page variant', array('%label' => $page_variant->label()));
+  public function editPageVariantTitle(BlockPageInterface $block_page, $page_variant_id) {
+    $page_variant_id = $block_page->getPageVariant($page_variant_id);
+    return $this->t('Edit %label page variant', array('%label' => $page_variant_id->label()));
   }
 
 }

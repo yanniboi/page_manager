@@ -90,7 +90,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         'route_name' => 'block_page.page_variant_edit',
         'route_parameters' => array(
           'block_page' => $this->entity->id(),
-          'page_variant' => $page_variant_id,
+          'page_variant_id' => $page_variant_id,
         ),
       );
       $operations['delete'] = array(
@@ -98,7 +98,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         'route_name' => 'block_page.page_variant_delete',
         'route_parameters' => array(
           'block_page' => $this->entity->id(),
-          'page_variant' => $page_variant_id,
+          'page_variant_id' => $page_variant_id,
         ),
       );
       $row['operations'] = array(

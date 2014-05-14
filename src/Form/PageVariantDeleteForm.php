@@ -56,9 +56,9 @@ class PageVariantDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant = NULL) {
+  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
     $this->blockPage = $block_page;
-    $this->pageVariant = $block_page->getPageVariant($page_variant);
+    $this->pageVariant = $block_page->getPageVariant($page_variant_id);
     return parent::buildForm($form, $form_state);
   }
 

@@ -53,8 +53,8 @@ class PageVariantAddForm extends PageVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant = NULL) {
-    $form = parent::buildForm($form, $form_state, $block_page, $page_variant);
+  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
+    $form = parent::buildForm($form, $form_state, $block_page, $page_variant_id);
     $form['actions']['submit']['#value'] = $this->t('Add page variant');
     return $form;
   }
@@ -73,7 +73,7 @@ class PageVariantAddForm extends PageVariantFormBase {
     drupal_set_message($this->t('The %label page variant has been added.', array('%label' => $this->pageVariant->label())));
     $form_state['redirect_route'] = new Url('block_page.page_variant_edit', array(
       'block_page' => $this->blockPage->id(),
-      'page_variant' => $page_variant_id,
+      'page_variant_id' => $page_variant_id,
     ));
   }
 
