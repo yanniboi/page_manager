@@ -54,7 +54,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         $this->t('Weight'),
         $this->t('Operations'),
       ),
-      '#empty' => $this->t('There are no regions for blocks.'),
+      '#empty' => $this->t('There are no page variants.'),
       '#tabledrag' => array(array(
         'action' => 'order',
         'relationship' => 'sibling',
