@@ -48,6 +48,19 @@ class BlockPluginBagTest extends UnitTestCase {
         'plugin' => 'system_powered_by_block',
         'region' => 'top',
       ),
+      'bing' => array(
+        'id' => 'bing',
+        'label' => 'Bing',
+        'plugin' => 'system_powered_by_block',
+        'region' => 'bottom',
+        'weight' => -10,
+      ),
+      'baz' => array(
+        'id' => 'baz',
+        'label' => 'Baz',
+        'plugin' => 'system_powered_by_block',
+        'region' => 'bottom',
+      ),
     );
     $plugins = array();
     $plugin_map = array();
@@ -63,13 +76,13 @@ class BlockPluginBagTest extends UnitTestCase {
       $plugin_map[] = array($block_id, $block, $plugin);
     }
     $block_manager = $this->getMock('Drupal\block\BlockManagerInterface');
-    $block_manager->expects($this->exactly(2))
+    $block_manager->expects($this->exactly(4))
       ->method('createInstance')
       ->will($this->returnValueMap($plugin_map));
 
     $block_plugin_bag = new BlockPluginBag($block_manager, $blocks);
     $expected = array(
-      'bottom' => array('foo' => $plugins['foo']),
+      'bottom' => array('bing' => $plugins['bing'], 'baz' => $plugins['baz'], 'foo' => $plugins['foo']),
       'top' => array('bar' => $plugins['bar']),
     );
     $this->assertSame($expected, $block_plugin_bag->getAllByRegion());

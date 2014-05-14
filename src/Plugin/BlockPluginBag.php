@@ -58,13 +58,13 @@ class BlockPluginBag extends DefaultPluginBag {
    */
   public function getAllByRegion() {
     $region_assignments = array();
-    /** @var $block \Drupal\block\BlockPluginInterface */
     foreach ($this as $block_id => $block) {
       $region = $this->getBlockRegion($block_id);
       $region_assignments[$region][$block_id] = $block;
     }
     foreach ($region_assignments as $region => $region_assignment) {
-      uasort($region_assignment, function (BlockPluginInterface $a, BlockPluginInterface $b) {
+      // @todo Determine the reason this needs error suppression.
+      @uasort($region_assignment, function (BlockPluginInterface $a, BlockPluginInterface $b) {
         $a_config = $a->getConfiguration();
         $a_weight = isset($a_config['weight']) ? $a_config['weight'] : 0;
         $b_config = $b->getConfiguration();
