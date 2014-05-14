@@ -115,8 +115,6 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
       $this->addPageVariant(array(
         'id' => 'default',
         'label' => 'Default',
-        // @todo This should not be needed.
-        'blocks' => array(),
       ));
     }
   }
