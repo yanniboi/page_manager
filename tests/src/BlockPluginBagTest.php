@@ -38,11 +38,13 @@ class BlockPluginBagTest extends UnitTestCase {
     $blocks = array(
       'foo' => array(
         'id' => 'foo',
+        'label' => 'Foo',
         'plugin' => 'system_powered_by_block',
         'region' => 'bottom',
       ),
       'bar' => array(
         'id' => 'bar',
+        'label' => 'Bar',
         'plugin' => 'system_powered_by_block',
         'region' => 'top',
       ),
@@ -53,8 +55,8 @@ class BlockPluginBagTest extends UnitTestCase {
       $plugin = $this->getMock('Drupal\block\BlockPluginInterface');
       $plugin->expects($this->any())
         ->method('label')
-        ->will($this->returnValue(''));
-      $plugin->expects($this->atLeastOnce())
+        ->will($this->returnValue($block['label']));
+      $plugin->expects($this->any())
         ->method('getConfiguration')
         ->will($this->returnValue($block));
       $plugins[$block_id] = $plugin;
