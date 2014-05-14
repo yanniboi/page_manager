@@ -27,7 +27,7 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagI
    *
    * @param array $configuration
    *
-   * @return \Drupal\block_page\Plugin\PageVariantInterface
+   * @return string
    */
   public function addPageVariant(array $configuration);
 

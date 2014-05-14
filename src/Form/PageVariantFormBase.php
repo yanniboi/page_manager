@@ -26,11 +26,11 @@ abstract class PageVariantFormBase extends FormBase {
   protected $pageVariant;
 
   /**
-   * @param string $page_variant
+   * @param string $page_variant_id
    *
    * @return \Drupal\block_page\Plugin\PageVariantInterface
    */
-  abstract protected function preparePageVariant($page_variant);
+  abstract protected function preparePageVariant($page_variant_id);
 
   /**
    * {@inheritdoc}
@@ -71,7 +71,8 @@ abstract class PageVariantFormBase extends FormBase {
 
     if (!$this->pageVariant->id()) {
       // Save the page variant and update the instance.
-      $this->pageVariant = $this->blockPage->addPageVariant($this->pageVariant->getConfiguration());
+      $page_variant_id = $this->blockPage->addPageVariant($this->pageVariant->getConfiguration());
+      $this->pageVariant = $this->blockPage->getPageVariant($page_variant_id);
     }
     $this->blockPage->save();
   }

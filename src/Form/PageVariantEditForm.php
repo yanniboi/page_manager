@@ -217,8 +217,8 @@ class PageVariantEditForm extends PageVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function preparePageVariant($page_variant) {
-    return $this->blockPage->getPageVariant($page_variant);
+  protected function preparePageVariant($page_variant_id) {
+    return $this->blockPage->getPageVariant($page_variant_id);
   }
 
 }

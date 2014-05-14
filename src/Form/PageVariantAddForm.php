@@ -74,8 +74,8 @@ class PageVariantAddForm extends PageVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function preparePageVariant($page_variant) {
-    return $this->pageVariantManager->createInstance($page_variant);
+  protected function preparePageVariant($page_variant_id) {
+    return $this->pageVariantManager->createInstance($page_variant_id);
   }
 
 }

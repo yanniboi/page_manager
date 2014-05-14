@@ -150,9 +150,9 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    * {@inheritdoc}
    */
   public function addBlock(array $configuration) {
-    $uuid = $this->uuidGenerator()->generate();
-    $this->getBlockBag()->addInstanceId($uuid, $configuration);
-    return $uuid;
+    $configuration['uuid'] = $this->uuidGenerator()->generate();
+    $this->getBlockBag()->addInstanceId($configuration['uuid'], $configuration);
+    return $configuration['uuid'];
   }
 
   /**
