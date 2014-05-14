@@ -43,6 +43,7 @@ class BlockPageAdminTest extends WebTestBase {
     $this->doTestAddBlockPage();
     $this->doTestAddPageVariant();
     $this->doTestAddBlock();
+    $this->doTestEditPageVariant();
   }
 
   /**
@@ -104,6 +105,59 @@ class BlockPageAdminTest extends WebTestBase {
       $links[] = (string) $element;
     }
     $this->assertEqual($expected, $links);
+  }
+
+  /**
+   * Tests editing a page variant.
+   */
+  protected function doTestEditPageVariant() {
+    $block = $this->findBlockByLabel('foo', 'First', 'User account menu');
+    $block_config = $block->getConfiguration();
+
+    $this->drupalGet('admin/structure/block_page/manage/foo');
+    $this->clickLink('Edit');
+    $this->assertTitle('Edit First page variant | Drupal');
+    $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-region', 'top');
+    $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-weight', 0);
+
+    $form_name = 'blocks[' . $block_config['uuid'] . ']';
+    $edit = array(
+      $form_name . '[region]' => 'bottom',
+      $form_name . '[weight]' => -10,
+    );
+    $this->drupalPostForm(NULL, $edit, 'Update page variant');
+    $this->assertRaw(String::format('The %label page variant has been updated.', array('%label' => 'First')));
+    $this->clickLink('Edit');
+    $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-region', 'bottom');
+    $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-weight', -10);
+  }
+
+  /**
+   * Finds a block based on its block page, variant, and block label.
+   *
+   * @param string $block_page_id
+   *   The ID of the block page.
+   * @param string $page_variant_label
+   *   The label of the page variant.
+   * @param string $block_label
+   *   The label of the block.
+   *
+   * @return \Drupal\block\BlockPluginInterface|null
+   */
+  protected function findBlockByLabel($block_page_id, $page_variant_label, $block_label) {
+    $block_page = \Drupal::entityManager()->getStorage('block_page')->load($block_page_id);
+    foreach ($block_page->getPluginBag() as $page_variant) {
+      if ($page_variant->label() != $page_variant_label) {
+        continue;
+      }
+      foreach ($page_variant->getRegionAssignments() as $blocks) {
+        foreach ($blocks as $block) {
+          if ($block->label() == $block_label) {
+            return $block;
+          }
+        }
+      }
+    }
   }
 
 }
