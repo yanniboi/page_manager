@@ -115,6 +115,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
       $this->addPageVariant(array(
         'id' => 'default',
         'label' => 'Default',
+        'weight' => 10,
       ));
     }
   }
