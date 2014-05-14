@@ -24,10 +24,26 @@ class BlockPluginBag extends DefaultPluginBag {
     return parent::get($instance_id);
   }
 
+  /**
+   * @todo.
+   *
+   * @param string $block_id
+   *
+   * @return string|null
+   */
   public function getBlockRegion($block_id) {
     $configuration = $this->get($block_id)->getConfiguration();
     return isset($configuration['region']) ? $configuration['region'] : NULL;
   }
+
+  /**
+   * @todo.
+   *
+   * @param string $block_id
+   * @param string $region
+   *
+   * @return $this
+   */
   public function setBlockRegion($block_id, $region) {
     $configuration = $this->get($block_id)->getConfiguration();
     $configuration['region'] = $region;
@@ -35,6 +51,11 @@ class BlockPluginBag extends DefaultPluginBag {
     return $this;
   }
 
+  /**
+   * @todo.
+   *
+   * @return array
+   */
   public function getAllByRegion() {
     $region_assignments = array();
     /** @var $block \Drupal\block\BlockPluginInterface */
@@ -56,7 +77,6 @@ class BlockPluginBag extends DefaultPluginBag {
       $region_assignments[$region] = $region_assignment;
     }
     return $region_assignments;
-
   }
 
 }

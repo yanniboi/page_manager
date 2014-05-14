@@ -170,7 +170,7 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
     $empty = array_fill_keys(array_keys($this->getRegionNames()), array());
     $full = $this->getBlockBag()->getAllByRegion();
     // Merge it with the actual values to maintain the ordering.
-    return array_merge($empty, $full);
+    return array_intersect_key(array_merge($empty, $full), $empty);
   }
 
   /**
