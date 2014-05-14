@@ -10,7 +10,7 @@ namespace Drupal\block_page\Plugin;
 use Drupal\Core\Plugin\DefaultPluginBag;
 
 /**
- * @todo.
+ * Provides a collection of page variants.
  */
 class PageVariantBag extends DefaultPluginBag {
 

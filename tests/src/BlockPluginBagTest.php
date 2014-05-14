@@ -11,7 +11,7 @@ use Drupal\block_page\Plugin\BlockPluginBag;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * @todo.
+ * Tests the block plugin bag.
  *
  * @coversDefaultClass \Drupal\block_page\Plugin\BlockPluginBag
  *

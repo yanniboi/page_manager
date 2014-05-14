@@ -10,10 +10,17 @@ namespace Drupal\block_page\Annotation;
 use Drupal\Component\Annotation\Plugin;
 
 /**
- * @todo.
+ * Defines a page variant annotation object.
  *
  * @Annotation
  */
 class PageVariant extends Plugin {
+
+  /**
+   * The plugin ID.
+   *
+   * @var string
+   */
+  public $id;
 
 }

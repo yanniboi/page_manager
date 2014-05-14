@@ -17,11 +17,15 @@ use Drupal\Core\Url;
 abstract class PageVariantConfigureBlockFormBase extends FormBase {
 
   /**
+   * The block page.
+   *
    * @var \Drupal\block_page\BlockPageInterface
    */
   protected $blockPage;
 
   /**
+   * The page variant.
+   *
    * @var \Drupal\block_page\Plugin\PageVariantInterface
    */
   protected $pageVariant;
@@ -34,14 +38,21 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
   protected $block;
 
   /**
+   * Prepares the block plugin based on the block ID.
+   *
    * @param string $block_id
+   *   Either a block ID, or the plugin ID used to create a new block.
    *
    * @return \Drupal\block\BlockPluginInterface
+   *   The block plugin.
    */
   abstract protected function prepareBlock($block_id);
 
   /**
+   * Returns the text to use for the submit button.
+   *
    * @return string
+   *   The submit button text.
    */
   abstract protected function submitText();
 
@@ -80,7 +91,7 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
    */
   public function validateForm(array &$form, array &$form_state) {
     $settings = array(
-      'values' => &$form_state['values']['settings']
+      'values' => &$form_state['values']['settings'],
     );
     // Call the plugin validate handler.
     $this->block->validateConfigurationForm($form, $settings);

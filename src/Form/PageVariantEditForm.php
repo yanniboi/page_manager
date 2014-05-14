@@ -77,7 +77,13 @@ class PageVariantEditForm extends PageVariantFormBase {
     $form['blocks'] = array(
       '#prefix' => '<h3>' . $this->t('Blocks') . '</h3>',
       '#type' => 'table',
-      '#header' => array($this->t('Label'), $this->t('Plugin ID'), $this->t('Region'), $this->t('Weight'), $this->t('Operations')),
+      '#header' => array(
+        $this->t('Label'),
+        $this->t('Plugin ID'),
+        $this->t('Region'),
+        $this->t('Weight'),
+        $this->t('Operations'),
+      ),
       '#empty' => $this->t('There are no regions for blocks.')
     );
     // Loop through the blocks per region.

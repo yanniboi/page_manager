@@ -23,41 +23,52 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagI
   public function getPath();
 
   /**
-   * @todo.
+   * Adds a new page variant to the block page.
    *
    * @param array $configuration
    *
    * @return string
+   *   The page variant ID.
    */
   public function addPageVariant(array $configuration);
 
   /**
-   * @todo.
+   * Retrieves a specific page variant.
    *
    * @param string $page_variant_id
+   *   The page variant ID.
    *
    * @return \Drupal\block_page\Plugin\PageVariantInterface
+   *   The page variant object.
    */
   public function getPageVariant($page_variant_id);
 
   /**
-   * @todo.
+   * Removes a specific page variant.
    *
    * @param string $page_variant_id
+   *   The page variant ID.
    *
    * @return $this
    */
   public function removePageVariant($page_variant_id);
 
   /**
+   * Returns the page variants available for the block page.
+   *
    * @return \Drupal\block_page\Plugin\PageVariantInterface[]
+   *   An array of the page variants.
    */
   public function getPageVariants();
 
   /**
-   * @todo.
+   * Selects the page variant to use for this block page.
+   *
+   * This loops through the available page variants and checks each for access,
+   * returning the first one that is accessible.
    *
    * @return \Drupal\block_page\Plugin\PageVariantInterface|null
+   *   Either the first accessible page variant, or NULL if none are accessible.
    */
   public function selectPageVariant();
 

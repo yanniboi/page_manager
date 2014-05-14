@@ -10,7 +10,7 @@ namespace Drupal\block_page\Tests;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * @todo.
+ * Tests the page variant plugin.
  *
  * @coversDefaultClass \Drupal\block_page\Plugin\PageVariantBase
  *

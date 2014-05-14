@@ -13,7 +13,7 @@ use Drupal\Core\Language\LanguageManager;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
- * @todo.
+ * Manages discovery of page variant plugins.
  */
 class PageVariantManager extends DefaultPluginManager {
 

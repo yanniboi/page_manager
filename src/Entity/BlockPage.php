@@ -63,7 +63,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   protected $path;
 
   /**
-   * @todo.
+   * The configuration of the page variants.
    *
    * @var array
    */

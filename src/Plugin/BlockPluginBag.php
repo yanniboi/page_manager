@@ -25,9 +25,11 @@ class BlockPluginBag extends DefaultPluginBag {
   }
 
   /**
-   * @todo.
+   * Returns all blocks keyed by their region.
    *
    * @return array
+   *   An associative array keyed by region, containing an associative array of
+   *   block plugins.
    */
   public function getAllByRegion() {
     $region_assignments = array();

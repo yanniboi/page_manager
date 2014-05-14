@@ -11,7 +11,7 @@ use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Plugin\PluginDependencyTrait;
 
 /**
- * @todo.
+ * Provides a base class for PageVariant plugins.
  */
 abstract class PageVariantBase extends PluginBase implements PageVariantInterface {
 

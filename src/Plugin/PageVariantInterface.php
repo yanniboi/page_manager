@@ -12,7 +12,7 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 
 /**
- * @todo.
+ * Provides an interface for PageVariant plugins.
  */
 interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
 
@@ -25,24 +25,37 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function label();
 
   /**
-   * @todo.
+   * Returns the unique ID for the page variant.
+   *
+   * @return string
+   *   The page variant ID.
    */
   public function id();
 
   /**
-   * @todo.
+   * Returns the weight of the page variant.
+   *
+   * @return int
+   *   The page variant weight.
    */
   public function getWeight();
 
   /**
-   * @todo.
+   * Sets the weight of the page variant.
    *
    * @param int $weight
+   *   The weight to set.
    */
   public function setWeight($weight);
 
   /**
-   * @todo.
+   * Returns a specific block plugin.
+   *
+   * @param string $block_id
+   *   The block ID.
+   *
+   * @return \Drupal\block\BlockPluginInterface
+   *   The block plugin.
    */
   public function getBlock($block_id);
 
@@ -109,16 +122,18 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function getRegionName($region);
 
   /**
-   * Returns the number of blocks contained in this group.
+   * Returns the number of blocks contained by the page variant.
    *
    * @return int
+   *   The number of blocks contained by the page variant.
    */
   public function getBlockCount();
 
   /**
-   * @todo.
+   * Determines if this page variant is accessible.
    *
    * @return bool
+   *   TRUE if this page variant is accessible, FALSE otherwise.
    */
   public function access();
 

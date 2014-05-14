@@ -10,7 +10,7 @@ namespace Drupal\block_page\Plugin\PageVariant;
 use Drupal\block_page\Plugin\PageVariantBase;
 
 /**
- * @todo.
+ * Provides a default page variant.
  *
  * @PageVariant(
  *   id = "default"
@@ -22,6 +22,7 @@ class DefaultPageVariant extends PageVariantBase {
    * {@inheritdoc}
    */
   public function getRegionNames() {
+    // @todo Reference an external object of some kind, like a Layout.
     return array(
       'top' => 'Top',
       'bottom' => 'Bottom',
@@ -32,7 +33,7 @@ class DefaultPageVariant extends PageVariantBase {
    * {@inheritdoc}
    */
   public function access() {
-    // @todo.
+    // @todo Develop something more sophisticated.
     return (bool) $this->getBlockCount();
   }
 

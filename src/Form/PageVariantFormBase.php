@@ -36,11 +36,15 @@ abstract class PageVariantFormBase extends FormBase {
    *   Either a page variant ID, or the plugin ID used to create a new variant.
    *
    * @return \Drupal\block_page\Plugin\PageVariantInterface
+   *   The page variant object.
    */
   abstract protected function preparePageVariant($page_variant_id);
 
   /**
+   * Returns the text to use for the submit button.
+   *
    * @return string
+   *   The submit button text.
    */
   abstract protected function submitText();
 
@@ -71,7 +75,7 @@ abstract class PageVariantFormBase extends FormBase {
   public function validateForm(array &$form, array &$form_state) {
     // Allow the page variant to validate the form.
     $plugin_values = array(
-      'values' => &$form_state['values']['plugin']
+      'values' => &$form_state['values']['plugin'],
     );
     $form['plugin'] = $this->pageVariant->validateConfigurationForm($form, $plugin_values);
   }
@@ -82,7 +86,7 @@ abstract class PageVariantFormBase extends FormBase {
   public function submitForm(array &$form, array &$form_state) {
     // Allow the page variant to submit the form.
     $plugin_values = array(
-      'values' => &$form_state['values']['plugin']
+      'values' => &$form_state['values']['plugin'],
     );
     $this->pageVariant->submitConfigurationForm($form, $plugin_values);
   }
