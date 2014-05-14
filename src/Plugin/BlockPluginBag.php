@@ -39,21 +39,6 @@ class BlockPluginBag extends DefaultPluginBag {
   /**
    * @todo.
    *
-   * @param string $block_id
-   * @param string $region
-   *
-   * @return $this
-   */
-  public function setBlockRegion($block_id, $region) {
-    $configuration = $this->get($block_id)->getConfiguration();
-    $configuration['region'] = $region;
-    $this->setInstanceConfiguration($block_id, $configuration);
-    return $this;
-  }
-
-  /**
-   * @todo.
-   *
    * @return array
    */
   public function getAllByRegion() {

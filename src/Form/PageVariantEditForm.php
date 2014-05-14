@@ -57,6 +57,9 @@ class PageVariantEditForm extends PageVariantFormBase {
   public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant = NULL) {
     $form = parent::buildForm($form, $form_state, $block_page, $page_variant);
 
+    $form['actions']['submit']['#value'] = $this->t('Update page variant');
+
+    // Set up the attributes used by a modal to prevent duplication later.
     $attributes = array(
       'class' => array('use-ajax'),
       'data-accepts' => 'application/vnd.drupal-modal',
@@ -64,14 +67,17 @@ class PageVariantEditForm extends PageVariantFormBase {
         'width' => 'auto',
       )),
     );
+
+    // Build a table of all blocks used by this page variant.
     $form['blocks'] = array(
       '#prefix' => '<h3>' . $this->t('Blocks') . '</h3>',
       '#type' => 'table',
       '#header' => array($this->t('Label'), $this->t('Plugin ID'), $this->t('Region'), $this->t('Weight'), $this->t('Operations')),
       '#empty' => $this->t('There are no regions for blocks.')
     );
-    $form['actions']['submit']['#value'] = $this->t('Update page variant');
+    // Loop through the blocks per region.
     foreach ($this->pageVariant->getRegionAssignments() as $region => $blocks) {
+      // Add a section for each region and allow blocks to be dragged between them.
       $form['blocks']['#tabledrag'][] = array(
         'action' => 'match',
         'relationship' => 'sibling',
@@ -113,16 +119,16 @@ class PageVariantEditForm extends PageVariantFormBase {
         ),
       );
 
-      $weight_delta = round($this->pageVariant->getBlockCount() / 2);
+      /** @var $blocks \Drupal\block\BlockPluginInterface[] */
       foreach ($blocks as $block_id => $block) {
         $row = array(
           '#attributes' => array(
             'class' => array('draggable'),
           ),
         );
-        /** @var $block \Drupal\block\BlockPluginInterface */
         $row['label']['#markup'] = $block->label();
         $row['id']['#markup'] = $block->getPluginId();
+        // Allow the region to be changed for each block.
         $row['region'] = array(
           '#title' => $this->t('Region'),
           '#title_display' => 'invisible',
@@ -133,6 +139,18 @@ class PageVariantEditForm extends PageVariantFormBase {
             'class' => array('block-region-select', 'block-region-' . $region),
           ),
         );
+        // Allow the weight to be changed for each block.
+        $configuration = $block->getConfiguration();
+        $row['weight'] = array(
+          '#type' => 'weight',
+          '#default_value' => isset($configuration['weight']) ? $configuration['weight'] : 0,
+          '#title' => t('Weight for @block block', array('@block' => $block->label())),
+          '#title_display' => 'invisible',
+          '#attributes' => array(
+            'class' => array('block-weight', 'block-weight-' . $region),
+          ),
+        );
+        // Add the operation links.
         $operations = array();
         $operations['edit'] = array(
           'title' => $this->t('Edit'),
@@ -144,17 +162,6 @@ class PageVariantEditForm extends PageVariantFormBase {
           ),
           'attributes' => $attributes,
         );
-        $configuration = $block->getConfiguration();
-        $row['weight'] = array(
-          '#type' => 'weight',
-          '#default_value' => isset($configuration['weight']) ? $configuration['weight'] : 0,
-          '#delta' => $weight_delta,
-          '#title' => t('Weight for @block block', array('@block' => $block->label())),
-          '#title_display' => 'invisible',
-          '#attributes' => array(
-            'class' => array('block-weight', 'block-weight-' . $region),
-          ),
-        );
         $row['operations'] = array(
           '#type' => 'operations',
           '#links' => $operations,
@@ -162,6 +169,7 @@ class PageVariantEditForm extends PageVariantFormBase {
         $form['blocks'][$block_id] = $row;
       }
     }
+    // Add a section containing the available blocks to be added to the variant.
     $form['available_blocks'] = array(
       '#type' => 'details',
       '#title' => $this->t('Available blocks'),
@@ -171,8 +179,8 @@ class PageVariantEditForm extends PageVariantFormBase {
         ),
       ),
     );
-    $plugins = $this->blockManager->getSortedDefinitions();
-    foreach ($plugins as $plugin_id => $plugin_definition) {
+    foreach ($this->blockManager->getSortedDefinitions() as $plugin_id => $plugin_definition) {
+      // Make a section for each region.
       $category = String::checkPlain($plugin_definition['category']);
       $category_key = 'category-' . $category;
       if (!isset($form['available_blocks'][$category_key])) {
@@ -184,6 +192,7 @@ class PageVariantEditForm extends PageVariantFormBase {
           ),
         );
       }
+      // Add a link for each available block within each region.
       $form['available_blocks'][$category_key]['content']['#links'][$plugin_id] = array(
         'title' => $plugin_definition['admin_label'],
         'route_name' => 'block_page.page_variant_add_block',
@@ -203,9 +212,10 @@ class PageVariantEditForm extends PageVariantFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
+    // If the blocks were rearranged, update their regions.
     if (!empty($form_state['values']['blocks'])) {
       foreach ($form_state['values']['blocks'] as $block_id => $block_values) {
-        $this->pageVariant->setRegionAssignment($block_id, $block_values['region']);
+        $this->pageVariant->updateBlock($block_id, array('region' => $block_values['region']));
       }
     }
 

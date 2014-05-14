@@ -58,6 +58,18 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function addBlock(array $configuration);
 
   /**
+   * Updates the configuration of a specific block plugin.
+   *
+   * @param string $block_id
+   *   The block ID.
+   * @param array $configuration
+   *   The array of configuration to set.
+   *
+   * @return $this
+   */
+  public function updateBlock($block_id, array $configuration);
+
+  /**
    * Returns the region a specific block is assigned to.
    *
    * @param string $block_id
@@ -77,18 +89,6 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
    *   values.
    */
   public function getRegionAssignments();
-
-  /**
-   * Sets the region for a specific block plugin.
-   *
-   * @param string $block_id
-   *   The block ID.
-   * @param string $region
-   *   The machine name of the region.
-   *
-   * @return $this
-   */
-  public function setRegionAssignment($block_id, $region);
 
   /**
    * Returns the human-readable list of regions keyed by machine name.

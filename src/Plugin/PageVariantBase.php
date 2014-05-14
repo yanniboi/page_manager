@@ -158,6 +158,15 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   /**
    * {@inheritdoc}
    */
+  public function updateBlock($block_id, array $configuration) {
+    $existing_configuration = $this->getBlock($block_id)->getConfiguration();
+    $this->getBlockBag()->setInstanceConfiguration($block_id, $configuration + $existing_configuration);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getRegionAssignment($block_id) {
     return $this->getBlockBag()->getBlockRegion($block_id);
   }
@@ -171,14 +180,6 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
     $full = $this->getBlockBag()->getAllByRegion();
     // Merge it with the actual values to maintain the ordering.
     return array_intersect_key(array_merge($empty, $full), $empty);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setRegionAssignment($block_id, $region) {
-    $this->getBlockBag()->setBlockRegion($block_id, $region);
-    return $this;
   }
 
   /**

@@ -89,7 +89,7 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
 
     // Call the plugin submit handler.
     $this->plugin->submitConfigurationForm($form, $settings);
-    $this->pageVariant->setRegionAssignment($this->blockId, $form_state['values']['region']);
+    $this->pageVariant->updateBlock($this->blockId, array('region' => $form_state['values']['region']));
     $this->blockPage->save();
 
     $form_state['redirect_route'] = new Url('block_page.page_variant_edit', array(

@@ -16,17 +16,24 @@ use Drupal\Core\Form\FormBase;
 abstract class PageVariantFormBase extends FormBase {
 
   /**
+   * The block page this page variant belongs to.
+   *
    * @var \Drupal\block_page\BlockPageInterface
    */
   protected $blockPage;
 
   /**
+   * The page variant used by this form.
+   *
    * @var \Drupal\block_page\Plugin\PageVariantInterface
    */
   protected $pageVariant;
 
   /**
+   * Prepares the page variant used by this form.
+   *
    * @param string $page_variant_id
+   *   Either a page variant ID, or the plugin ID used to create a new variant.
    *
    * @return \Drupal\block_page\Plugin\PageVariantInterface
    */
@@ -38,6 +45,8 @@ abstract class PageVariantFormBase extends FormBase {
   public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant = NULL) {
     $this->blockPage = $block_page;
     $this->pageVariant = $this->preparePageVariant($page_variant);
+
+    // Allow the page variant to add to the form.
     $form['plugin'] = $this->pageVariant->buildConfigurationForm(array(), $form_state);
     $form['plugin']['#tree'] = TRUE;
 
@@ -54,6 +63,7 @@ abstract class PageVariantFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, array &$form_state) {
+    // Allow the page variant to validate the form.
     $plugin_values = array(
       'values' => &$form_state['values']['plugin']
     );
@@ -64,16 +74,19 @@ abstract class PageVariantFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
+    // Allow the page variant to submit the form.
     $plugin_values = array(
       'values' => &$form_state['values']['plugin']
     );
     $this->pageVariant->submitConfigurationForm($form, $plugin_values);
 
+    // If this page variant is new, add it to the page.
     if (!$this->pageVariant->id()) {
-      // Save the page variant and update the instance.
       $page_variant_id = $this->blockPage->addPageVariant($this->pageVariant->getConfiguration());
+      // Update the instance being tracked.
       $this->pageVariant = $this->blockPage->getPageVariant($page_variant_id);
     }
+    // Save the block page.
     $this->blockPage->save();
   }
 
