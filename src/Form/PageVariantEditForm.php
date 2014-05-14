@@ -203,12 +203,15 @@ class PageVariantEditForm extends PageVariantFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
+    if (!empty($form_state['values']['blocks'])) {
+      foreach ($form_state['values']['blocks'] as $block_id => $block_values) {
+        $this->pageVariant->setRegionAssignment($block_id, $block_values['region']);
+      }
+    }
+
     parent::submitForm($form, $form_state);
-    drupal_set_message($this->t('The %label page variant has been added.', array('%label' => $this->pageVariant->label())));
+    drupal_set_message($this->t('The %label page variant has been updated.', array('%label' => $this->pageVariant->label())));
     $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
-    foreach ($form_state['values']['blocks'] as $block_id => $block_values) {
-      $this->pageVariant->setRegionAssignment($block_id, $block_values['region']);
-    };
   }
 
   /**
