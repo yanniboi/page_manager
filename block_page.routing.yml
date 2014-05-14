@@ -20,7 +20,7 @@ block_page.page_edit:
   path: '/admin/structure/block_page/manage/{block_page}'
   defaults:
     _entity_form: 'block_page.edit'
-    _title: 'Edit block page'
+    _title_callback: '\Drupal\block_page\Controller\BlockPageController::editBlockPageTitle'
   requirements:
     _entity_access: block_page.update
 
@@ -47,7 +47,7 @@ block_page.page_variant_edit:
   path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant}'
   defaults:
     _form: '\Drupal\block_page\Form\PageVariantEditForm'
-    _title: 'Edit page variant'
+    _title_callback: '\Drupal\block_page\Controller\BlockPageController::editPageVariantTitle'
   requirements:
     _entity_access: block_page.update
 
