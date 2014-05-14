@@ -40,6 +40,15 @@ class BlockPageAdminTest extends WebTestBase {
   }
 
   public function testAdmin() {
+    $this->doTestAddBlockPage();
+    $this->doTestAddPageVariant();
+    $this->doTestAddBlock();
+  }
+
+  /**
+   * Tests adding a block page.
+   */
+  protected function doTestAddBlockPage() {
     $this->drupalGet('admin/structure/block_page');
     $this->assertText('There is no Block Page yet.');
 
@@ -59,12 +68,13 @@ class BlockPageAdminTest extends WebTestBase {
 
     // Assert that a page variant was added by default.
     $this->drupalGet('admin/structure/block_page/manage/foo');
-    //$this->assertText('There are no page variants.');
-    $this->clickLink('Edit');
-    $this->assertTitle('Edit Default page variant | Drupal');
-    $this->drupalPostForm(NULL, array(), 'Update page variant');
-    $this->assertRaw(String::format('The %label page variant has been updated.', array('%label' => 'Default')));
+    $this->assertNoText('There are no page variants.');
+  }
 
+  /**
+   * Tests adding a page variant.
+   */
+  protected function doTestAddPageVariant() {
     // Add a new page variant.
     $this->clickLink('Add new page variant');
     $edit = array(
@@ -72,7 +82,12 @@ class BlockPageAdminTest extends WebTestBase {
     );
     $this->drupalPostForm(NULL, $edit, 'Add page variant');
     $this->assertRaw(String::format('The %label page variant has been added.', array('%label' => 'First')));
+  }
 
+  /**
+   * Tests adding a block to a variant.
+   */
+  protected function doTestAddBlock() {
     // Add a block to the variant.
     $this->clickLink('User account menu');
     $edit = array(
