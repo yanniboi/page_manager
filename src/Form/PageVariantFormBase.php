@@ -79,15 +79,6 @@ abstract class PageVariantFormBase extends FormBase {
       'values' => &$form_state['values']['plugin']
     );
     $this->pageVariant->submitConfigurationForm($form, $plugin_values);
-
-    // If this page variant is new, add it to the page.
-    if (!$this->pageVariant->id()) {
-      $page_variant_id = $this->blockPage->addPageVariant($this->pageVariant->getConfiguration());
-      // Update the instance being tracked.
-      $this->pageVariant = $this->blockPage->getPageVariant($page_variant_id);
-    }
-    // Save the block page.
-    $this->blockPage->save();
   }
 
 }

@@ -212,14 +212,17 @@ class PageVariantEditForm extends PageVariantFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    // If the blocks were rearranged, update their regions.
+    parent::submitForm($form, $form_state);
+
+    // If the blocks were rearranged, update their values.
     if (!empty($form_state['values']['blocks'])) {
       foreach ($form_state['values']['blocks'] as $block_id => $block_values) {
         $this->pageVariant->updateBlock($block_id, $block_values);
       }
     }
 
-    parent::submitForm($form, $form_state);
+    // Save the block page.
+    $this->blockPage->save();
     drupal_set_message($this->t('The %label page variant has been updated.', array('%label' => $this->pageVariant->label())));
     $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
   }
@@ -228,6 +231,7 @@ class PageVariantEditForm extends PageVariantFormBase {
    * {@inheritdoc}
    */
   protected function preparePageVariant($page_variant_id) {
+    // Load the page variant directly from the block page.
     return $this->blockPage->getPageVariant($page_variant_id);
   }
 

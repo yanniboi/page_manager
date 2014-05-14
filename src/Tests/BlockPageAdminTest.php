@@ -111,9 +111,12 @@ class BlockPageAdminTest extends WebTestBase {
    * Tests editing a page variant.
    */
   protected function doTestEditPageVariant() {
-    $block = $this->findBlockByLabel('foo', 'First', 'User account menu');
-    $block_config = $block->getConfiguration();
+    if (!$block = $this->findBlockByLabel('foo', 'First', 'User account menu')) {
+      $this->fail('Block not found');
+      return;
+    }
 
+    $block_config = $block->getConfiguration();
     $this->drupalGet('admin/structure/block_page/manage/foo');
     $this->clickLink('Edit');
     $this->assertTitle('Edit First page variant | Drupal');

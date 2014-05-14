@@ -64,17 +64,24 @@ class PageVariantAddForm extends PageVariantFormBase {
    */
   public function submitForm(array &$form, array &$form_state) {
     parent::submitForm($form, $form_state);
+
+    // If this page variant is new, add it to the page.
+    $page_variant_id = $this->blockPage->addPageVariant($this->pageVariant->getConfiguration());
+
+    // Save the block page.
+    $this->blockPage->save();
+    drupal_set_message($this->t('The %label page variant has been added.', array('%label' => $this->pageVariant->label())));
     $form_state['redirect_route'] = new Url('block_page.page_variant_edit', array(
       'block_page' => $this->blockPage->id(),
-      'page_variant' => $this->pageVariant->id(),
+      'page_variant' => $page_variant_id,
     ));
-    drupal_set_message($this->t('The %label page variant has been added.', array('%label' => $this->pageVariant->label())));
   }
 
   /**
    * {@inheritdoc}
    */
   protected function preparePageVariant($page_variant_id) {
+    // Create a new page variant instance.
     return $this->pageVariantManager->createInstance($page_variant_id);
   }
 
