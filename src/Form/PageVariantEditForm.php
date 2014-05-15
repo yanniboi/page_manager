@@ -84,11 +84,12 @@ class PageVariantEditForm extends PageVariantFormBase {
         $this->t('Weight'),
         $this->t('Operations'),
       ),
-      '#empty' => $this->t('There are no regions for blocks.')
+      '#empty' => $this->t('There are no regions for blocks.'),
     );
     // Loop through the blocks per region.
     foreach ($this->pageVariant->getRegionAssignments() as $region => $blocks) {
-      // Add a section for each region and allow blocks to be dragged between them.
+      // Add a section for each region and allow blocks to be dragged between
+      // them.
       $form['blocks']['#tabledrag'][] = array(
         'action' => 'match',
         'relationship' => 'sibling',

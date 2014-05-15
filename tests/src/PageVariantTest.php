@@ -31,10 +31,15 @@ class PageVariantTest extends UnitTestCase {
   }
 
   /**
+   * Sets up a page variant plugin for testing.
+   *
    * @param array $configuration
+   *   An array of plugin configuration.
    * @param array $definition
+   *   The plugin definition array.
    *
    * @return \Drupal\block_page\Plugin\PageVariantBase|\PHPUnit_Framework_MockObject_MockObject
+   *   A mocked page variant plugin.
    */
   public function setUpPageVariant($configuration = array(), $definition = array()) {
     return $this->getMockBuilder('Drupal\block_page\Plugin\PageVariantBase')
@@ -44,6 +49,8 @@ class PageVariantTest extends UnitTestCase {
   }
 
   /**
+   * Tests the label() method.
+   *
    * @covers ::label
    */
   public function testLabel() {
@@ -52,6 +59,8 @@ class PageVariantTest extends UnitTestCase {
   }
 
   /**
+   * Tests the label() method using a default value.
+   *
    * @covers ::label
    */
   public function testLabelDefault() {
@@ -60,6 +69,8 @@ class PageVariantTest extends UnitTestCase {
   }
 
   /**
+   * Tests the getWeight() method.
+   *
    * @covers ::getWeight
    */
   public function testGetWeight() {
@@ -68,6 +79,8 @@ class PageVariantTest extends UnitTestCase {
   }
 
   /**
+   * Tests the getWeight() method using a default value.
+   *
    * @covers ::getWeight
    */
   public function testGetWeightDefault() {
@@ -76,6 +89,8 @@ class PageVariantTest extends UnitTestCase {
   }
 
   /**
+   * Tests the getRegionName() method.
+   *
    * @covers ::getRegionName
    *
    * @dataProvider providerTestGetRegionName
@@ -100,6 +115,8 @@ class PageVariantTest extends UnitTestCase {
   }
 
   /**
+   * Tests the getRegionAssignments() method.
+   *
    * @covers ::getRegionAssignments
    *
    * @dataProvider providerTestGetRegionAssignments
@@ -166,6 +183,8 @@ class PageVariantTest extends UnitTestCase {
   }
 
   /**
+   * Tests the getConfiguration() method.
+   *
    * @covers ::getConfiguration
    */
   public function testGetConfiguration() {

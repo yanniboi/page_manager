@@ -39,6 +39,9 @@ class BlockPageAdminTest extends WebTestBase {
     $this->drupalLogin($this->drupalCreateUser(array('administer block pages')));
   }
 
+  /**
+   * Tests the block page admin UI.
+   */
   public function testAdmin() {
     $this->doTestAddBlockPage();
     $this->doTestAddPageVariant();
@@ -146,6 +149,7 @@ class BlockPageAdminTest extends WebTestBase {
    *   The label of the block.
    *
    * @return \Drupal\block\BlockPluginInterface|null
+   *   Either a block plugin, or NULL.
    */
   protected function findBlockByLabel($block_page_id, $page_variant_label, $block_label) {
     $block_page = \Drupal::entityManager()->getStorage('block_page')->load($block_page_id);

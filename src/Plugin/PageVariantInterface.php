@@ -107,6 +107,7 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
    * Returns the human-readable list of regions keyed by machine name.
    *
    * @return array
+   *   An array of human-readable region names keyed by machine name.
    */
   public function getRegionNames();
 

@@ -32,6 +32,8 @@ class BlockPluginBagTest extends UnitTestCase {
   }
 
   /**
+   * Tests the getAllByRegion() method.
+   *
    * @covers ::getAllByRegion
    */
   public function testGetAllByRegion() {
@@ -82,8 +84,14 @@ class BlockPluginBagTest extends UnitTestCase {
 
     $block_plugin_bag = new BlockPluginBag($block_manager, $blocks);
     $expected = array(
-      'bottom' => array('bing' => $plugins['bing'], 'baz' => $plugins['baz'], 'foo' => $plugins['foo']),
-      'top' => array('bar' => $plugins['bar']),
+      'bottom' => array(
+        'bing' => $plugins['bing'],
+        'baz' => $plugins['baz'],
+        'foo' => $plugins['foo'],
+      ),
+      'top' => array(
+        'bar' => $plugins['bar'],
+      ),
     );
     $this->assertSame($expected, $block_plugin_bag->getAllByRegion());
   }

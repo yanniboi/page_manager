@@ -18,7 +18,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 class PageVariantManager extends DefaultPluginManager {
 
   /**
-   * Constructs a new PageVariantManager
+   * Constructs a new PageVariantManager.
    *
    * @param \Traversable $namespaces
    *   An object that implements \Traversable which contains the root paths

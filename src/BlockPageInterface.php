@@ -16,9 +16,10 @@ use Drupal\Core\Config\Entity\EntityWithPluginBagInterface;
 interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagInterface {
 
   /**
-   * Returns the path for this block page.
+   * Returns the path for the block page.
    *
    * @return string
+   *   The path for the block page.
    */
   public function getPath();
 
@@ -26,6 +27,7 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagI
    * Adds a new page variant to the block page.
    *
    * @param array $configuration
+   *   An array of configuration for the new page variant.
    *
    * @return string
    *   The page variant ID.
@@ -62,7 +64,7 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagI
   public function getPageVariants();
 
   /**
-   * Selects the page variant to use for this block page.
+   * Selects the page variant to use for the block page.
    *
    * This loops through the available page variants and checks each for access,
    * returning the first one that is accessible.
