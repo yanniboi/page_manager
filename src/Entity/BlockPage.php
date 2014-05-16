@@ -70,16 +70,11 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   protected $page_variants = array();
 
   /**
-   * {@inheritdoc}
-   */
-  protected $pluginConfigKey = 'page_variants';
-
-  /**
    * The plugin bag that holds the page variants.
    *
    * @var \Drupal\Component\Plugin\PluginBag
    */
-  protected $pluginBag;
+  protected $pageVariantBag;
 
   /**
    * {@inheritdoc}
@@ -111,7 +106,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   public function postCreate(EntityStorageInterface $storage) {
     parent::postCreate($storage);
     // Ensure there is at least one page variant.
-    if (!$this->getPluginBag()->count()) {
+    if (!$this->getPageVariants()->count()) {
       $this->addPageVariant(array(
         'id' => 'default',
         'label' => 'Default',
@@ -143,7 +138,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    */
   public function addPageVariant(array $configuration) {
     $configuration['uuid'] = $this->uuidGenerator()->generate();
-    $this->getPluginBag()->addInstanceId($configuration['uuid'], $configuration);
+    $this->getPageVariants()->addInstanceId($configuration['uuid'], $configuration);
     return $configuration['uuid'];
   }
 
@@ -151,14 +146,14 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    * {@inheritdoc}
    */
   public function getPageVariant($page_variant_id) {
-    return $this->getPluginBag()->get($page_variant_id);
+    return $this->getPageVariants()->get($page_variant_id);
   }
 
   /**
    * {@inheritdoc}
    */
   public function removePageVariant($page_variant_id) {
-    $this->getPluginBag()->removeInstanceId($page_variant_id);
+    $this->getPageVariants()->removeInstanceId($page_variant_id);
     return $this;
   }
 
@@ -166,18 +161,20 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    * {@inheritdoc}
    */
   public function getPageVariants() {
-    return $this->getPluginBag();
+    if (!$this->pageVariantBag) {
+      $this->pageVariantBag = new PageVariantBag(\Drupal::service('plugin.manager.page_variant'), $this->get('page_variants'));
+      $this->pageVariantBag->sort();
+    }
+    return $this->pageVariantBag;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getPluginBag() {
-    if (!$this->pluginBag) {
-      $this->pluginBag = new PageVariantBag(\Drupal::service('plugin.manager.page_variant'), $this->get($this->pluginConfigKey));
-      $this->pluginBag->sort();
-    }
-    return $this->pluginBag;
+  public function getPluginBags() {
+    return array(
+      'page_variants' => $this->getPageVariants(),
+    );
   }
 
   /**

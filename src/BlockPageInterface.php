@@ -8,12 +8,12 @@
 namespace Drupal\block_page;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
-use Drupal\Core\Config\Entity\EntityWithPluginBagInterface;
+use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 
 /**
  * Provides an interface for block page objects.
  */
-interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagInterface {
+interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagsInterface {
 
   /**
    * Returns the path for the block page.
