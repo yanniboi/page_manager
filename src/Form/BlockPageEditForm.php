@@ -113,7 +113,7 @@ class BlockPageEditForm extends BlockPageFormBase {
 
     $form['access_section'] = array(
       '#type' => 'details',
-      '#title' => $this->t('Access'),
+      '#title' => $this->t('Access Conditions'),
       '#open' => TRUE,
       '#weight' => 50,
     );

@@ -83,7 +83,7 @@ block_page.page_variant_delete:
     _form: '\Drupal\block_page\Form\PageVariantDeleteForm'
     _title: 'Delete page variant'
   requirements:
-    _entity_access: block_page.delete
+    _entity_access: block_page.update
 
 block_page.page_variant_add_block:
   path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/add/{block_id}'
