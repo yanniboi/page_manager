@@ -20,6 +20,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *   id = "block_page",
  *   label = @Translation("Block Page"),
  *   controllers = {
+ *     "access" = "Drupal\block_page\Entity\BlockPageAccess",
  *     "list_builder" = "Drupal\block_page\Entity\BlockPageListBuilder",
  *     "view_builder" = "Drupal\block_page\Entity\BlockPageViewBuilder",
  *     "form" = {
