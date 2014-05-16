@@ -77,7 +77,7 @@ abstract class PageVariantFormBase extends FormBase {
     $plugin_values = array(
       'values' => &$form_state['values']['plugin'],
     );
-    $form['plugin'] = $this->pageVariant->validateConfigurationForm($form, $plugin_values);
+    $this->pageVariant->validateConfigurationForm($form, $plugin_values);
   }
 
   /**
