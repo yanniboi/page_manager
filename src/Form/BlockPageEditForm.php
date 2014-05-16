@@ -163,12 +163,20 @@ class BlockPageEditForm extends BlockPageFormBase {
         ),
         'attributes' => $attributes,
       );
+      $operations['delete'] = array(
+        'title' => $this->t('Delete'),
+        'route_name' => 'block_page.access_condition_delete',
+        'route_parameters' => array(
+          'block_page' => $this->entity->id(),
+          'access_condition_id' => $access_id,
+        ),
+        'attributes' => $attributes,
+      );
       $row['operations'] = array(
         '#type' => 'operations',
         '#links' => $operations,
       );
       $form['access_section']['table'][$access_id] = $row;
-      //$form['access_section']['access'][$access_id] = $access_condition->buildForm(array(), $form_state);
     }
     return $form;
   }
