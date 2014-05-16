@@ -8,6 +8,7 @@
 namespace Drupal\block_page\Entity;
 
 use Drupal\block_page\BlockPageInterface;
+use Drupal\block_page\Plugin\ConditionPluginBag;
 use Drupal\block_page\Plugin\PageVariantBag;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -70,11 +71,25 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   protected $page_variants = array();
 
   /**
+   * The configuration of access conditions.
+   *
+   * @var array
+   */
+  protected $access = array();
+
+  /**
    * The plugin bag that holds the page variants.
    *
    * @var \Drupal\Component\Plugin\PluginBag
    */
   protected $pageVariantBag;
+
+  /**
+   * The plugin bag that holds the access conditions.
+   *
+   * @var \Drupal\Component\Plugin\PluginBag
+   */
+  protected $accessConditionBag;
 
   /**
    * {@inheritdoc}
@@ -86,6 +101,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
       'label',
       'path',
       'page_variants',
+      'access',
     );
     foreach ($names as $name) {
       $properties[$name] = $this->get($name);
@@ -174,6 +190,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   public function getPluginBags() {
     return array(
       'page_variants' => $this->getPageVariants(),
+      'access' => $this->getAccessConditions(),
     );
   }
 
@@ -187,6 +204,40 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
       }
     }
     return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAccessConditions() {
+    if (!$this->accessConditionBag) {
+      $this->accessConditionBag = new ConditionPluginBag(\Drupal::service('plugin.manager.condition'), $this->get('access'));
+    }
+    return $this->accessConditionBag;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addAccessCondition(array $configuration) {
+    $configuration['uuid'] = $this->uuidGenerator()->generate();
+    $this->getAccessConditions()->addInstanceId($configuration['uuid'], $configuration);
+    return $configuration['uuid'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAccessCondition($page_variant_id) {
+    return $this->getAccessConditions()->get($page_variant_id);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function removeAccessCondition($page_variant_id) {
+    $this->getAccessConditions()->removeInstanceId($page_variant_id);
+    return $this;
   }
 
 }

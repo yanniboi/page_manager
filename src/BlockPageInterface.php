@@ -74,4 +74,44 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBags
    */
   public function selectPageVariant();
 
+  /**
+   * Returns the conditions used for determining access for this block page.
+   *
+   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\block_page\Plugin\ConditionPluginBag
+   *   An array of configured condition plugins.
+   */
+  public function getAccessConditions();
+
+  /**
+   * Adds a new access condition to the block page.
+   *
+   * @param array $configuration
+   *   An array of configuration for the new access condition.
+   *
+   * @return string
+   *   The access condition ID.
+   */
+  public function addAccessCondition(array $configuration);
+
+  /**
+   * Retrieves a specific access condition.
+   *
+   * @param string $page_variant_id
+   *   The access condition ID.
+   *
+   * @return \Drupal\Core\Condition\ConditionInterface
+   *   The access condition object.
+   */
+  public function getAccessCondition($page_variant_id);
+
+  /**
+   * Removes a specific access condition.
+   *
+   * @param string $page_variant_id
+   *   The access condition ID.
+   *
+   * @return $this
+   */
+  public function removeAccessCondition($page_variant_id);
+
 }

@@ -32,6 +32,22 @@ block_page.page_delete:
   requirements:
     _entity_access: block_page.delete
 
+block_page.access_condition_add:
+  path: '/admin/structure/block_page/manage/{block_page}/access/add/{access_condition_id}'
+  defaults:
+    _form: '\Drupal\block_page\Form\AccessConditionAddForm'
+    _title: 'Add new access condition'
+  requirements:
+    _entity_access: block_page.update
+
+block_page.access_condition_edit:
+  path: '/admin/structure/block_page/manage/{block_page}/access/edit/{access_condition_id}'
+  defaults:
+    _form: '\Drupal\block_page\Form\AccessConditionEditForm'
+    _title_callback: '\Drupal\block_page\Controller\BlockPageController::editAccessConditionTitle'
+  requirements:
+    _entity_access: block_page.update
+
 #### Page Variants
 
 block_page.page_variant_add:

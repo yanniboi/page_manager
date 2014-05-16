@@ -110,6 +110,66 @@ class BlockPageEditForm extends BlockPageFormBase {
       );
       $form['page_variants']['table'][$page_variant_id] = $row;
     }
+
+    $form['access_section'] = array(
+      '#type' => 'details',
+      '#title' => $this->t('Access'),
+      '#open' => TRUE,
+      '#weight' => 50,
+    );
+    $form['access_section']['table'] = array(
+      '#type' => 'table',
+      '#header' => array(
+        $this->t('Label'),
+        $this->t('Description'),
+        $this->t('Operations'),
+      ),
+      '#empty' => $this->t('There are no access conditions.'),
+    );
+
+    $form['access_section']['add'] = array(
+      '#theme' => 'links',
+      '#links' => array(),
+    );
+    $access_conditions = $this->entity->getAccessConditions();
+    $condition_manager = \Drupal::service('plugin.manager.condition');
+    foreach ($condition_manager->getDefinitions() as $access_id => $access_condition) {
+      $form['access_section']['add']['#links'][$access_id] = array(
+        'title' => $access_condition['label'],
+        'route_name' => 'block_page.access_condition_add',
+        'route_parameters' => array(
+          'block_page' => $this->entity->id(),
+          'access_condition_id' => $access_id,
+        ),
+        'attributes' => $attributes,
+      );
+    }
+
+
+    $form['access_section']['access'] = array(
+      '#tree' => TRUE,
+    );
+    foreach ($access_conditions as $access_id => $access_condition) {
+      $row = array();
+      $row['label']['#markup'] = $access_condition->getPluginDefinition()['label'];
+      $row['description']['#markup'] = $access_condition->summary();
+      $operations = array();
+      $operations['edit'] = array(
+        'title' => $this->t('Edit'),
+        'route_name' => 'block_page.access_condition_edit',
+        'route_parameters' => array(
+          'block_page' => $this->entity->id(),
+          'access_condition_id' => $access_id,
+        ),
+        'attributes' => $attributes,
+      );
+      $row['operations'] = array(
+        '#type' => 'operations',
+        '#links' => $operations,
+      );
+      $form['access_section']['table'][$access_id] = $row;
+      //$form['access_section']['access'][$access_id] = $access_condition->buildForm(array(), $form_state);
+    }
     return $form;
   }
 
@@ -131,9 +191,9 @@ class BlockPageEditForm extends BlockPageFormBase {
    * {@inheritdoc}
    */
   protected function copyFormValuesToEntity(EntityInterface $entity, array $form, array &$form_state) {
+    $keys_to_skip = array_keys($this->entity->getPluginBags());
     foreach ($form_state['values'] as $key => $value) {
-      // Do not manipulate page variants here.
-      if ($key != 'page_variants') {
+      if (!in_array($key, $keys_to_skip)) {
         $entity->set($key, $value);
       }
     }

@@ -44,4 +44,20 @@ class BlockPageController extends ControllerBase {
     return $this->t('Edit %label page variant', array('%label' => $page_variant_id->label()));
   }
 
+  /**
+   * Route title callback.
+   *
+   * @param \Drupal\block_page\BlockPageInterface $block_page
+   *   The block page.
+   * @param string $access_condition_id
+   *   The access condition ID.
+   *
+   * @return string
+   *   The title for the access condition edit form.
+   */
+  public function editAccessConditionTitle(BlockPageInterface $block_page, $access_condition_id) {
+    $access_condition = $block_page->getAccessCondition($access_condition_id);
+    return $this->t('Edit %label access condition', array('%label' => $access_condition->getPluginDefinition()['label']));
+  }
+
 }
