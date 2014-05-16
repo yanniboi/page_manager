@@ -57,7 +57,7 @@ abstract class AccessConditionFormBase extends FormBase {
     $this->accessCondition = $this->prepareAccessCondition($access_condition_id);
 
     // Allow the access condition to add to the form.
-    $form['plugin'] = $this->accessCondition->buildForm(array(), $form_state);
+    $form['plugin'] = $this->accessCondition->buildConfigurationForm(array(), $form_state);
     $form['plugin']['#tree'] = TRUE;
 
     $form['actions'] = array('#type' => 'actions');
@@ -78,7 +78,7 @@ abstract class AccessConditionFormBase extends FormBase {
     $plugin_values = array(
       'values' => &$form_state['values']['plugin'],
     );
-    $this->accessCondition->validateForm($form, $plugin_values);
+    $this->accessCondition->validateConfigurationForm($form, $plugin_values);
   }
 
   /**
@@ -89,7 +89,7 @@ abstract class AccessConditionFormBase extends FormBase {
     $plugin_values = array(
       'values' => &$form_state['values']['plugin'],
     );
-    $this->accessCondition->submitForm($form, $plugin_values);
+    $this->accessCondition->submitConfigurationForm($form, $plugin_values);
   }
 
 }
