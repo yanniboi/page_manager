@@ -25,10 +25,16 @@ class BlockPageEditForm extends BlockPageFormBase {
       'class' => array('use-ajax'),
       'data-accepts' => 'application/vnd.drupal-modal',
       'data-dialog-options' => Json::encode(array(
-          'width' => 'auto',
-        )),
+        'width' => 'auto',
+      )),
     );
-    $form['add_new_block_page'] = array(
+
+    $form['page_variants'] = array(
+      '#type' => 'details',
+      '#title' => $this->t('Page Variants'),
+      '#open' => TRUE,
+    );
+    $form['page_variants']['add_new_block_page'] = array(
       '#type' => 'link',
       '#title' => $this->t('Add new page variant'),
       '#route_name' => 'block_page.page_variant_add',
@@ -42,9 +48,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         ),
       ),
     );
-
-    $form['page_variants'] = array(
-      '#prefix' => '<h3>' . $this->t('Page Variants') . '</h3>',
+    $form['page_variants']['table'] = array(
       '#type' => 'table',
       '#header' => array(
         $this->t('Label'),
@@ -104,7 +108,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         '#type' => 'operations',
         '#links' => $operations,
       );
-      $form['page_variants'][$page_variant_id] = $row;
+      $form['page_variants']['table'][$page_variant_id] = $row;
     }
     return $form;
   }
