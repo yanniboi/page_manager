@@ -17,16 +17,16 @@ trait ConditionAccessResolverTrait {
   /**
    * Resolves the given conditions based on the condition logic ('and'/'or').
    *
-   * @param \Drupal\block_page\Plugin\ConditionPluginBag $condition_plugin_bag
-   *   The condition plugin bag.
+   * @param \Drupal\Core\Condition\ConditionInterface[] $conditions
+   *   A set of conditions.
    * @param string $condition_logic
    *   The logic used to compute access, either 'and' or 'or'.
    *
    * @return bool
    *   Whether these conditions grant or deny access.
    */
-  protected function resolveConditions(ConditionPluginBag $condition_plugin_bag, $condition_logic) {
-    foreach ($condition_plugin_bag as $condition) {
+  protected function resolveConditions($conditions, $condition_logic) {
+    foreach ($conditions as $condition) {
       try {
         $pass = $condition->execute();
         // If a condition fails and all conditions were required, deny access.
@@ -39,11 +39,16 @@ trait ConditionAccessResolverTrait {
         }
       }
       catch (PluginException $e) {
-        // A missing context should always deny access.
-        return FALSE;
+        // If a condition is missing context and all conditions were required,
+        // deny access.
+        if ($condition_logic == 'and') {
+          return FALSE;
+        }
       }
     }
-    return TRUE;
+
+    // If no conditions passed and one condition was required, deny access.
+    return $condition_logic == 'and';
   }
 
 }
