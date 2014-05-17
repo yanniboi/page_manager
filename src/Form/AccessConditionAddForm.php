@@ -71,15 +71,12 @@ class AccessConditionAddForm extends AccessConditionFormBase {
     parent::submitForm($form, $form_state);
 
     // If this access condition is new, add it to the page.
-    $access_condition_id = $this->blockPage->addAccessCondition($this->accessCondition->getConfiguration());
+    $this->blockPage->addAccessCondition($this->accessCondition->getConfiguration());
 
     // Save the block page.
     $this->blockPage->save();
     drupal_set_message($this->t('The %label access condition has been added.', array('%label' => $this->accessCondition->getPluginDefinition()['label'])));
-    $form_state['redirect_route'] = new Url('block_page.access_condition_edit', array(
-      'block_page' => $this->blockPage->id(),
-      'access_condition_id' => $access_condition_id,
-    ));
+    $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
   }
 
 }

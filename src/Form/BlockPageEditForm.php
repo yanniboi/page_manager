@@ -185,9 +185,11 @@ class BlockPageEditForm extends BlockPageFormBase {
    * {@inheritdoc}
    */
   public function save(array $form, array &$form_state) {
-    foreach ($form_state['values']['page_variants'] as $page_variant_id => $data) {
-      if ($page_variant = $this->entity->getPageVariant($page_variant_id)) {
-        $page_variant->setWeight($data['weight']);
+    if (!empty($form_state['values']['page_variants'])) {
+      foreach ($form_state['values']['page_variants'] as $page_variant_id => $data) {
+        if ($page_variant = $this->entity->getPageVariant($page_variant_id)) {
+          $page_variant->setWeight($data['weight']);
+        }
       }
     }
     parent::save($form, $form_state);
