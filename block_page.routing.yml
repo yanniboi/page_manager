@@ -34,6 +34,14 @@ block_page.page_delete:
 
 #### Access Conditions
 
+block_page.access_condition_select:
+  path: '/admin/structure/block_page/manage/{block_page}/access/select'
+  defaults:
+    _content: '\Drupal\block_page\Controller\BlockPageController::selectAccessCondition'
+    _title: 'Select access condition'
+  requirements:
+    _entity_access: block_page.update
+
 block_page.access_condition_add:
   path: '/admin/structure/block_page/manage/{block_page}/access/add/{access_condition_id}'
   defaults:

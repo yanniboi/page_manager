@@ -115,7 +115,20 @@ class BlockPageEditForm extends BlockPageFormBase {
       '#type' => 'details',
       '#title' => $this->t('Access Conditions'),
       '#open' => TRUE,
-      '#weight' => 50,
+    );
+    $form['access_section']['add'] = array(
+      '#type' => 'link',
+      '#title' => $this->t('Add new access condition'),
+      '#route_name' => 'block_page.access_condition_select',
+      '#route_parameters' => array(
+        'block_page' => $this->entity->id(),
+      ),
+      '#attributes' => $attributes,
+      '#attached' => array(
+        'library' => array(
+          'core/drupal.ajax',
+        ),
+      ),
     );
     $form['access_section']['table'] = array(
       '#type' => 'table',
@@ -135,25 +148,8 @@ class BlockPageEditForm extends BlockPageFormBase {
       ),
       '#default_value' => $this->entity->getAccessLogic(),
     );
-    $form['access_section']['add'] = array(
-      '#theme' => 'links',
-      '#links' => array(),
-    );
+
     $access_conditions = $this->entity->getAccessConditions();
-    $condition_manager = \Drupal::service('plugin.manager.condition');
-    foreach ($condition_manager->getDefinitions() as $access_id => $access_condition) {
-      $form['access_section']['add']['#links'][$access_id] = array(
-        'title' => $access_condition['label'],
-        'route_name' => 'block_page.access_condition_add',
-        'route_parameters' => array(
-          'block_page' => $this->entity->id(),
-          'access_condition_id' => $access_id,
-        ),
-        'attributes' => $attributes,
-      );
-    }
-
-
     $form['access_section']['access'] = array(
       '#tree' => TRUE,
     );
