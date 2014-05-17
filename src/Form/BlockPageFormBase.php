@@ -15,6 +15,8 @@ use Drupal\Core\Entity\EntityForm;
 abstract class BlockPageFormBase extends EntityForm {
 
   /**
+   * {@inheritdoc}
+   *
    * @var \Drupal\block_page\BlockPageInterface
    */
   protected $entity;

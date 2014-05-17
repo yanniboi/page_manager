@@ -16,11 +16,15 @@ use Drupal\Core\Form\ConfirmFormBase;
 class PageVariantDeleteForm extends ConfirmFormBase {
 
   /**
+   * The block page this page variant belongs to.
+   *
    * @var \Drupal\block_page\BlockPageInterface
    */
   protected $blockPage;
 
   /**
+   * The page variant.
+   *
    * @var \Drupal\block_page\Plugin\PageVariantInterface
    */
   protected $pageVariant;

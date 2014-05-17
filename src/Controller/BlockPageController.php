@@ -109,7 +109,7 @@ class BlockPageController extends ControllerBase {
           'data-dialog-options' => Json::encode(array(
             'width' => 'auto',
           )),
-        )
+        ),
       );
     }
     return $build;
@@ -147,7 +147,7 @@ class BlockPageController extends ControllerBase {
           'data-dialog-options' => Json::encode(array(
             'width' => 'auto',
           )),
-        )
+        ),
       );
     }
     return $build;

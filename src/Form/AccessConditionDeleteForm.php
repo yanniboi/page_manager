@@ -16,11 +16,15 @@ use Drupal\Core\Form\ConfirmFormBase;
 class AccessConditionDeleteForm extends ConfirmFormBase {
 
   /**
+   * The block page this selection condition belongs to.
+   *
    * @var \Drupal\block_page\BlockPageInterface
    */
   protected $blockPage;
 
   /**
+   * The access condition used by this form.
+   *
    * @var \Drupal\Core\Condition\ConditionInterface
    */
   protected $accessCondition;
