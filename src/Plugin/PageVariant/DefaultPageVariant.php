@@ -7,6 +7,7 @@
 
 namespace Drupal\block_page\Plugin\PageVariant;
 
+use Drupal\block_page\Plugin\ConditionAccessResolverTrait;
 use Drupal\block_page\Plugin\PageVariantBase;
 
 /**
@@ -17,6 +18,8 @@ use Drupal\block_page\Plugin\PageVariantBase;
  * )
  */
 class DefaultPageVariant extends PageVariantBase {
+
+  use ConditionAccessResolverTrait;
 
   /**
    * {@inheritdoc}
@@ -33,8 +36,7 @@ class DefaultPageVariant extends PageVariantBase {
    * {@inheritdoc}
    */
   public function access() {
-    // @todo Develop something more sophisticated.
-    return (bool) $this->getBlockCount();
+    return $this->resolveConditions($this->getSelectionConditions(), $this->getSelectionLogic());
   }
 
 }

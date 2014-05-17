@@ -94,7 +94,7 @@ block_page.page_variant_delete:
     _entity_access: block_page.update
 
 block_page.page_variant_add_block:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/add/{block_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/page_variant/add/{block_id}'
   defaults:
     _form: 'Drupal\block_page\Form\PageVariantAddBlockForm'
     _title: 'Add block to page variant'
@@ -102,9 +102,43 @@ block_page.page_variant_add_block:
     _entity_access: block_page.update
 
 block_page.page_variant_edit_block:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/edit/{block_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/page_variant/edit/{block_id}'
   defaults:
     _form: 'Drupal\block_page\Form\PageVariantEditBlockForm'
     _title: 'Edit block in page variant'
+  requirements:
+    _entity_access: block_page.update
+
+#### Selection Conditions
+
+block_page.selection_condition_select:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/select'
+  defaults:
+    _content: '\Drupal\block_page\Controller\BlockPageController::selectSelectionCondition'
+    _title: 'Select selection condition'
+  requirements:
+    _entity_access: block_page.update
+
+block_page.selection_condition_add:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/add/{selection_condition_id}'
+  defaults:
+    _form: '\Drupal\block_page\Form\SelectionConditionAddForm'
+    _title: 'Add new selection condition'
+  requirements:
+    _entity_access: block_page.update
+
+block_page.selection_condition_edit:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/edit/{selection_condition_id}'
+  defaults:
+    _form: '\Drupal\block_page\Form\SelectionConditionEditForm'
+    _title_callback: '\Drupal\block_page\Controller\BlockPageController::editSelectionConditionTitle'
+  requirements:
+    _entity_access: block_page.update
+
+block_page.selection_condition_delete:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/delete/{selection_condition_id}'
+  defaults:
+    _form: '\Drupal\block_page\Form\SelectionConditionDeleteForm'
+    _title: 'Delete selection condition'
   requirements:
     _entity_access: block_page.update

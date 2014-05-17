@@ -217,6 +217,82 @@ class PageVariantEditForm extends PageVariantFormBase {
       );
     }
 
+    // Selection conditions.
+    $form['selection_section'] = array(
+      '#type' => 'details',
+      '#title' => $this->t('Selection Conditions'),
+      '#open' => TRUE,
+    );
+    $form['selection_section']['add'] = array(
+      '#type' => 'link',
+      '#title' => $this->t('Add new selection condition'),
+      '#route_name' => 'block_page.selection_condition_select',
+      '#route_parameters' => array(
+        'block_page' => $this->blockPage->id(),
+        'page_variant_id' => $this->pageVariant->id(),
+      ),
+      '#attributes' => $attributes,
+      '#attached' => array(
+        'library' => array(
+          'core/drupal.ajax',
+        ),
+      ),
+    );
+    $form['selection_section']['table'] = array(
+      '#type' => 'table',
+      '#header' => array(
+        $this->t('Label'),
+        $this->t('Description'),
+        $this->t('Operations'),
+      ),
+      '#empty' => $this->t('There are no selection conditions.'),
+    );
+
+    $form['selection_section']['selection_logic'] = array(
+      '#type' => 'radios',
+      '#options' => array(
+        'and' => $this->t('All conditions must pass'),
+        'or' => $this->t('Only one condition must pass'),
+      ),
+      '#default_value' => $this->pageVariant->getSelectionLogic(),
+    );
+
+    $selection_conditions = $this->pageVariant->getSelectionConditions();
+    $form['selection_section']['selection'] = array(
+      '#tree' => TRUE,
+    );
+    foreach ($selection_conditions as $selection_id => $selection_condition) {
+      $row = array();
+      $row['label']['#markup'] = $selection_condition->getPluginDefinition()['label'];
+      $row['description']['#markup'] = $selection_condition->summary();
+      $operations = array();
+      $operations['edit'] = array(
+        'title' => $this->t('Edit'),
+        'route_name' => 'block_page.selection_condition_edit',
+        'route_parameters' => array(
+          'block_page' => $this->blockPage->id(),
+          'page_variant_id' => $this->pageVariant->id(),
+          'selection_condition_id' => $selection_id,
+        ),
+        'attributes' => $attributes,
+      );
+      $operations['delete'] = array(
+        'title' => $this->t('Delete'),
+        'route_name' => 'block_page.selection_condition_delete',
+        'route_parameters' => array(
+          'block_page' => $this->blockPage->id(),
+          'page_variant_id' => $this->pageVariant->id(),
+          'selection_condition_id' => $selection_id,
+        ),
+        'attributes' => $attributes,
+      );
+      $row['operations'] = array(
+        '#type' => 'operations',
+        '#links' => $operations,
+      );
+      $form['selection_section']['table'][$selection_id] = $row;
+    }
+
     return $form;
   }
 

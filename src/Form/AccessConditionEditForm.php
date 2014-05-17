@@ -43,7 +43,6 @@ class AccessConditionEditForm extends AccessConditionFormBase {
     // Save the block page.
     $this->blockPage->save();
     drupal_set_message($this->t('The %label access condition has been updated.', array('%label' => $this->accessCondition->getPluginDefinition()['label'])));
-    $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
   }
 
 }

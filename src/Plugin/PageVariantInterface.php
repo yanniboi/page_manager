@@ -138,4 +138,52 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
    */
   public function access();
 
+  /**
+   * Returns the conditions used for determining if this page variant is selected.
+   *
+   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\block_page\Plugin\ConditionPluginBag
+   *   An array of configured condition plugins.
+   */
+  public function getSelectionConditions();
+
+  /**
+   * Adds a new selection condition to the block page.
+   *
+   * @param array $configuration
+   *   An array of configuration for the new selection condition.
+   *
+   * @return string
+   *   The selection condition ID.
+   */
+  public function addSelectionCondition(array $configuration);
+
+  /**
+   * Retrieves a specific selection condition.
+   *
+   * @param string $selection_condition_id
+   *   The selection condition ID.
+   *
+   * @return \Drupal\Core\Condition\ConditionInterface
+   *   The selection condition object.
+   */
+  public function getSelectionCondition($selection_condition_id);
+
+  /**
+   * Removes a specific selection condition.
+   *
+   * @param string $selection_condition_id
+   *   The selection condition ID.
+   *
+   * @return $this
+   */
+  public function removeSelectionCondition($selection_condition_id);
+
+  /**
+   * Returns the logic used to compute selections, either 'and' or 'or'.
+   *
+   * @return string
+   *   The string 'and', or the string 'or'.
+   */
+  public function getSelectionLogic();
+
 }

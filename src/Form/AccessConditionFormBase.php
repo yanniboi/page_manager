@@ -90,6 +90,7 @@ abstract class AccessConditionFormBase extends FormBase {
       'values' => &$form_state['values']['plugin'],
     );
     $this->accessCondition->submitConfigurationForm($form, $plugin_values);
+    $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
   }
 
 }

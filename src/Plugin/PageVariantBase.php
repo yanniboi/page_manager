@@ -22,7 +22,14 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    *
    * @var \Drupal\block_page\Plugin\BlockPluginBag
    */
-  protected $pluginBag;
+  protected $blockPluginBag;
+
+  /**
+   * The plugin bag that holds the selection condition plugins.
+   *
+   * @var \Drupal\Component\Plugin\PluginBag
+   */
+  protected $selectionConditionBag;
 
   /**
    * {@inheritdoc}
@@ -37,10 +44,10 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    * {@inheritdoc}
    */
   protected function getBlockBag() {
-    if (!$this->pluginBag) {
-      $this->pluginBag = new BlockPluginBag(\Drupal::service('plugin.manager.block'), $this->configuration['blocks']);
+    if (!$this->blockPluginBag) {
+      $this->blockPluginBag = new BlockPluginBag(\Drupal::service('plugin.manager.block'), $this->configuration['blocks']);
     }
-    return $this->pluginBag;
+    return $this->blockPluginBag;
   }
 
   /**
@@ -78,6 +85,7 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
     return array(
       'id' => $this->getPluginId(),
       'blocks' => $this->getBlockBag()->getConfiguration(),
+      'selection_conditions' => $this->getSelectionConditions()->getConfiguration(),
     ) + $this->configuration;
   }
 
@@ -98,6 +106,8 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
       'uuid' => '',
       'weight' => 0,
       'blocks' => array(),
+      'selection_conditions' => array(),
+      'selection_logic' => 'and',
     );
   }
 
@@ -106,6 +116,9 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    */
   public function calculateDependencies() {
     foreach ($this->getBlockBag() as $instance) {
+      $this->calculatePluginDependencies($instance);
+    }
+    foreach ($this->getSelectionConditions() as $instance) {
       $this->calculatePluginDependencies($instance);
     }
     return $this->dependencies;
@@ -195,6 +208,47 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    */
   public function getBlockCount() {
     return count($this->configuration['blocks']);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSelectionConditions() {
+    if (!$this->selectionConditionBag) {
+      $this->selectionConditionBag = new ConditionPluginBag(\Drupal::service('plugin.manager.condition'), $this->configuration['selection_conditions']);
+    }
+    return $this->selectionConditionBag;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addSelectionCondition(array $configuration) {
+    $configuration['uuid'] = $this->uuidGenerator()->generate();
+    $this->getSelectionConditions()->addInstanceId($configuration['uuid'], $configuration);
+    return $configuration['uuid'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSelectionCondition($selection_condition_id) {
+    return $this->getSelectionConditions()->get($selection_condition_id);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function removeSelectionCondition($selection_condition_id) {
+    $this->getSelectionConditions()->removeInstanceId($selection_condition_id);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSelectionLogic() {
+    return $this->configuration['selection_logic'];
   }
 
   /**

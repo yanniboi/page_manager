@@ -237,15 +237,15 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   /**
    * {@inheritdoc}
    */
-  public function getAccessCondition($page_variant_id) {
-    return $this->getAccessConditions()->get($page_variant_id);
+  public function getAccessCondition($access_condition_id) {
+    return $this->getAccessConditions()->get($access_condition_id);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function removeAccessCondition($page_variant_id) {
-    $this->getAccessConditions()->removeInstanceId($page_variant_id);
+  public function removeAccessCondition($access_condition_id) {
+    $this->getAccessConditions()->removeInstanceId($access_condition_id);
     return $this;
   }
 
