@@ -44,7 +44,7 @@ class PageVariantTest extends UnitTestCase {
   public function setUpPageVariant($configuration = array(), $definition = array()) {
     return $this->getMockBuilder('Drupal\block_page\Plugin\PageVariantBase')
       ->setConstructorArgs(array($configuration, 'test', $definition))
-      ->setMethods(array('getRegionNames', 'access', 'getBlockBag'))
+      ->setMethods(array('getRegionNames', 'access', 'getBlockBag', 'getSelectionConditions'))
       ->getMock();
   }
 
@@ -194,17 +194,28 @@ class PageVariantTest extends UnitTestCase {
     $block_bag->expects($this->once())
       ->method('getConfiguration')
       ->will($this->returnValue(array()));
+    $condition_bag = $this->getMockBuilder('Drupal\block_page\Plugin\ConditionPluginBag')
+      ->disableOriginalConstructor()
+      ->getMock();
+    $condition_bag->expects($this->once())
+      ->method('getConfiguration')
+      ->will($this->returnValue(array()));
     $page_variant = $this->setUpPageVariant();
     $page_variant->expects($this->once())
       ->method('getBlockBag')
       ->will($this->returnValue($block_bag));
+    $page_variant->expects($this->once())
+      ->method('getSelectionConditions')
+      ->will($this->returnValue($condition_bag));
 
     $expected = array(
       'id' => 'test',
       'blocks' => array(),
+      'selection_conditions' => array(),
       'label' => '',
       'uuid' => '',
       'weight' => 0,
+      'selection_logic' => 'and',
     );
     $this->assertSame($expected, $page_variant->getConfiguration());
   }

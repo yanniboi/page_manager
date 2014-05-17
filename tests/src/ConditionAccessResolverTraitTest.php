@@ -15,6 +15,9 @@ use Drupal\Tests\UnitTestCase;
  * Tests resolving a set of conditions.
  *
  * @coversDefaultClass \Drupal\block_page\Plugin\ConditionAccessResolverTrait
+ *
+ * @group Drupal
+ * @group BlockPage
  */
 class ConditionAccessResolverTraitTest extends UnitTestCase {
 
