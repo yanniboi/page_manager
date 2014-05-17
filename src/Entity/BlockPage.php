@@ -76,7 +76,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    *
    * @var array
    */
-  protected $access = array();
+  protected $access_conditions = array();
 
   /**
    * Tracks the logic used to compute access, either 'and' or 'or'.
@@ -109,7 +109,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
       'label',
       'path',
       'page_variants',
-      'access',
+      'access_conditions',
       'access_logic',
     );
     foreach ($names as $name) {
@@ -199,7 +199,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   public function getPluginBags() {
     return array(
       'page_variants' => $this->getPageVariants(),
-      'access' => $this->getAccessConditions(),
+      'access_conditions' => $this->getAccessConditions(),
     );
   }
 
@@ -220,7 +220,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    */
   public function getAccessConditions() {
     if (!$this->accessConditionBag) {
-      $this->accessConditionBag = new ConditionPluginBag(\Drupal::service('plugin.manager.condition'), $this->get('access'));
+      $this->accessConditionBag = new ConditionPluginBag(\Drupal::service('plugin.manager.condition'), $this->get('access_conditions'));
     }
     return $this->accessConditionBag;
   }
