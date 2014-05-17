@@ -114,4 +114,12 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBags
    */
   public function removeAccessCondition($page_variant_id);
 
+  /**
+   * Returns the logic used to compute access, either 'and' or 'or'.
+   *
+   * @return string
+   *   The string 'and', or the string 'or'.
+   */
+  public function getAccessLogic();
+
 }

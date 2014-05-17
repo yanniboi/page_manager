@@ -79,6 +79,13 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   protected $access = array();
 
   /**
+   * Tracks the logic used to compute access, either 'and' or 'or'.
+   *
+   * @var string
+   */
+  protected $access_logic = 'and';
+
+  /**
    * The plugin bag that holds the page variants.
    *
    * @var \Drupal\Component\Plugin\PluginBag
@@ -103,6 +110,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
       'path',
       'page_variants',
       'access',
+      'access_logic',
     );
     foreach ($names as $name) {
       $properties[$name] = $this->get($name);
@@ -239,6 +247,13 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   public function removeAccessCondition($page_variant_id) {
     $this->getAccessConditions()->removeInstanceId($page_variant_id);
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAccessLogic() {
+    return $this->access_logic;
   }
 
 }

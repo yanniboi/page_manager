@@ -127,6 +127,14 @@ class BlockPageEditForm extends BlockPageFormBase {
       '#empty' => $this->t('There are no access conditions.'),
     );
 
+    $form['access_section']['access_logic'] = array(
+      '#type' => 'radios',
+      '#options' => array(
+        'and' => $this->t('All conditions must pass'),
+        'or' => $this->t('Only one condition must pass'),
+      ),
+      '#default_value' => $this->entity->getAccessLogic(),
+    );
     $form['access_section']['add'] = array(
       '#theme' => 'links',
       '#links' => array(),
