@@ -30,8 +30,12 @@ trait ConditionAccessResolverTrait {
   protected function resolveConditions($conditions, $condition_logic, $contexts = array()) {
     foreach ($conditions as $condition) {
       try {
+        // @todo Find a better way to handle unwanted context.
+        $condition_contexts = $condition->getContextDefinitions();
         foreach ($contexts as $name => $value) {
-          $condition->setContextValue($name, $value);
+          if (isset($condition_contexts[$name])) {
+            $condition->setContextValue($name, $value);
+          }
         }
         $pass = $condition->execute();
         // If a condition fails and all conditions were required, deny access.

@@ -52,7 +52,7 @@ class CurrentUserContext implements EventSubscriberInterface {
    */
   public function onBlockPageContext(BlockPageContextEvent $event) {
     $current_user = $this->userStorage->load($this->accountProxy->getAccount()->id());
-    $event->getBlockPage()->setContextValue('user', $current_user);
+    $event->getBlockPage()->setContextValue('current_user', $current_user);
   }
 
   /**
