@@ -186,4 +186,22 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
    */
   public function getSelectionLogic();
 
+  /**
+   * Gets the values for all defined contexts.
+   *
+   * @return array
+   *   An array of set context values, keyed by context name.
+   */
+  public function getContextValues();
+
+  /**
+   * Sets the context values for this page variant.
+   *
+   * @param array $contexts
+   *   An array of context values, keyed by context name.
+   *
+   * @return $this
+   */
+  public function setContextValues(array $contexts);
+
 }

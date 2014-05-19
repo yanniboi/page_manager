@@ -25,7 +25,7 @@ class BlockPageAccess extends EntityAccessController {
   protected function checkAccess(EntityInterface $entity, $operation, $langcode, AccountInterface $account) {
     /** @var $entity \Drupal\block_page\BlockPageInterface */
     if ($operation == 'view') {
-      return $this->resolveConditions($entity->getAccessConditions(), $entity->getAccessLogic());
+      return $this->resolveConditions($entity->getAccessConditions(), $entity->getAccessLogic(), $entity->getContextValues());
     }
     return parent::checkAccess($entity, $operation, $langcode, $account);
   }

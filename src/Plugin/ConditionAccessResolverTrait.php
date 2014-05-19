@@ -21,13 +21,18 @@ trait ConditionAccessResolverTrait {
    *   A set of conditions.
    * @param string $condition_logic
    *   The logic used to compute access, either 'and' or 'or'.
+   * @param array $contexts
+   *   (optional) An array of contexts to set on the conditions.
    *
    * @return bool
    *   Whether these conditions grant or deny access.
    */
-  protected function resolveConditions($conditions, $condition_logic) {
+  protected function resolveConditions($conditions, $condition_logic, $contexts = array()) {
     foreach ($conditions as $condition) {
       try {
+        foreach ($contexts as $name => $value) {
+          $condition->setContextValue($name, $value);
+        }
         $pass = $condition->execute();
         // If a condition fails and all conditions were required, deny access.
         if (!$pass && $condition_logic == 'and') {

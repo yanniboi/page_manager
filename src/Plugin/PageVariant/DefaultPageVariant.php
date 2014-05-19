@@ -36,7 +36,7 @@ class DefaultPageVariant extends PageVariantBase {
    * {@inheritdoc}
    */
   public function access() {
-    return $this->resolveConditions($this->getSelectionConditions(), $this->getSelectionLogic());
+    return $this->resolveConditions($this->getSelectionConditions(), $this->getSelectionLogic(), $this->getContextValues());
   }
 
 }

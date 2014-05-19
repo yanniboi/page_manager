@@ -8,6 +8,7 @@
 namespace Drupal\block_page\Entity;
 
 use Drupal\block_page\BlockPageInterface;
+use Drupal\block_page\Event\BlockPageContextEvent;
 use Drupal\block_page\Plugin\ConditionPluginBag;
 use Drupal\block_page\Plugin\PageVariantBag;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -100,6 +101,15 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   protected $accessConditionBag;
 
   /**
+   * An array of collected contexts.
+   *
+   * This is only used on runtime, and is not stored.
+   *
+   * @var array
+   */
+  protected $contexts = array();
+
+  /**
    * {@inheritdoc}
    */
   public function toArray() {
@@ -159,6 +169,16 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   }
 
   /**
+   * Wraps the event dispatcher.
+   *
+   * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   *   The event dispatcher.
+   */
+  protected function eventDispatcher() {
+    return \Drupal::service('event_dispatcher');
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function addPageVariant(array $configuration) {
@@ -208,6 +228,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    */
   public function selectPageVariant() {
     foreach ($this->getPageVariants() as $page_variant) {
+      $page_variant->setContextValues($this->getContextValues());
       if ($page_variant->access()) {
         return $page_variant;
       }
@@ -254,6 +275,23 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    */
   public function getAccessLogic() {
     return $this->access_logic;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getContextValues() {
+    if (!$this->contexts) {
+      $this->eventDispatcher()->dispatch('block_page_context', new BlockPageContextEvent($this));
+    }
+    return $this->contexts;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setContextValue($name, $value) {
+    $this->contexts[$name] = $value;
   }
 
 }

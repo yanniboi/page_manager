@@ -122,4 +122,24 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBags
    */
   public function getAccessLogic();
 
+  /**
+   * Gets the values for all defined contexts.
+   *
+   * @return array
+   *   An array of set context values, keyed by context name.
+   */
+  public function getContextValues();
+
+  /**
+   * Sets the value for a defined context.
+   *
+   * @param string $name
+   *   The name of the context.
+   * @param mixed $value
+   *   The value to set the context to.
+   *
+   * @return $this
+   */
+  public function setContextValue($name, $value);
+
 }

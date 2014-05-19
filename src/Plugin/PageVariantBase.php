@@ -32,6 +32,15 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   protected $selectionConditionBag;
 
   /**
+   * An array of collected contexts.
+   *
+   * This is only used on runtime, and is not stored.
+   *
+   * @var array
+   */
+  protected $contexts = array();
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition) {
@@ -249,6 +258,21 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    */
   public function getSelectionLogic() {
     return $this->configuration['selection_logic'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getContextValues() {
+    return $this->contexts;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setContextValues(array $contexts) {
+    $this->contexts = $contexts;
+    return $this;
   }
 
   /**
