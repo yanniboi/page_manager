@@ -139,6 +139,14 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function access();
 
   /**
+   * Returns the render array for the page variant.
+   *
+   * @return array
+   *   A render array for the page variant.
+   */
+  public function render();
+
+  /**
    * Returns the conditions used for determining if this page variant is selected.
    *
    * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\block_page\Plugin\ConditionPluginBag
