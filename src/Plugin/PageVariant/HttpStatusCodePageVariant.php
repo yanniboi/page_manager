@@ -35,17 +35,20 @@ class HttpStatusCodePageVariant extends PageVariantBase {
     return TRUE;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function buildConfigurationForm(array $form, array &$form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
-    // Get all possible status codes defined by symfony.
-    $options = Response::$statusTexts;
 
+    // Get all possible status codes defined by Symfony.
+    $options = Response::$statusTexts;
     // Move 403/404/500 to the top.
     $options = array(
-        '404' => $options['404'],
-        '403' => $options['403'],
-        '500' => $options['500'],
-      ) + $options;
+      '404' => $options['404'],
+      '403' => $options['403'],
+      '500' => $options['500'],
+    ) + $options;
 
     // Add the HTTP status code, so it's easier for people to find it.
     array_walk($options, function($title, $code) use(&$options) {

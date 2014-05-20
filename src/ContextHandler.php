@@ -106,11 +106,12 @@ class ContextHandler {
   }
 
   /**
-   * Determines which contexts satisfy the constraints of a given data definition.
+   * Determines which contexts satisfy the constraints of a given definition.
    *
    * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
    *   An array of contexts.
    * @param \Drupal\Core\TypedData\DataDefinitionInterface $definition
+   *   The definition to satisfy.
    *
    * @return \Drupal\Component\Plugin\Context\ContextInterface[]
    *   An array of valid contexts.
