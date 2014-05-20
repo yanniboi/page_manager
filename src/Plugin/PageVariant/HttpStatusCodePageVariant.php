@@ -82,7 +82,13 @@ class HttpStatusCodePageVariant extends PageVariantBase {
    * {@inheritdoc}
    */
   public function render() {
-    throw new HttpException($this->configuration['status_code']);
+    $status_code = $this->configuration['status_code'];
+    if ($status_code == 200) {
+      return array();
+    }
+    else {
+      throw new HttpException($status_code);
+    }
   }
 
 }

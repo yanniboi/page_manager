@@ -68,6 +68,12 @@ class BlockPageAdminTest extends WebTestBase {
 
     // Test that it is available immediately.
     $this->drupalGet('admin/foo');
+    $this->assertResponse(404);
+    $this->drupalGet('admin/structure/block_page/manage/foo');
+    $this->clickLink('Edit');
+    $this->drupalPostForm(NULL, array('plugin[status_code]' => 200), 'Update page variant');
+    $this->drupalGet('admin/foo');
+    $this->assertResponse(200);
     $this->assertTitle('Foo | Drupal');
 
     // Assert that a page variant was added by default.
@@ -81,6 +87,7 @@ class BlockPageAdminTest extends WebTestBase {
   protected function doTestAddPageVariant() {
     // Add a new page variant.
     $this->clickLink('Add new page variant');
+    $this->clickLink('Landing page');
     $edit = array(
       'plugin[label]' => 'First',
     );
