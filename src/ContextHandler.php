@@ -22,7 +22,7 @@ class ContextHandler {
    *
    * @var \Drupal\Core\TypedData\TypedDataManager
    */
-  protected $typed_data;
+  protected $typedDataManager;
 
   /**
    * Constructs a new ContextHandler.
@@ -31,7 +31,7 @@ class ContextHandler {
    *   The typed data manager.
    */
   public function __construct(TypedDataManager $typed_data) {
-    $this->typed_data = $typed_data;
+    $this->typedDataManager = $typed_data;
   }
 
   /**
@@ -89,7 +89,7 @@ class ContextHandler {
         $plugin_contexts = $plugin['context'];
         $requirements = array();
         foreach ($plugin_contexts as $context_id => $plugin_context) {
-          $definition = $this->typed_data->getDefinition($plugin_context['type']);
+          $definition = $this->typedDataManager->getDefinition($plugin_context['type']);
           $definition['type'] = $plugin_context['type'];
           if (isset($plugin_context['constraints'])) {
             if (!isset($definition['constraints'])) {
