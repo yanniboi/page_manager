@@ -7,6 +7,7 @@
 
 namespace Drupal\block_page\Plugin;
 
+use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Plugin\Exception\PluginException;
 
 /**
@@ -30,11 +31,13 @@ trait ConditionAccessResolverTrait {
   protected function resolveConditions($conditions, $condition_logic, $contexts = array()) {
     foreach ($conditions as $condition) {
       try {
-        // @todo Find a better way to handle unwanted context.
-        $condition_contexts = $condition->getContextDefinitions();
-        foreach ($contexts as $name => $value) {
-          if (isset($condition_contexts[$name])) {
-            $condition->setContextValue($name, $value);
+        if ($condition instanceof ContextAwarePluginInterface) {
+          // @todo Find a better way to handle unwanted context.
+          $condition_contexts = $condition->getContextDefinitions();
+          foreach ($contexts as $name => $value) {
+            if (isset($condition_contexts[$name])) {
+              $condition->setContextValue($name, $value);
+            }
           }
         }
         $pass = $condition->execute();
