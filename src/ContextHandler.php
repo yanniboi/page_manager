@@ -68,37 +68,41 @@ class ContextHandler {
    *   An array of plugin definitions.
    */
   public function getAvailablePlugins(array $contexts, PluginManagerInterface $manager) {
-    $plugins = $manager->getDefinitions();
-    $available_plugins = array();
-    foreach ($plugins as $plugin_id => $plugin) {
-      if (isset($plugin['context'])) {
-        $plugin_contexts = $plugin['context'];
-        $requirements = array();
-        foreach ($plugin_contexts as $context_id => $plugin_context) {
-          $definition = $this->typedDataManager->getDefinition($plugin_context['type']);
-          $definition['type'] = $plugin_context['type'];
-          if (isset($plugin_context['constraints'])) {
-            if (!isset($definition['constraints'])) {
-              $definition['constraints'] = $plugin_context['constraints'];
-            }
-            else {
-              $definition['constraints'] += $plugin_context['constraints'];
-            }
-          }
-          if (!isset($definition['required'])) {
-            $definition['required'] = TRUE;
-          }
-          $requirements[$context_id] = new DataDefinition($definition);
-        }
-        if ($this->checkRequirements($contexts, $requirements)) {
-          $available_plugins[$plugin_id] = $plugin;
-        }
+    return array_filter($manager->getDefinitions(), function ($plugin_definition) use ($contexts) {
+      // If this plugin doesn't need any context, it is available to use.
+      if (!isset($plugin_definition['context'])) {
+        return TRUE;
       }
-      else {
-        $available_plugins[$plugin_id] = $plugin;
+
+      // Build an array of requirements out of the contexts specified by the
+      // plugin definition.
+      $requirements = array();
+      foreach ($plugin_definition['context'] as $context_id => $plugin_context) {
+        $definition = $this->typedDataManager->getDefinition($plugin_context['type']);
+        $definition['type'] = $plugin_context['type'];
+
+        // If the plugin specifies additional constraints, add them to the
+        // constraints defined by the plugin type.
+        if (isset($plugin_context['constraints'])) {
+          // Ensure the array exists before adding in constraints.
+          if (!isset($definition['constraints'])) {
+            $definition['constraints'] = array();
+          }
+
+          $definition['constraints'] += $plugin_context['constraints'];
+        }
+
+        // Assume the requirement is required if unspecified.
+        if (!isset($definition['required'])) {
+          $definition['required'] = TRUE;
+        }
+
+        $requirements[$context_id] = new DataDefinition($definition);
       }
-    }
-    return $available_plugins;
+
+      // Check the set of contexts against the requirements.
+      return $this->checkRequirements($contexts, $requirements);
+    });
   }
 
   /**
