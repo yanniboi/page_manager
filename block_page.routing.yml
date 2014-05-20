@@ -69,7 +69,7 @@ block_page.access_condition_delete:
 #### Page Variants
 
 block_page.page_variant_add:
-  path: '/admin/structure/block_page/manage/{block_page}/add'
+  path: '/admin/structure/block_page/manage/{block_page}/add/{page_variant_id}'
   defaults:
     _form: '\Drupal\block_page\Form\PageVariantAddForm'
     _title: 'Add new page variant'
