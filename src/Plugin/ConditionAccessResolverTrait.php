@@ -9,6 +9,7 @@ namespace Drupal\block_page\Plugin;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Plugin\Exception\PluginException;
+use Drupal\Core\Condition\ConditionInterface;
 
 /**
  * Resolves a set of conditions.
@@ -30,37 +31,48 @@ trait ConditionAccessResolverTrait {
    */
   protected function resolveConditions($conditions, $condition_logic, $contexts = array()) {
     foreach ($conditions as $condition) {
+      $this->prepareCondition($condition, $contexts);
+
       try {
-        if ($condition instanceof ContextAwarePluginInterface) {
-          // @todo Find a better way to handle unwanted context.
-          $condition_contexts = $condition->getContextDefinitions();
-          foreach ($contexts as $name => $context) {
-            if (isset($condition_contexts[$name])) {
-              $condition->setContextValue($name, $context->getContextValue());
-            }
-          }
-        }
         $pass = $condition->execute();
-        // If a condition fails and all conditions were required, deny access.
-        if (!$pass && $condition_logic == 'and') {
-          return FALSE;
-        }
-        // If a condition passes and one condition was required, grant access.
-        elseif ($pass && $condition_logic == 'or') {
-          return TRUE;
-        }
       }
       catch (PluginException $e) {
-        // If a condition is missing context and all conditions were required,
-        // deny access.
-        if ($condition_logic == 'and') {
-          return FALSE;
-        }
+        // If a condition is missing context, consider that a fail.
+        $pass = FALSE;
+      }
+
+      // If a condition fails and all conditions were required, deny access.
+      if (!$pass && $condition_logic == 'and') {
+        return FALSE;
+      }
+      // If a condition passes and one condition was required, grant access.
+      elseif ($pass && $condition_logic == 'or') {
+        return TRUE;
       }
     }
 
     // If no conditions passed and one condition was required, deny access.
     return $condition_logic == 'and';
+  }
+
+  /**
+   * Prepares a condition for evaluation.
+   *
+   * @param \Drupal\Core\Condition\ConditionInterface $condition
+   *   A condition about to be evaluated.
+   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
+   *   An array of contexts to set on the condition.
+   */
+  protected function prepareCondition(ConditionInterface $condition, $contexts) {
+    if ($condition instanceof ContextAwarePluginInterface) {
+      // @todo Find a better way to handle unwanted context.
+      $condition_contexts = $condition->getContextDefinitions();
+      foreach ($contexts as $name => $context) {
+        if (isset($condition_contexts[$name])) {
+          $condition->setContextValue($name, $context->getContextValue());
+        }
+      }
+    }
   }
 
 }
