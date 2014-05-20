@@ -67,7 +67,14 @@ trait ConditionAccessResolverTrait {
     if ($condition instanceof ContextAwarePluginInterface) {
       // @todo Find a better way to handle unwanted context.
       $condition_contexts = $condition->getContextDefinitions();
+
+      // @todo Find a better way to load context assignments.
+      $configuration = $condition->getConfiguration();
+      $assignments = isset($configuration['context_assignments']) ? array_flip($configuration['context_assignments']) : array();
+
       foreach ($contexts as $name => $context) {
+        // If this context was given a specific name, use that.
+        $name = isset($assignments[$name]) ? $assignments[$name] : $name;
         if (isset($condition_contexts[$name])) {
           $condition->setContextValue($name, $context->getContextValue());
         }

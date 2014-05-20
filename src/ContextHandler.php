@@ -138,4 +138,38 @@ class ContextHandler {
     });
   }
 
+  /**
+   * Builds a form element for assigning a context to a given slot.
+   *
+   * @param \Drupal\Core\TypedData\DataDefinitionInterface[] $definitions
+   *   An array of definitions.
+   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
+   *   An array of contexts.
+   *
+   * @return array
+   *   A form element for assigning context.
+   */
+  public function addContextAssignmentElement($definitions, $contexts) {
+    $element = array();
+    $element['#tree'] = TRUE;
+    foreach ($definitions as $context_slot => $definition) {
+      $definition['required'] = isset($definition['required']) ? $definition['required'] : TRUE;
+      $definition = new DataDefinition($definition);
+      $valid_contexts = $this->getValidContexts($contexts, $definition);
+      $options = array();
+      foreach ($valid_contexts as $context_id => $context) {
+        $context_definition = new DataDefinition($context->getContextDefinition());
+        $options[$context_id] = $context_definition->getLabel();
+      }
+      $element[$context_slot] = array(
+        '#title' => t('Select a @context value:', array('@context' => $context_slot)),
+        '#type' => 'select',
+        '#options' => $options,
+        '#required' => $definition->isRequired(),
+        '#default_value' => !empty($configuration['context map'][$context_slot]) ? $configuration['context map'][$context_slot] : '',
+      );
+    }
+    return $element;
+  }
+
 }

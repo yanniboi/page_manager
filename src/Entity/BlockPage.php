@@ -283,12 +283,6 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   public function getContexts() {
     if (!$this->contexts) {
       $this->eventDispatcher()->dispatch('block_page_context', new BlockPageContextEvent($this));
-
-      // @todo Implement a mechanism to choose between the current user and a
-      //   {user} from context.
-      if (!isset($this->contexts['user']) && isset($this->contexts['current_user'])) {
-        $this->contexts['user'] = $this->contexts['current_user'];
-      }
     }
     return $this->contexts;
   }

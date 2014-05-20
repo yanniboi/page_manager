@@ -8,6 +8,7 @@
 namespace Drupal\block_page\Form;
 
 use Drupal\block_page\BlockPageInterface;
+use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
 
 /**
@@ -50,6 +51,13 @@ abstract class AccessConditionFormBase extends FormBase {
   abstract protected function submitText();
 
   /**
+   * @return \Drupal\block_page\ContextHandler
+   */
+  protected function contextHandler() {
+    return \Drupal::service('context.handler');
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $access_condition_id = NULL) {
@@ -59,6 +67,10 @@ abstract class AccessConditionFormBase extends FormBase {
     // Allow the access condition to add to the form.
     $form['plugin'] = $this->accessCondition->buildConfigurationForm(array(), $form_state);
     $form['plugin']['#tree'] = TRUE;
+
+    if ($this->accessCondition instanceof ContextAwarePluginInterface) {
+      $form['context_assignments'] = $this->contextHandler()->addContextAssignmentElement($this->accessCondition->getContextDefinitions(), $this->blockPage->getContexts());
+    }
 
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(
@@ -90,6 +102,14 @@ abstract class AccessConditionFormBase extends FormBase {
       'values' => &$form_state['values']['plugin'],
     );
     $this->accessCondition->submitConfigurationForm($form, $plugin_values);
+
+    if (!empty($form_state['values']['context_assignments'])) {
+      // @todo Consider creating a ContextAwareConditionPluginBase to handle this.
+      $configuration = $this->accessCondition->getConfiguration();
+      $configuration['context_assignments'] = $form_state['values']['context_assignments'];
+      $this->accessCondition->setConfiguration($configuration);
+    }
+
     $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
   }
 
