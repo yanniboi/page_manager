@@ -197,19 +197,19 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   /**
    * Gets the values for all defined contexts.
    *
-   * @return array
-   *   An array of set context values, keyed by context name.
+   * @return \Drupal\Component\Plugin\Context\ContextInterface[]
+   *   An array of set contexts, keyed by context name.
    */
-  public function getContextValues();
+  public function getContexts();
 
   /**
    * Sets the context values for this page variant.
    *
-   * @param array $contexts
-   *   An array of context values, keyed by context name.
+   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
+   *   An array of contexts, keyed by context name.
    *
    * @return $this
    */
-  public function setContextValues(array $contexts);
+  public function setContexts(array $contexts);
 
 }

@@ -105,7 +105,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    *
    * This is only used on runtime, and is not stored.
    *
-   * @var array
+   * @var \Drupal\Component\Plugin\Context\ContextInterface[]
    */
   protected $contexts = array();
 
@@ -228,7 +228,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    */
   public function selectPageVariant() {
     foreach ($this->getPageVariants() as $page_variant) {
-      $page_variant->setContextValues($this->getContextValues());
+      $page_variant->setContexts($this->getContexts());
       if ($page_variant->access()) {
         return $page_variant;
       }
@@ -280,7 +280,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   /**
    * {@inheritdoc}
    */
-  public function getContextValues() {
+  public function getContexts() {
     if (!$this->contexts) {
       $this->eventDispatcher()->dispatch('block_page_context', new BlockPageContextEvent($this));
 
@@ -296,7 +296,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
   /**
    * {@inheritdoc}
    */
-  public function setContextValue($name, $value) {
+  public function addContext($name, $value) {
     $this->contexts[$name] = $value;
   }
 

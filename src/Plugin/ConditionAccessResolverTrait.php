@@ -22,7 +22,7 @@ trait ConditionAccessResolverTrait {
    *   A set of conditions.
    * @param string $condition_logic
    *   The logic used to compute access, either 'and' or 'or'.
-   * @param array $contexts
+   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
    *   (optional) An array of contexts to set on the conditions.
    *
    * @return bool
@@ -34,9 +34,9 @@ trait ConditionAccessResolverTrait {
         if ($condition instanceof ContextAwarePluginInterface) {
           // @todo Find a better way to handle unwanted context.
           $condition_contexts = $condition->getContextDefinitions();
-          foreach ($contexts as $name => $value) {
+          foreach ($contexts as $name => $context) {
             if (isset($condition_contexts[$name])) {
-              $condition->setContextValue($name, $value);
+              $condition->setContextValue($name, $context->getContextValue());
             }
           }
         }

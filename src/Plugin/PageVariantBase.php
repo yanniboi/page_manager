@@ -36,7 +36,7 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    *
    * This is only used on runtime, and is not stored.
    *
-   * @var array
+   * @var \Drupal\Component\Plugin\Context\ContextInterface[]
    */
   protected $contexts = array();
 
@@ -263,14 +263,14 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   /**
    * {@inheritdoc}
    */
-  public function getContextValues() {
+  public function getContexts() {
     return $this->contexts;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setContextValues(array $contexts) {
+  public function setContexts(array $contexts) {
     $this->contexts = $contexts;
     return $this;
   }

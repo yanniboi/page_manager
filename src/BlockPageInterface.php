@@ -125,21 +125,21 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBags
   /**
    * Gets the values for all defined contexts.
    *
-   * @return array
+   * @return \Drupal\Component\Plugin\Context\ContextInterface[]
    *   An array of set context values, keyed by context name.
    */
-  public function getContextValues();
+  public function getContexts();
 
   /**
-   * Sets the value for a defined context.
+   * Sets the context for a given name.
    *
    * @param string $name
    *   The name of the context.
-   * @param mixed $value
-   *   The value to set the context to.
+   * @param \Drupal\Component\Plugin\Context\ContextInterface $value
+   *   The context to add.
    *
    * @return $this
    */
-  public function setContextValue($name, $value);
+  public function addContext($name, $value);
 
 }

@@ -9,6 +9,7 @@ namespace Drupal\block_page\EventSubscriber;
 
 use Drupal\block_page\Event\BlockPageContextEvent;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Session\AccountProxyInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -52,7 +53,9 @@ class CurrentUserContext implements EventSubscriberInterface {
    */
   public function onBlockPageContext(BlockPageContextEvent $event) {
     $current_user = $this->userStorage->load($this->accountProxy->getAccount()->id());
-    $event->getBlockPage()->setContextValue('current_user', $current_user);
+    $context = new Context(array('type' => 'entity', 'constraints' => array('EntityType' => 'user')));
+    $context->setContextValue($current_user);
+    $event->getBlockPage()->addContext('current_user', $context);
   }
 
   /**
