@@ -184,12 +184,13 @@ class ContextHandlerTest extends UnitTestCase {
     $data[] = array(array(), $requirement_any);
     // A context with a generic matching requirement is valid.
     $data[] = array(array($context_any), $requirement_any);
-    // A context with a mismatched constraint is invalid
+    // A context with a specific matching requirement is valid.
+    $data[] = array(array($context_specific), $requirement_specific);
+
+    // A context with a mismatched constraint is invalid.
     $data[] = array(array($context_constraint_mismatch), $requirement_specific, array());
     // A context with a mismatched datatype is invalid.
     $data[] = array(array($context_datatype_mismatch), $requirement_specific, array());
-    // A context with a specific matching requirement is valid..
-    $data[] = array(array($context_specific), $requirement_specific);
 
     return $data;
   }

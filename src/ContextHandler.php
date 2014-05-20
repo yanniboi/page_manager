@@ -7,6 +7,7 @@
 
 namespace Drupal\block_page;
 
+use Drupal\Component\Plugin\Context\ContextInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
@@ -112,20 +113,25 @@ class ContextHandler {
    *   An array of valid contexts.
    */
   public function getValidContexts(array $contexts, DataDefinitionInterface $definition) {
-    $valid = array();
-    foreach ($contexts as $id => $context) {
+    return array_filter($contexts, function (ContextInterface $context) use ($definition) {
       // @todo getContextDefinition() should return a DataDefinitionInterface.
       $context_definition = new DataDefinition($context->getContextDefinition());
-      if ($definition->getDataType() == $context_definition->getDataType()) {
-        foreach ($definition->getConstraints() as $constraint_name => $constraint) {
-          if ($context_definition->getConstraint($constraint_name) != $constraint) {
-            continue 2;
-          }
-        }
-        $valid[$id] = $context;
+
+      // If the data types do not match, this context is invalid.
+      if ($definition->getDataType() != $context_definition->getDataType()) {
+        return FALSE;
       }
-    }
-    return $valid;
+
+      // If any constraint does not match, this context is invalid.
+      foreach ($definition->getConstraints() as $constraint_name => $constraint) {
+        if ($context_definition->getConstraint($constraint_name) != $constraint) {
+          return FALSE;
+        }
+      }
+
+      // All contexts with matching data type and contexts are valid.
+      return TRUE;
+    });
   }
 
 }
