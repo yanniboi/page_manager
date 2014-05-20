@@ -135,4 +135,92 @@ class ContextHandlerTest extends UnitTestCase {
     return $data;
   }
 
+  /**
+   * @covers ::getAvailablePlugins
+   *
+   * @dataProvider providerTestGetAvailablePlugins
+   */
+  public function testGetAvailablePlugins($contexts, $definitions, $expected, $typed_data_definition = NULL) {
+    if ($typed_data_definition) {
+      $this->typedDataManager->expects($this->atLeastOnce())
+        ->method('getDefinition')
+        ->will($this->returnValueMap($typed_data_definition));
+    }
+
+    $plugin_manager = $this->getMock('Drupal\Component\Plugin\PluginManagerInterface');
+    $plugin_manager->expects($this->once())
+      ->method('getDefinitions')
+      ->will($this->returnValue($definitions));
+
+    $this->assertSame($expected, $this->contextHandler->getAvailablePlugins($contexts, $plugin_manager));
+  }
+
+  public function providerTestGetAvailablePlugins() {
+    $context = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context->expects($this->atLeastOnce())
+      ->method('getContextDefinition')
+      ->will($this->returnValue(array('type' => 'data_type1', 'constraints' => array('constraint_name2' => 'constraint_value2'))));
+
+    $data = array();
+
+    $plugins = array();
+    // No context and no plugins, no plugins available.
+    $data[] = array(array(), $plugins, array());
+
+    $plugins = array('plugin1' => array());
+    // No context, all plugins available.
+    $data[] = array(array(), $plugins, $plugins);
+
+    $plugins = array('plugin1' => array('context' => array()));
+    // No context, all plugins available.
+    $data[] = array(array(), $plugins, $plugins);
+
+    $plugins = array('plugin1' => array('context' => array('context1' => array('type' => 'data_type1'))));
+    // Missing context, no plugins available.
+    $data[] = array(array(), $plugins, array());
+    // Satisfied context, all plugins available.
+    $data[] = array(array($context), $plugins, $plugins);
+
+    $plugins = array('plugin1' => array('context' => array('context1' => array('type' => 'data_type1', 'constraints' => array('constraint_name1' => 'constraint_value1')))));
+    // Mismatched constraints, no plugins available.
+    $data[] = array(array($context), $plugins, array());
+
+    $plugins = array('plugin1' => array('context' => array('context1' => array('type' => 'data_type1', 'constraints' => array('constraint_name2' => 'constraint_value2')))));
+    // Satisfied context with constraint, all plugins available.
+    $data[] = array(array($context), $plugins, $plugins);
+
+    $typed_data = array(array('data_type1', array('required' => FALSE)));
+    // Optional unsatisfied context from TypedData, all plugins available.
+    $data[] = array(array(), $plugins, $plugins, $typed_data);
+
+    $typed_data = array(array('data_type1', array('required' => TRUE)));
+    // Required unsatisfied context from TypedData, no plugins available.
+    $data[] = array(array(), $plugins, array(), $typed_data);
+
+    $typed_data = array(array('data_type1', array('constraints' => array('constraint_name1' => 'constraint_value1'), 'required' => FALSE)));
+    // Optional mismatched constraint from TypedData, all plugins available.
+    $data[] = array(array(), $plugins, $plugins, $typed_data);
+
+    $typed_data = array(array('data_type1', array('constraints' => array('constraint_name1' => 'constraint_value1'), 'required' => TRUE)));
+    // Required mismatched constraint from TypedData, no plugins available.
+    $data[] = array(array(), $plugins, array(), $typed_data);
+
+    $typed_data = array(array('data_type1', array('constraints' => array('constraint_name2' => 'constraint_value2'))));
+    // Satisfied constraint from TypedData, all plugins available.
+    $data[] = array(array($context), $plugins, $plugins, $typed_data);
+
+    $plugins = array(
+      'plugin1' => array('context' => array('context1' => array('type' => 'data_type1', 'constraints' => array('constraint_name1' => 'constraint_value1')))),
+      'plugin2' => array('context' => array('context2' => array('type' => 'data_type2'))),
+    );
+    $typed_data = array(
+      array('data_type1', array()),
+      array('data_type2', array('constraints' => array('constraint_name2' => 'constraint_value2'))),
+    );
+    // Context only satisfies one plugin.
+    $data[] = array(array($context), $plugins, array('plugin2' => $plugins['plugin2']), $typed_data);
+
+    return $data;
+  }
+
 }
