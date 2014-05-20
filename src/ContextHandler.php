@@ -47,17 +47,12 @@ class ContextHandler {
    *   otherwise.
    */
   public function checkRequirements(array $contexts, array $requirements) {
-    $results = array();
-    foreach ($requirements as $name => $requirement) {
-      if ($requirement->isRequired()) {
-        $valid_contexts = $this->getValidContexts($contexts, $requirement);
-        $results += array_fill_keys(array_keys($valid_contexts), TRUE);
-      }
-      else {
-        $results[$name] = TRUE;
+    foreach ($requirements as $requirement) {
+      if ($requirement->isRequired() && !$this->getValidContexts($contexts, $requirement)) {
+        return FALSE;
       }
     }
-    return count($requirements) == count($results);
+    return TRUE;
   }
 
   /**
