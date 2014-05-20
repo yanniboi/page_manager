@@ -21,6 +21,20 @@ use Drupal\Tests\UnitTestCase;
 class ContextHandlerTest extends UnitTestCase {
 
   /**
+   * The typed data manager.
+   *
+   * @var \Drupal\Core\TypedData\TypedDataManager|\PHPUnit_Framework_MockObject_MockObject
+   */
+  protected $typedDataManager;
+
+  /**
+   * The context handler.
+   *
+   * @var \Drupal\block_page\ContextHandler
+   */
+  protected $contextHandler;
+
+  /**
    * {@inheritdoc}
    */
   public static function getInfo() {
@@ -32,17 +46,27 @@ class ContextHandlerTest extends UnitTestCase {
   }
 
   /**
+   * {@inheritdoc}
+   *
+   * @covers ::__construct
+   */
+  protected function setUp() {
+    parent::setUp();
+
+    $this->typedDataManager = $this->getMockBuilder('Drupal\Core\TypedData\TypedDataManager')
+      ->disableOriginalConstructor()
+      ->getMock();
+    $this->contextHandler = new ContextHandler($this->typedDataManager);
+  }
+
+  /**
    * @covers ::checkRequirements
    * @covers ::getValidContexts
    *
    * @dataProvider providerTestCheckRequirements
    */
   public function testCheckRequirements($contexts, $requirements, $expected) {
-    $typed_data_manager = $this->getMockBuilder('Drupal\Core\TypedData\TypedDataManager')
-      ->disableOriginalConstructor()
-      ->getMock();
-    $context_handler = new ContextHandler($typed_data_manager);
-    $this->assertSame($expected, $context_handler->checkRequirements($contexts, $requirements));
+    $this->assertSame($expected, $this->contextHandler->checkRequirements($contexts, $requirements));
   }
 
   public function providerTestCheckRequirements() {
