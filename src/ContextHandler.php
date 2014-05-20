@@ -127,8 +127,8 @@ class ContextHandler {
             continue 2;
           }
         }
+        $valid[$id] = $context;
       }
-      $valid[$id] = $context;
     }
     return $valid;
   }

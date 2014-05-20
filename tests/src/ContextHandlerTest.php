@@ -122,7 +122,7 @@ class ContextHandlerTest extends UnitTestCase {
     $data[] = array(array(), array($requirement_any, $requirement_optional), FALSE);
     $data[] = array(array($context_any), array($requirement_any), TRUE);
     $data[] = array(array($context_constraint_mismatch), array($requirement_specific), FALSE);
-    $data[] = array(array($context_datatype_mismatch), array($requirement_specific), TRUE);
+    $data[] = array(array($context_datatype_mismatch), array($requirement_specific), FALSE);
     $data[] = array(array($context_specific), array($requirement_specific), TRUE);
 
     return $data;
@@ -186,9 +186,8 @@ class ContextHandlerTest extends UnitTestCase {
     $data[] = array(array($context_any), $requirement_any);
     // A context with a mismatched constraint is invalid
     $data[] = array(array($context_constraint_mismatch), $requirement_specific, array());
-    // A context with a mismatched datatype is valid.
-    // @todo This seems wrong.
-    $data[] = array(array($context_datatype_mismatch), $requirement_specific);
+    // A context with a mismatched datatype is invalid.
+    $data[] = array(array($context_datatype_mismatch), $requirement_specific, array());
     // A context with a specific matching requirement is valid..
     $data[] = array(array($context_specific), $requirement_specific);
 
@@ -270,7 +269,7 @@ class ContextHandlerTest extends UnitTestCase {
     $data[] = array(array($context), $plugins, $plugins, $typed_data);
 
     $plugins = array(
-      'unexpected_plugin' => array('context' => array('context1' => array('type' => 'expected_data_type', 'constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value')))),
+      'unexpected_plugin' => array('context' => array('context1' => array('type' => 'unexpected_data_type', 'constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value')))),
       'expected_plugin' => array('context' => array('context2' => array('type' => 'expected_data_type'))),
     );
     $typed_data = array(
