@@ -15,7 +15,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  * Provides a page variant that returns a response with an HTTP status code.
  *
  * @PageVariant(
- *   id = "http_status_code"
+ *   id = "http_status_code",
+ *   admin_label = @Translation("HTTP status code")
  * )
  */
 class HttpStatusCodePageVariant extends PageVariantBase {

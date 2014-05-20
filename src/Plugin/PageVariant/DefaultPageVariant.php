@@ -12,10 +12,6 @@ use Drupal\block_page\Plugin\PageVariantBase;
 
 /**
  * Provides a default page variant.
- *
- * @PageVariant(
- *   id = "default"
- * )
  */
 class DefaultPageVariant extends PageVariantBase {
 

@@ -37,7 +37,7 @@ class BlockPageEditForm extends BlockPageFormBase {
     $form['page_variants']['add_new_block_page'] = array(
       '#type' => 'link',
       '#title' => $this->t('Add new page variant'),
-      '#route_name' => 'block_page.page_variant_add',
+      '#route_name' => 'block_page.page_variant_select',
       '#route_parameters' => array(
         'block_page' => $this->entity->id(),
       ),

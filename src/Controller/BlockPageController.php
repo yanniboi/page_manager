@@ -81,6 +81,41 @@ class BlockPageController extends ControllerBase {
   }
 
   /**
+   * Presents a list of page variants to add to the block page.
+   *
+   * @param \Drupal\block_page\BlockPageInterface $block_page
+   *   The block page.
+   *
+   * @return array
+   *   The page variant selection page.
+   */
+  public function selectPageVariant(BlockPageInterface $block_page) {
+    $build = array(
+      '#theme' => 'links',
+      '#links' => array(),
+    );
+    $page_variant_manager = \Drupal::service('plugin.manager.page_variant');
+    foreach ($page_variant_manager->getDefinitions() as $page_variant_id => $page_variant) {
+      $build['#links'][$page_variant_id] = array(
+        'title' => $page_variant['admin_label'],
+        'route_name' => 'block_page.page_variant_add',
+        'route_parameters' => array(
+          'block_page' => $block_page->id(),
+          'page_variant_id' => $page_variant_id,
+        ),
+        'attributes' => array(
+          'class' => array('use-ajax'),
+          'data-accepts' => 'application/vnd.drupal-modal',
+          'data-dialog-options' => Json::encode(array(
+            'width' => 'auto',
+          )),
+        ),
+      );
+    }
+    return $build;
+  }
+
+  /**
    * Presents a list of access conditions to add to the block page.
    *
    * @param \Drupal\block_page\BlockPageInterface $block_page
