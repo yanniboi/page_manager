@@ -50,18 +50,8 @@ class ContextHandler {
     $results = array();
     foreach ($requirements as $name => $requirement) {
       if ($requirement->isRequired()) {
-        foreach ($contexts as $context) {
-          // @todo getContextDefinition() should return a DataDefinitionInterface.
-          $context_definition = new DataDefinition($context->getContextDefinition());
-          if ($requirement->getDataType() == $context_definition->getDataType()) {
-            foreach ($requirement->getConstraints() as $constraint_name => $constraint) {
-              if ($context_definition->getConstraint($constraint_name) != $constraint) {
-                continue 2;
-              }
-            }
-          }
-          $results[$name] = TRUE;
-        }
+        $valid_contexts = $this->getValidContexts($contexts, $requirement);
+        $results += array_fill_keys(array_keys($valid_contexts), TRUE);
       }
       else {
         $results[$name] = TRUE;

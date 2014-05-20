@@ -33,6 +33,7 @@ class ContextHandlerTest extends UnitTestCase {
 
   /**
    * @covers ::checkRequirements
+   * @covers ::getValidContexts
    *
    * @dataProvider providerTestCheckRequirements
    */
