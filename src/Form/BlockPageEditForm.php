@@ -29,12 +29,12 @@ class BlockPageEditForm extends BlockPageFormBase {
       )),
     );
 
-    $form['page_variants'] = array(
+    $form['page_variant_section'] = array(
       '#type' => 'details',
       '#title' => $this->t('Page Variants'),
       '#open' => TRUE,
     );
-    $form['page_variants']['add_new_block_page'] = array(
+    $form['page_variant_section']['add_new_block_page'] = array(
       '#type' => 'link',
       '#title' => $this->t('Add new page variant'),
       '#route_name' => 'block_page.page_variant_select',
@@ -48,7 +48,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         ),
       ),
     );
-    $form['page_variants']['table'] = array(
+    $form['page_variant_section']['page_variants'] = array(
       '#type' => 'table',
       '#header' => array(
         $this->t('Label'),
@@ -108,15 +108,15 @@ class BlockPageEditForm extends BlockPageFormBase {
         '#type' => 'operations',
         '#links' => $operations,
       );
-      $form['page_variants']['table'][$page_variant_id] = $row;
+      $form['page_variant_section']['page_variants'][$page_variant_id] = $row;
     }
 
-    $form['access_section'] = array(
+    $form['access_section_section'] = array(
       '#type' => 'details',
       '#title' => $this->t('Access Conditions'),
       '#open' => TRUE,
     );
-    $form['access_section']['add'] = array(
+    $form['access_section_section']['add'] = array(
       '#type' => 'link',
       '#title' => $this->t('Add new access condition'),
       '#route_name' => 'block_page.access_condition_select',
@@ -130,7 +130,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         ),
       ),
     );
-    $form['access_section']['table'] = array(
+    $form['access_section_section']['access_section'] = array(
       '#type' => 'table',
       '#header' => array(
         $this->t('Label'),
@@ -140,7 +140,7 @@ class BlockPageEditForm extends BlockPageFormBase {
       '#empty' => $this->t('There are no access conditions.'),
     );
 
-    $form['access_section']['access_logic'] = array(
+    $form['access_section_section']['access_logic'] = array(
       '#type' => 'radios',
       '#options' => array(
         'and' => $this->t('All conditions must pass'),
@@ -150,7 +150,7 @@ class BlockPageEditForm extends BlockPageFormBase {
     );
 
     $access_conditions = $this->entity->getAccessConditions();
-    $form['access_section']['access'] = array(
+    $form['access_section_section']['access'] = array(
       '#tree' => TRUE,
     );
     foreach ($access_conditions as $access_id => $access_condition) {
@@ -180,7 +180,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         '#type' => 'operations',
         '#links' => $operations,
       );
-      $form['access_section']['table'][$access_id] = $row;
+      $form['access_section_section']['access_section'][$access_id] = $row;
     }
     return $form;
   }
