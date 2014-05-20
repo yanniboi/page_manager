@@ -143,7 +143,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
     // Ensure there is at least one page variant.
     if (!$this->getPageVariants()->count()) {
       $this->addPageVariant(array(
-        'id' => 'default',
+        'id' => 'http_status_code',
         'label' => 'Default',
         'weight' => 10,
       ));
