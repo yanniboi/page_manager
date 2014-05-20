@@ -61,7 +61,6 @@ class ContextHandlerTest extends UnitTestCase {
 
   /**
    * @covers ::checkRequirements
-   * @covers ::getValidContexts
    *
    * @dataProvider providerTestCheckRequirements
    */
@@ -70,13 +69,6 @@ class ContextHandlerTest extends UnitTestCase {
   }
 
   public function providerTestCheckRequirements() {
-    $data = array();
-
-    $requirement_any = $this->getMock('Drupal\Core\TypedData\DataDefinitionInterface');
-    $requirement_any->expects($this->atLeastOnce())
-      ->method('isRequired')
-      ->will($this->returnValue(TRUE));
-
     $requirement_optional = $this->getMock('Drupal\Core\TypedData\DataDefinitionInterface');
     $requirement_optional->expects($this->atLeastOnce())
       ->method('isRequired')
@@ -123,6 +115,7 @@ class ContextHandlerTest extends UnitTestCase {
       ->method('getContextDefinition')
       ->will($this->returnValue(array('type' => 'foo', 'constraints' => array('bar' => 'baz'))));
 
+    $data = array();
     $data[] = array(array(), array(), TRUE);
     $data[] = array(array(), array($requirement_any), FALSE);
     $data[] = array(array(), array($requirement_optional), TRUE);
@@ -131,6 +124,73 @@ class ContextHandlerTest extends UnitTestCase {
     $data[] = array(array($context_constraint_mismatch), array($requirement_specific), FALSE);
     $data[] = array(array($context_datatype_mismatch), array($requirement_specific), TRUE);
     $data[] = array(array($context_specific), array($requirement_specific), TRUE);
+
+    return $data;
+  }
+
+  /**
+   * @covers ::getValidContexts
+   *
+   * @dataProvider providerTestGetValidContexts
+   */
+  public function testGetValidContexts($contexts, $requirement, $expected = NULL) {
+    if (is_null($expected)) {
+      $expected = $contexts;
+    }
+    $this->assertSame($expected, $this->contextHandler->getValidContexts($contexts, $requirement));
+  }
+
+  public function providerTestGetValidContexts() {
+    $requirement_any = $this->getMock('Drupal\Core\TypedData\DataDefinitionInterface');
+    $requirement_any->expects($this->atLeastOnce())
+      ->method('isRequired')
+      ->will($this->returnValue(TRUE));
+    $requirement_any->expects($this->atLeastOnce())
+      ->method('getDataType')
+      ->will($this->returnValue('any'));
+    $requirement_any->expects($this->atLeastOnce())
+      ->method('getConstraints')
+      ->will($this->returnValue(array()));
+    $requirement_specific = $this->getMock('Drupal\Core\TypedData\DataDefinitionInterface');
+    $requirement_specific->expects($this->atLeastOnce())
+      ->method('isRequired')
+      ->will($this->returnValue(TRUE));
+    $requirement_specific->expects($this->atLeastOnce())
+      ->method('getDataType')
+      ->will($this->returnValue('foo'));
+    $requirement_specific->expects($this->atLeastOnce())
+      ->method('getConstraints')
+      ->will($this->returnValue(array('bar' => 'baz')));
+
+    $context_any = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context_any->expects($this->atLeastOnce())
+      ->method('getContextDefinition')
+      ->will($this->returnValue(array()));
+    $context_constraint_mismatch = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context_constraint_mismatch->expects($this->atLeastOnce())
+      ->method('getContextDefinition')
+      ->will($this->returnValue(array('type' => 'foo')));
+    $context_datatype_mismatch = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context_datatype_mismatch->expects($this->atLeastOnce())
+      ->method('getContextDefinition')
+      ->will($this->returnValue(array('type' => 'fuzzy')));
+    $context_specific = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context_specific->expects($this->atLeastOnce())
+      ->method('getContextDefinition')
+      ->will($this->returnValue(array('type' => 'foo', 'constraints' => array('bar' => 'baz'))));
+
+    $data = array();
+    // No context will return no valid contexts.
+    $data[] = array(array(), $requirement_any);
+    // A context with a generic matching requirement is valid.
+    $data[] = array(array($context_any), $requirement_any);
+    // A context with a mismatched constraint is invalid
+    $data[] = array(array($context_constraint_mismatch), $requirement_specific, array());
+    // A context with a mismatched datatype is valid.
+    // @todo This seems wrong.
+    $data[] = array(array($context_datatype_mismatch), $requirement_specific);
+    // A context with a specific matching requirement is valid..
+    $data[] = array(array($context_specific), $requirement_specific);
 
     return $data;
   }
@@ -159,7 +219,7 @@ class ContextHandlerTest extends UnitTestCase {
     $context = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
     $context->expects($this->atLeastOnce())
       ->method('getContextDefinition')
-      ->will($this->returnValue(array('type' => 'data_type1', 'constraints' => array('constraint_name2' => 'constraint_value2'))));
+      ->will($this->returnValue(array('type' => 'expected_data_type', 'constraints' => array('expected_constraint_name' => 'expected_constraint_value'))));
 
     $data = array();
 
@@ -167,58 +227,58 @@ class ContextHandlerTest extends UnitTestCase {
     // No context and no plugins, no plugins available.
     $data[] = array(array(), $plugins, array());
 
-    $plugins = array('plugin1' => array());
+    $plugins = array('expected_plugin' => array());
     // No context, all plugins available.
     $data[] = array(array(), $plugins, $plugins);
 
-    $plugins = array('plugin1' => array('context' => array()));
+    $plugins = array('expected_plugin' => array('context' => array()));
     // No context, all plugins available.
     $data[] = array(array(), $plugins, $plugins);
 
-    $plugins = array('plugin1' => array('context' => array('context1' => array('type' => 'data_type1'))));
+    $plugins = array('expected_plugin' => array('context' => array('context1' => array('type' => 'expected_data_type'))));
     // Missing context, no plugins available.
     $data[] = array(array(), $plugins, array());
     // Satisfied context, all plugins available.
     $data[] = array(array($context), $plugins, $plugins);
 
-    $plugins = array('plugin1' => array('context' => array('context1' => array('type' => 'data_type1', 'constraints' => array('constraint_name1' => 'constraint_value1')))));
+    $plugins = array('expected_plugin' => array('context' => array('context1' => array('type' => 'expected_data_type', 'constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value')))));
     // Mismatched constraints, no plugins available.
     $data[] = array(array($context), $plugins, array());
 
-    $plugins = array('plugin1' => array('context' => array('context1' => array('type' => 'data_type1', 'constraints' => array('constraint_name2' => 'constraint_value2')))));
+    $plugins = array('expected_plugin' => array('context' => array('context1' => array('type' => 'expected_data_type', 'constraints' => array('expected_constraint_name' => 'expected_constraint_value')))));
     // Satisfied context with constraint, all plugins available.
     $data[] = array(array($context), $plugins, $plugins);
 
-    $typed_data = array(array('data_type1', array('required' => FALSE)));
+    $typed_data = array(array('expected_data_type', array('required' => FALSE)));
     // Optional unsatisfied context from TypedData, all plugins available.
     $data[] = array(array(), $plugins, $plugins, $typed_data);
 
-    $typed_data = array(array('data_type1', array('required' => TRUE)));
+    $typed_data = array(array('expected_data_type', array('required' => TRUE)));
     // Required unsatisfied context from TypedData, no plugins available.
     $data[] = array(array(), $plugins, array(), $typed_data);
 
-    $typed_data = array(array('data_type1', array('constraints' => array('constraint_name1' => 'constraint_value1'), 'required' => FALSE)));
+    $typed_data = array(array('expected_data_type', array('constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value'), 'required' => FALSE)));
     // Optional mismatched constraint from TypedData, all plugins available.
     $data[] = array(array(), $plugins, $plugins, $typed_data);
 
-    $typed_data = array(array('data_type1', array('constraints' => array('constraint_name1' => 'constraint_value1'), 'required' => TRUE)));
+    $typed_data = array(array('expected_data_type', array('constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value'), 'required' => TRUE)));
     // Required mismatched constraint from TypedData, no plugins available.
     $data[] = array(array(), $plugins, array(), $typed_data);
 
-    $typed_data = array(array('data_type1', array('constraints' => array('constraint_name2' => 'constraint_value2'))));
+    $typed_data = array(array('expected_data_type', array('constraints' => array('expected_constraint_name' => 'expected_constraint_value'))));
     // Satisfied constraint from TypedData, all plugins available.
     $data[] = array(array($context), $plugins, $plugins, $typed_data);
 
     $plugins = array(
-      'plugin1' => array('context' => array('context1' => array('type' => 'data_type1', 'constraints' => array('constraint_name1' => 'constraint_value1')))),
-      'plugin2' => array('context' => array('context2' => array('type' => 'data_type2'))),
+      'unexpected_plugin' => array('context' => array('context1' => array('type' => 'expected_data_type', 'constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value')))),
+      'expected_plugin' => array('context' => array('context2' => array('type' => 'expected_data_type'))),
     );
     $typed_data = array(
-      array('data_type1', array()),
-      array('data_type2', array('constraints' => array('constraint_name2' => 'constraint_value2'))),
+      array('unexpected_data_type', array()),
+      array('expected_data_type', array('constraints' => array('expected_constraint_name' => 'expected_constraint_value'))),
     );
     // Context only satisfies one plugin.
-    $data[] = array(array($context), $plugins, array('plugin2' => $plugins['plugin2']), $typed_data);
+    $data[] = array(array($context), $plugins, array('expected_plugin' => $plugins['expected_plugin']), $typed_data);
 
     return $data;
   }
