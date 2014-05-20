@@ -44,7 +44,7 @@ class PageVariantTest extends UnitTestCase {
   public function setUpPageVariant($configuration = array(), $definition = array()) {
     return $this->getMockBuilder('Drupal\block_page\Plugin\PageVariantBase')
       ->setConstructorArgs(array($configuration, 'test', $definition))
-      ->setMethods(array('getRegionNames', 'access', 'getBlockBag', 'getSelectionConditions'))
+      ->setMethods(array('getRegionNames', 'access', 'render', 'getBlockBag', 'getSelectionConditions'))
       ->getMock();
   }
 
