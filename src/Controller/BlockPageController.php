@@ -129,8 +129,8 @@ class BlockPageController extends ControllerBase {
       '#theme' => 'links',
       '#links' => array(),
     );
-    $condition_manager = \Drupal::service('plugin.manager.condition');
-    foreach ($condition_manager->getDefinitions() as $access_id => $access_condition) {
+    $available_plugins = $this->getAvailableConditionPlugins($block_page->getContexts());
+    foreach ($available_plugins as $access_id => $access_condition) {
       $build['#links'][$access_id] = array(
         'title' => $access_condition['label'],
         'route_name' => 'block_page.access_condition_add',
@@ -166,8 +166,8 @@ class BlockPageController extends ControllerBase {
       '#theme' => 'links',
       '#links' => array(),
     );
-    $condition_manager = \Drupal::service('plugin.manager.condition');
-    foreach ($condition_manager->getDefinitions() as $selection_id => $selection_condition) {
+    $available_plugins = $this->getAvailableConditionPlugins($block_page->getContexts());
+    foreach ($available_plugins as $selection_id => $selection_condition) {
       $build['#links'][$selection_id] = array(
         'title' => $selection_condition['label'],
         'route_name' => 'block_page.selection_condition_add',
@@ -186,6 +186,21 @@ class BlockPageController extends ControllerBase {
       );
     }
     return $build;
+  }
+
+  /**
+   * Returns condition plugins for a given set of contexts.
+   *
+   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
+   *   A set of contexts.
+   *
+   * @return \Drupal\Core\Condition\ConditionInterface[]
+   *   A set of condition plugins that are satisfied by those contexts.
+   */
+  protected function getAvailableConditionPlugins(array $contexts) {
+    $condition_manager = \Drupal::service('plugin.manager.condition');
+    $context_handler = \Drupal::service('context.handler');
+    return $context_handler->getAvailablePlugins($contexts, $condition_manager);
   }
 
 }
