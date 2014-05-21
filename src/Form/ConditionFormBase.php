@@ -65,8 +65,8 @@ abstract class ConditionFormBase extends FormBase {
     $this->condition = $this->prepareCondition($condition_id);
 
     // Allow the condition to add to the form.
-    $form['plugin'] = $this->condition->buildConfigurationForm(array(), $form_state);
-    $form['plugin']['#tree'] = TRUE;
+    $form['condition'] = $this->condition->buildConfigurationForm(array(), $form_state);
+    $form['condition']['#tree'] = TRUE;
 
     if ($this->condition instanceof ContextAwarePluginInterface) {
       $form['context_assignments'] = $this->contextHandler()->addContextAssignmentElement($this->condition->getContextDefinitions(), $this->blockPage->getContexts());
@@ -87,10 +87,10 @@ abstract class ConditionFormBase extends FormBase {
    */
   public function validateForm(array &$form, array &$form_state) {
     // Allow the condition to validate the form.
-    $plugin_values = array(
-      'values' => &$form_state['values']['plugin'],
+    $condition_values = array(
+      'values' => &$form_state['values']['condition'],
     );
-    $this->condition->validateConfigurationForm($form, $plugin_values);
+    $this->condition->validateConfigurationForm($form, $condition_values);
   }
 
   /**
@@ -98,10 +98,10 @@ abstract class ConditionFormBase extends FormBase {
    */
   public function submitForm(array &$form, array &$form_state) {
     // Allow the condition to submit the form.
-    $plugin_values = array(
-      'values' => &$form_state['values']['plugin'],
+    $condition_values = array(
+      'values' => &$form_state['values']['condition'],
     );
-    $this->condition->submitConfigurationForm($form, $plugin_values);
+    $this->condition->submitConfigurationForm($form, $condition_values);
 
     if (!empty($form_state['values']['context_assignments'])) {
       // @todo Consider creating a ContextAwareConditionPluginBase to handle this.

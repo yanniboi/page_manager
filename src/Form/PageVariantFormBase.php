@@ -56,8 +56,8 @@ abstract class PageVariantFormBase extends FormBase {
     $this->pageVariant = $this->preparePageVariant($page_variant_id);
 
     // Allow the page variant to add to the form.
-    $form['plugin'] = $this->pageVariant->buildConfigurationForm(array(), $form_state);
-    $form['plugin']['#tree'] = TRUE;
+    $form['page_variant'] = $this->pageVariant->buildConfigurationForm(array(), $form_state);
+    $form['page_variant']['#tree'] = TRUE;
 
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(
@@ -74,10 +74,10 @@ abstract class PageVariantFormBase extends FormBase {
    */
   public function validateForm(array &$form, array &$form_state) {
     // Allow the page variant to validate the form.
-    $plugin_values = array(
-      'values' => &$form_state['values']['plugin'],
+    $page_variant_values = array(
+      'values' => &$form_state['values']['page_variant'],
     );
-    $this->pageVariant->validateConfigurationForm($form, $plugin_values);
+    $this->pageVariant->validateConfigurationForm($form, $page_variant_values);
   }
 
   /**
@@ -85,10 +85,10 @@ abstract class PageVariantFormBase extends FormBase {
    */
   public function submitForm(array &$form, array &$form_state) {
     // Allow the page variant to submit the form.
-    $plugin_values = array(
-      'values' => &$form_state['values']['plugin'],
+    $page_variant_values = array(
+      'values' => &$form_state['values']['page_variant'],
     );
-    $this->pageVariant->submitConfigurationForm($form, $plugin_values);
+    $this->pageVariant->submitConfigurationForm($form, $page_variant_values);
   }
 
 }

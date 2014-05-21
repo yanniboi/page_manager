@@ -72,13 +72,13 @@ class BlockPageAdminTest extends WebTestBase {
     $this->assertResponse(404);
     $this->drupalGet('admin/structure/block_page/manage/foo');
     $this->clickLink('Edit');
-    $this->drupalPostForm(NULL, array('plugin[status_code]' => 200), 'Update page variant');
+    $this->drupalPostForm(NULL, array('page_variant[status_code]' => 200), 'Update page variant');
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     $this->assertTitle('Foo | Drupal');
     $this->drupalGet('admin/structure/block_page/manage/foo');
     $this->clickLink('Edit');
-    $this->drupalPostForm(NULL, array('plugin[status_code]' => 403), 'Update page variant');
+    $this->drupalPostForm(NULL, array('page_variant[status_code]' => 403), 'Update page variant');
 
     // Assert that a page variant was added by default.
     $this->drupalGet('admin/structure/block_page/manage/foo');
@@ -93,7 +93,7 @@ class BlockPageAdminTest extends WebTestBase {
     $this->clickLink('Add new page variant');
     $this->clickLink('Landing page');
     $edit = array(
-      'plugin[label]' => 'First',
+      'page_variant[label]' => 'First',
     );
     $this->drupalPostForm(NULL, $edit, 'Add page variant');
     $this->assertRaw(String::format('The %label page variant has been added.', array('%label' => 'First')));
