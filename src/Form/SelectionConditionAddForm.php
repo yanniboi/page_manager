@@ -51,7 +51,7 @@ class SelectionConditionAddForm extends SelectionConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareSelectionCondition($selection_condition_id) {
+  protected function prepareCondition($selection_condition_id) {
     // Create a new selection condition instance.
     return $this->conditionManager->createInstance($selection_condition_id);
   }
@@ -70,11 +70,11 @@ class SelectionConditionAddForm extends SelectionConditionFormBase {
     parent::submitForm($form, $form_state);
 
     // If this selection condition is new, add it to the page.
-    $this->pageVariant->addSelectionCondition($this->selectionCondition->getConfiguration());
+    $this->pageVariant->addSelectionCondition($this->condition->getConfiguration());
 
     // Save the block page.
     $this->blockPage->save();
-    drupal_set_message($this->t('The %label selection condition has been added.', array('%label' => $this->selectionCondition->getPluginDefinition()['label'])));
+    drupal_set_message($this->t('The %label selection condition has been added.', array('%label' => $this->condition->getPluginDefinition()['label'])));
   }
 
 }

@@ -22,7 +22,7 @@ class AccessConditionEditForm extends AccessConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareAccessCondition($access_condition_id) {
+  protected function prepareCondition($access_condition_id) {
     // Load the access condition directly from the block page.
     return $this->blockPage->getAccessCondition($access_condition_id);
   }
@@ -42,7 +42,7 @@ class AccessConditionEditForm extends AccessConditionFormBase {
 
     // Save the block page.
     $this->blockPage->save();
-    drupal_set_message($this->t('The %label access condition has been updated.', array('%label' => $this->accessCondition->getPluginDefinition()['label'])));
+    drupal_set_message($this->t('The %label access condition has been updated.', array('%label' => $this->condition->getPluginDefinition()['label'])));
   }
 
 }

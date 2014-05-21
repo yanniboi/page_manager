@@ -51,7 +51,7 @@ class AccessConditionAddForm extends AccessConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareAccessCondition($access_condition_id) {
+  protected function prepareCondition($access_condition_id) {
     // Create a new access condition instance.
     return $this->conditionManager->createInstance($access_condition_id);
   }
@@ -70,11 +70,11 @@ class AccessConditionAddForm extends AccessConditionFormBase {
     parent::submitForm($form, $form_state);
 
     // If this access condition is new, add it to the page.
-    $this->blockPage->addAccessCondition($this->accessCondition->getConfiguration());
+    $this->blockPage->addAccessCondition($this->condition->getConfiguration());
 
     // Save the block page.
     $this->blockPage->save();
-    drupal_set_message($this->t('The %label access condition has been added.', array('%label' => $this->accessCondition->getPluginDefinition()['label'])));
+    drupal_set_message($this->t('The %label access condition has been added.', array('%label' => $this->condition->getPluginDefinition()['label'])));
   }
 
 }
