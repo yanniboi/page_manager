@@ -4,6 +4,11 @@ services:
     arguments: ['@current_user', '@entity.manager']
     tags:
       - { name: 'event_subscriber' }
+  block_page.route_param_context:
+    class: Drupal\block_page\EventSubscriber\RouteParamContext
+    arguments: ['@router.route_provider', '@typed_data_manager', '@request_stack']
+    tags:
+      - { name: 'event_subscriber' }
   block_page.block_page_routes:
     class: Drupal\block_page\Routing\BlockPageRoutes
     arguments: ['@entity.manager']
