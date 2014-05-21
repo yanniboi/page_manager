@@ -36,6 +36,15 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
   public function submitForm(array &$form, array &$form_state) {
     parent::submitForm($form, $form_state);
 
+    $configuration = $this->condition->getConfiguration();
+    // If this selection condition is new, add it to the page.
+    if (!isset($configuration['uuid'])) {
+      $this->pageVariant->addSelectionCondition($configuration);
+    }
+
+    // Save the block page.
+    $this->blockPage->save();
+
     $form_state['redirect_route'] = new Url('block_page.page_variant_edit', array(
       'block_page' => $this->blockPage->id(),
       'page_variant_id' => $this->pageVariant->id(),

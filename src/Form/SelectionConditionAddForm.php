@@ -59,22 +59,15 @@ class SelectionConditionAddForm extends SelectionConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function submitText() {
+  protected function submitButtonText() {
     return $this->t('Add selection condition');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
-    parent::submitForm($form, $form_state);
-
-    // If this selection condition is new, add it to the page.
-    $this->pageVariant->addSelectionCondition($this->condition->getConfiguration());
-
-    // Save the block page.
-    $this->blockPage->save();
-    drupal_set_message($this->t('The %label selection condition has been added.', array('%label' => $this->condition->getPluginDefinition()['label'])));
+  protected function submitMessageText() {
+    return $this->t('The %label selection condition has been added.', array('%label' => $this->condition->getPluginDefinition()['label']));
   }
 
 }

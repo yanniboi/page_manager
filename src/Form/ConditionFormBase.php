@@ -49,7 +49,15 @@ abstract class ConditionFormBase extends FormBase {
    * @return string
    *   The submit button text.
    */
-  abstract protected function submitText();
+  abstract protected function submitButtonText();
+
+  /**
+   * Returns the text to use for the submit message.
+   *
+   * @return string
+   *   The submit message text.
+   */
+  abstract protected function submitMessageText();
 
   /**
    * @return \Drupal\block_page\ContextHandler
@@ -76,7 +84,7 @@ abstract class ConditionFormBase extends FormBase {
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(
       '#type' => 'submit',
-      '#value' => $this->submitText(),
+      '#value' => $this->submitButtonText(),
       '#button_type' => 'primary',
     );
 
@@ -151,6 +159,9 @@ abstract class ConditionFormBase extends FormBase {
       $configuration['context_assignments'] = $form_state['values']['context_assignments'];
       $this->condition->setConfiguration($configuration);
     }
+
+    // Set the submission message.
+    drupal_set_message($this->submitMessageText());
   }
 
 }

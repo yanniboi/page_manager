@@ -30,19 +30,15 @@ class AccessConditionEditForm extends AccessConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function submitText() {
+  protected function submitButtonText() {
     return $this->t('Update access condition');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
-    parent::submitForm($form, $form_state);
-
-    // Save the block page.
-    $this->blockPage->save();
-    drupal_set_message($this->t('The %label access condition has been updated.', array('%label' => $this->condition->getPluginDefinition()['label'])));
+  protected function submitMessageText() {
+    return $this->t('The %label access condition has been updated.', array('%label' => $this->condition->getPluginDefinition()['label']));
   }
 
 }

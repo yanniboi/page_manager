@@ -59,22 +59,15 @@ class AccessConditionAddForm extends AccessConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function submitText() {
+  protected function submitButtonText() {
     return $this->t('Add access condition');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
-    parent::submitForm($form, $form_state);
-
-    // If this access condition is new, add it to the page.
-    $this->blockPage->addAccessCondition($this->condition->getConfiguration());
-
-    // Save the block page.
-    $this->blockPage->save();
-    drupal_set_message($this->t('The %label access condition has been added.', array('%label' => $this->condition->getPluginDefinition()['label'])));
+  protected function submitMessageText() {
+    return $this->t('The %label access condition has been added.', array('%label' => $this->condition->getPluginDefinition()['label']));
   }
 
 }
