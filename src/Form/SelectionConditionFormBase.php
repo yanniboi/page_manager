@@ -8,8 +8,6 @@
 namespace Drupal\block_page\Form;
 
 use Drupal\block_page\BlockPageInterface;
-use Drupal\Component\Plugin\ContextAwarePluginInterface;
-use Drupal\Core\Form\FormBase;
 use Drupal\Core\Url;
 
 /**
