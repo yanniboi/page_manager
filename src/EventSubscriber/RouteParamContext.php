@@ -10,7 +10,6 @@ namespace Drupal\block_page\EventSubscriber;
 use Drupal\block_page\Event\BlockPageContextEvent;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Routing\RouteProvider;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\TypedData\TypedDataManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,21 +19,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class RouteParamContext implements EventSubscriberInterface {
 
-  use StringTranslationTrait;
-
   /**
    * The route provider.
    *
    * @var \Drupal\Core\Routing\RouteProvider
    */
   protected $routeProvider;
-
-  /**
-   * The typed data manager.
-   *
-   * @var \Drupal\Core\TypedData\TypedDataManager
-   */
-  protected $typedDataManager;
 
   /**
    * The request stack.
@@ -48,14 +38,11 @@ class RouteParamContext implements EventSubscriberInterface {
    *
    * @param \Drupal\Core\Routing\RouteProvider $route_provider
    *   The route provider.
-   * @param \Drupal\Core\TypedData\TypedDataManager $typed_data_manager
-   *   The typed data manager.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
    */
-  public function __construct(RouteProvider $route_provider, TypedDataManager $typed_data_manager, RequestStack $request_stack) {
+  public function __construct(RouteProvider $route_provider, RequestStack $request_stack) {
     $this->routeProvider = $route_provider;
-    $this->typedDataManager = $typed_data_manager;
     $this->requestStack = $request_stack;
   }
 
@@ -76,18 +63,6 @@ class RouteParamContext implements EventSubscriberInterface {
         // Skip this parameter.
         if ($route_context_name == 'block_page') {
           continue;
-        }
-
-        // @todo Why is array('type' => 'entity:user') different than
-        //   array('type' => 'entity', 'constraints' => array('EntityType' => 'user'))
-        //   and which one is correct?
-        // Add in the definition in order to get the label and constraints.
-        $route_context += $this->typedDataManager->getDefinition($route_context['type']);
-
-        // Convert one style of definition to the other.
-        if (strpos($route_context['type'], 'entity:') === 0) {
-          list($type) = explode(':', $route_context['type'], 2);
-          $route_context['type'] = $type;
         }
 
         $context = new Context($route_context);

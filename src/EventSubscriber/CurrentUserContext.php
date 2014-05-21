@@ -57,8 +57,7 @@ class CurrentUserContext implements EventSubscriberInterface {
   public function onBlockPageContext(BlockPageContextEvent $event) {
     $current_user = $this->userStorage->load($this->accountProxy->getAccount()->id());
     $context = new Context(array(
-      'type' => 'entity',
-      'constraints' => array('EntityType' => 'user'),
+      'type' => 'entity:user',
       'label' => $this->t('Current user'),
     ));
     $context->setContextValue($current_user);
