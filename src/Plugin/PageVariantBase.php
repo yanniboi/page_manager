@@ -69,6 +69,13 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   /**
    * {@inheritdoc}
    */
+  public function adminLabel() {
+    return $this->pluginDefinition['admin_label'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function id() {
     return $this->configuration['uuid'];
   }

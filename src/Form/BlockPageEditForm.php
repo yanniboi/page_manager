@@ -52,7 +52,7 @@ class BlockPageEditForm extends BlockPageFormBase {
       '#type' => 'table',
       '#header' => array(
         $this->t('Label'),
-        $this->t('Plugin ID'),
+        $this->t('Plugin'),
         $this->t('Regions'),
         $this->t('Number of blocks'),
         $this->t('Weight'),
@@ -72,7 +72,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         ),
       );
       $row['label']['#markup'] = $page_variant->label();
-      $row['id']['#markup'] = $page_variant->getPluginId();
+      $row['id']['#markup'] = $page_variant->adminLabel();
       $row['regions'] = array('data' => array(
         '#theme' => 'item_list',
         '#items' => $page_variant->getRegionNames(),

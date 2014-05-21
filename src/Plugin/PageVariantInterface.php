@@ -25,6 +25,16 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function label();
 
   /**
+   * Returns the admin-facing page variant label.
+   *
+   * This is for the type of page variant, not the configured variant itself.
+   *
+   * @return string
+   *   The page variant administrative label.
+   */
+  public function adminLabel();
+
+  /**
    * Returns the unique ID for the page variant.
    *
    * @return string
