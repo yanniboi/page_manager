@@ -100,8 +100,16 @@ block_page.page_variant_delete:
   requirements:
     _entity_access: block_page.update
 
+block_page.page_variant_select_block:
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/block/select'
+  defaults:
+    _content: '\Drupal\block_page\Controller\BlockPageController::selectBlock'
+    _title: 'Select block'
+  requirements:
+    _entity_access: block_page.update
+
 block_page.page_variant_add_block:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/page_variant/add/{block_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/block/add/{block_id}'
   defaults:
     _form: 'Drupal\block_page\Form\PageVariantAddBlockForm'
     _title: 'Add block to page variant'
@@ -109,7 +117,7 @@ block_page.page_variant_add_block:
     _entity_access: block_page.update
 
 block_page.page_variant_edit_block:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/page_variant/edit/{block_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/block/edit/{block_id}'
   defaults:
     _form: 'Drupal\block_page\Form\PageVariantEditBlockForm'
     _title: 'Edit block in page variant'

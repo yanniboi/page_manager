@@ -7,42 +7,13 @@
 
 namespace Drupal\block_page\Form;
 
-use Drupal\block\BlockManagerInterface;
 use Drupal\block_page\BlockPageInterface;
 use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\String;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a form for editing a page variant.
  */
 class PageVariantEditForm extends PageVariantFormBase {
-
-  /**
-   * The block manager.
-   *
-   * @var \Drupal\block\BlockManagerInterface
-   */
-  protected $blockManager;
-
-  /**
-   * Constructs a new PageVariantEditForm.
-   *
-   * @param \Drupal\block\BlockManagerInterface $block_manager
-   *   The block manager.
-   */
-  public function __construct(BlockManagerInterface $block_manager) {
-    $this->blockManager = $block_manager;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('plugin.manager.block')
-    );
-  }
 
   /**
    * {@inheritdoc}
@@ -74,8 +45,27 @@ class PageVariantEditForm extends PageVariantFormBase {
     );
 
     // Build a table of all blocks used by this page variant.
-    $form['blocks'] = array(
-      '#prefix' => '<h3>' . $this->t('Blocks') . '</h3>',
+    $form['block_section'] = array(
+      '#type' => 'details',
+      '#title' => $this->t('Blocks'),
+      '#open' => TRUE,
+    );
+    $form['block_section']['add'] = array(
+      '#type' => 'link',
+      '#title' => $this->t('Add new block'),
+      '#route_name' => 'block_page.page_variant_select_block',
+      '#route_parameters' => array(
+        'block_page' => $this->blockPage->id(),
+        'page_variant_id' => $this->pageVariant->id(),
+      ),
+      '#attributes' => $attributes,
+      '#attached' => array(
+        'library' => array(
+          'core/drupal.ajax',
+        ),
+      ),
+    );
+    $form['block_section']['blocks'] = array(
       '#type' => 'table',
       '#header' => array(
         $this->t('Label'),
@@ -90,32 +80,32 @@ class PageVariantEditForm extends PageVariantFormBase {
     foreach ($this->pageVariant->getRegionAssignments() as $region => $blocks) {
       // Add a section for each region and allow blocks to be dragged between
       // them.
-      $form['blocks']['#tabledrag'][] = array(
+      $form['block_section']['blocks']['#tabledrag'][] = array(
         'action' => 'match',
         'relationship' => 'sibling',
         'group' => 'block-region-select',
         'subgroup' => 'block-region-' . $region,
         'hidden' => FALSE,
       );
-      $form['blocks']['#tabledrag'][] = array(
+      $form['block_section']['blocks']['#tabledrag'][] = array(
         'action' => 'order',
         'relationship' => 'sibling',
         'group' => 'block-weight',
         'subgroup' => 'block-weight-' . $region,
       );
-      $form['blocks'][$region] = array(
+      $form['block_section']['blocks'][$region] = array(
         '#attributes' => array(
           'class' => array('region-title', 'region-title-' . $region),
           'no_striping' => TRUE,
         ),
       );
-      $form['blocks'][$region]['title'] = array(
+      $form['block_section']['blocks'][$region]['title'] = array(
         '#markup' => $this->pageVariant->getRegionName($region),
         '#wrapper_attributes' => array(
           'colspan' => 5,
         ),
       );
-      $form['blocks'][$region . '-message'] = array(
+      $form['block_section']['blocks'][$region . '-message'] = array(
         '#attributes' => array(
           'class' => array(
             'region-message',
@@ -124,7 +114,7 @@ class PageVariantEditForm extends PageVariantFormBase {
           ),
         ),
       );
-      $form['blocks'][$region . '-message']['message'] = array(
+      $form['block_section']['blocks'][$region . '-message']['message'] = array(
         '#markup' => '<em>' . t('No blocks in this region') . '</em>',
         '#wrapper_attributes' => array(
           'colspan' => 5,
@@ -178,43 +168,8 @@ class PageVariantEditForm extends PageVariantFormBase {
           '#type' => 'operations',
           '#links' => $operations,
         );
-        $form['blocks'][$block_id] = $row;
+        $form['block_section']['blocks'][$block_id] = $row;
       }
-    }
-    // Add a section containing the available blocks to be added to the variant.
-    $form['available_blocks'] = array(
-      '#type' => 'details',
-      '#title' => $this->t('Available blocks'),
-      '#attached' => array(
-        'library' => array(
-          'core/drupal.ajax',
-        ),
-      ),
-    );
-    foreach ($this->blockManager->getSortedDefinitions() as $plugin_id => $plugin_definition) {
-      // Make a section for each region.
-      $category = String::checkPlain($plugin_definition['category']);
-      $category_key = 'category-' . $category;
-      if (!isset($form['available_blocks'][$category_key])) {
-        $form['available_blocks'][$category_key] = array(
-          '#type' => 'fieldgroup',
-          '#title' => $category,
-          'content' => array(
-            '#theme' => 'links',
-          ),
-        );
-      }
-      // Add a link for each available block within each region.
-      $form['available_blocks'][$category_key]['content']['#links'][$plugin_id] = array(
-        'title' => $plugin_definition['admin_label'],
-        'route_name' => 'block_page.page_variant_add_block',
-        'route_parameters' => array(
-          'block_page' => $this->blockPage->id(),
-          'page_variant_id' => $this->pageVariant->id(),
-          'block_id' => $plugin_id,
-        ),
-        'attributes' => $attributes,
-      );
     }
 
     // Selection conditions.

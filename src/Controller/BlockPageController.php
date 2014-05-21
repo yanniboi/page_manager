@@ -7,14 +7,43 @@
 
 namespace Drupal\block_page\Controller;
 
+use Drupal\block\BlockManagerInterface;
 use Drupal\block_page\BlockPageInterface;
 use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\String;
 use Drupal\Core\Controller\ControllerBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides route controllers for block page.
  */
 class BlockPageController extends ControllerBase {
+
+  /**
+   * The block manager.
+   *
+   * @var \Drupal\block\BlockManagerInterface
+   */
+  protected $blockManager;
+
+  /**
+   * Constructs a new PageVariantEditForm.
+   *
+   * @param \Drupal\block\BlockManagerInterface $block_manager
+   *   The block manager.
+   */
+  public function __construct(BlockManagerInterface $block_manager) {
+    $this->blockManager = $block_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('plugin.manager.block')
+    );
+  }
 
   /**
    * Route title callback.
@@ -175,6 +204,61 @@ class BlockPageController extends ControllerBase {
           'block_page' => $block_page->id(),
           'page_variant_id' => $page_variant_id,
           'selection_condition_id' => $selection_id,
+        ),
+        'attributes' => array(
+          'class' => array('use-ajax'),
+          'data-accepts' => 'application/vnd.drupal-modal',
+          'data-dialog-options' => Json::encode(array(
+            'width' => 'auto',
+          )),
+        ),
+      );
+    }
+    return $build;
+  }
+
+  /**
+   * Presents a list of blocks to add to the page variant.
+   *
+   * @param \Drupal\block_page\BlockPageInterface $block_page
+   *   The block page.
+   * @param string $page_variant_id
+   *   The page variant ID.
+   *
+   * @return array
+   *   The block selection page.
+   */
+  public function selectBlock(BlockPageInterface $block_page, $page_variant_id) {
+    // Add a section containing the available blocks to be added to the variant.
+    $build = array(
+      '#type' => 'container',
+      '#attached' => array(
+        'library' => array(
+          'core/drupal.ajax',
+        ),
+      ),
+    );
+    foreach ($this->blockManager->getSortedDefinitions() as $plugin_id => $plugin_definition) {
+      // Make a section for each region.
+      $category = String::checkPlain($plugin_definition['category']);
+      $category_key = 'category-' . $category;
+      if (!isset($build[$category_key])) {
+        $build[$category_key] = array(
+          '#type' => 'fieldgroup',
+          '#title' => $category,
+          'content' => array(
+            '#theme' => 'links',
+          ),
+        );
+      }
+      // Add a link for each available block within each region.
+      $build[$category_key]['content']['#links'][$plugin_id] = array(
+        'title' => $plugin_definition['admin_label'],
+        'route_name' => 'block_page.page_variant_add_block',
+        'route_parameters' => array(
+          'block_page' => $block_page->id(),
+          'page_variant_id' => $page_variant_id,
+          'block_id' => $plugin_id,
         ),
         'attributes' => array(
           'class' => array('use-ajax'),

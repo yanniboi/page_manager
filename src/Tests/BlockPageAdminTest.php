@@ -104,6 +104,7 @@ class BlockPageAdminTest extends WebTestBase {
    */
   protected function doTestAddBlock() {
     // Add a block to the variant.
+    $this->clickLink('Add new block');
     $this->clickLink('User account menu');
     $edit = array(
       'region' => 'top',
