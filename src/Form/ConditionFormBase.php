@@ -10,6 +10,7 @@ namespace Drupal\block_page\Form;
 use Drupal\block_page\BlockPageInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\TypedData\DataDefinition;
 
 /**
  * @todo.
@@ -69,7 +70,7 @@ abstract class ConditionFormBase extends FormBase {
     $form['condition']['#tree'] = TRUE;
 
     if ($this->condition instanceof ContextAwarePluginInterface) {
-      $form['context_assignments'] = $this->contextHandler()->addContextAssignmentElement($this->condition->getContextDefinitions(), $this->blockPage->getContexts());
+      $form['context_assignments'] = $this->addContextAssignmentElement($this->condition, $this->blockPage->getContexts());
     }
 
     $form['actions'] = array('#type' => 'actions');
@@ -80,6 +81,40 @@ abstract class ConditionFormBase extends FormBase {
     );
 
     return $form;
+  }
+
+  /**
+   * Builds a form element for assigning a context to a given slot.
+   *
+   * @param \Drupal\Component\Plugin\ContextAwarePluginInterface $condition
+   *   The context-aware condition plugin.
+   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
+   *   An array of contexts.
+   *
+   * @return array
+   *   A form element for assigning context.
+   */
+  protected function addContextAssignmentElement(ContextAwarePluginInterface $condition, $contexts) {
+    $element = array();
+    $element['#tree'] = TRUE;
+    foreach ($condition->getContextDefinitions() as $context_slot => $definition) {
+      $definition['required'] = isset($definition['required']) ? $definition['required'] : TRUE;
+      $definition = new DataDefinition($definition);
+      $valid_contexts = $this->contextHandler()->getValidContexts($contexts, $definition);
+      $options = array();
+      foreach ($valid_contexts as $context_id => $context) {
+        $context_definition = new DataDefinition($context->getContextDefinition());
+        $options[$context_id] = $context_definition->getLabel();
+      }
+      $element[$context_slot] = array(
+        '#title' => t('Select a @context value:', array('@context' => $context_slot)),
+        '#type' => 'select',
+        '#options' => $options,
+        '#required' => $definition->isRequired(),
+        '#default_value' => !empty($configuration['context map'][$context_slot]) ? $configuration['context map'][$context_slot] : '',
+      );
+    }
+    return $element;
   }
 
   /**
