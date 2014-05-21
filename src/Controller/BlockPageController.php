@@ -9,6 +9,8 @@ namespace Drupal\block_page\Controller;
 
 use Drupal\block\BlockManagerInterface;
 use Drupal\block_page\BlockPageInterface;
+use Drupal\block_page\ContextHandler;
+use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Controller\ControllerBase;
@@ -27,13 +29,43 @@ class BlockPageController extends ControllerBase {
   protected $blockManager;
 
   /**
+   * The condition manager.
+   *
+   * @var \Drupal\Component\Plugin\PluginManagerInterface
+   */
+  protected $conditionManager;
+
+  /**
+   * The page variant manager.
+   *
+   * @var \Drupal\Component\Plugin\PluginManagerInterface
+   */
+  protected $pageVariantManager;
+
+  /**
+   * The context handler.
+   *
+   * @var \Drupal\block_page\ContextHandler
+   */
+  protected $contextHandler;
+
+  /**
    * Constructs a new PageVariantEditForm.
    *
    * @param \Drupal\block\BlockManagerInterface $block_manager
    *   The block manager.
+   * @param \Drupal\Component\Plugin\PluginManagerInterface $condition_manager
+   *   The condition manager.
+   * @param \Drupal\Component\Plugin\PluginManagerInterface $page_variant_manager
+   *   The page variant manager.
+   * @param \Drupal\block_page\ContextHandler $context_handler
+   *   The context handler.
    */
-  public function __construct(BlockManagerInterface $block_manager) {
+  public function __construct(BlockManagerInterface $block_manager, PluginManagerInterface $condition_manager, PluginManagerInterface $page_variant_manager, ContextHandler $context_handler) {
     $this->blockManager = $block_manager;
+    $this->conditionManager = $condition_manager;
+    $this->pageVariantManager = $page_variant_manager;
+    $this->contextHandler = $context_handler;
   }
 
   /**
@@ -41,7 +73,10 @@ class BlockPageController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.block')
+      $container->get('plugin.manager.block'),
+      $container->get('plugin.manager.condition'),
+      $container->get('plugin.manager.page_variant'),
+      $container->get('context.handler')
     );
   }
 
@@ -123,8 +158,7 @@ class BlockPageController extends ControllerBase {
       '#theme' => 'links',
       '#links' => array(),
     );
-    $page_variant_manager = \Drupal::service('plugin.manager.page_variant');
-    foreach ($page_variant_manager->getDefinitions() as $page_variant_id => $page_variant) {
+    foreach ($this->pageVariantManager->getDefinitions() as $page_variant_id => $page_variant) {
       $build['#links'][$page_variant_id] = array(
         'title' => $page_variant['admin_label'],
         'route_name' => 'block_page.page_variant_add',
@@ -158,7 +192,7 @@ class BlockPageController extends ControllerBase {
       '#theme' => 'links',
       '#links' => array(),
     );
-    $available_plugins = $this->getAvailableConditionPlugins($block_page->getContexts());
+    $available_plugins = $this->contextHandler->getAvailablePlugins($block_page->getContexts(), $this->conditionManager);
     foreach ($available_plugins as $access_id => $access_condition) {
       $build['#links'][$access_id] = array(
         'title' => $access_condition['label'],
@@ -195,7 +229,7 @@ class BlockPageController extends ControllerBase {
       '#theme' => 'links',
       '#links' => array(),
     );
-    $available_plugins = $this->getAvailableConditionPlugins($block_page->getContexts());
+    $available_plugins = $this->contextHandler->getAvailablePlugins($block_page->getContexts(), $this->conditionManager);
     foreach ($available_plugins as $selection_id => $selection_condition) {
       $build['#links'][$selection_id] = array(
         'title' => $selection_condition['label'],
@@ -270,21 +304,6 @@ class BlockPageController extends ControllerBase {
       );
     }
     return $build;
-  }
-
-  /**
-   * Returns condition plugins for a given set of contexts.
-   *
-   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
-   *   A set of contexts.
-   *
-   * @return \Drupal\Core\Condition\ConditionInterface[]
-   *   A set of condition plugins that are satisfied by those contexts.
-   */
-  protected function getAvailableConditionPlugins(array $contexts) {
-    $condition_manager = \Drupal::service('plugin.manager.condition');
-    $context_handler = \Drupal::service('context.handler');
-    return $context_handler->getAvailablePlugins($contexts, $condition_manager);
   }
 
 }
