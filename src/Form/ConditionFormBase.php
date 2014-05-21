@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\TypedData\DataDefinition;
 
 /**
- * @todo.
+ * Provides a base form for editing and adding a condition.
  */
 abstract class ConditionFormBase extends FormBase {
 

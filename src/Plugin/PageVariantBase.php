@@ -250,15 +250,15 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   /**
    * {@inheritdoc}
    */
-  public function getSelectionCondition($selection_condition_id) {
-    return $this->getSelectionConditions()->get($selection_condition_id);
+  public function getSelectionCondition($condition_id) {
+    return $this->getSelectionConditions()->get($condition_id);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function removeSelectionCondition($selection_condition_id) {
-    $this->getSelectionConditions()->removeInstanceId($selection_condition_id);
+  public function removeSelectionCondition($condition_id) {
+    $this->getSelectionConditions()->removeInstanceId($condition_id);
     return $this;
   }
 

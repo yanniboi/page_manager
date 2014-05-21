@@ -163,7 +163,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         'route_name' => 'block_page.access_condition_edit',
         'route_parameters' => array(
           'block_page' => $this->entity->id(),
-          'access_condition_id' => $access_id,
+          'condition_id' => $access_id,
         ),
         'attributes' => $attributes,
       );
@@ -172,7 +172,7 @@ class BlockPageEditForm extends BlockPageFormBase {
         'route_name' => 'block_page.access_condition_delete',
         'route_parameters' => array(
           'block_page' => $this->entity->id(),
-          'access_condition_id' => $access_id,
+          'condition_id' => $access_id,
         ),
         'attributes' => $attributes,
       );

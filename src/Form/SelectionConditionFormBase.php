@@ -11,7 +11,7 @@ use Drupal\block_page\BlockPageInterface;
 use Drupal\Core\Url;
 
 /**
- * Provides a base form for editing and adding an selection condition.
+ * Provides a base form for editing and adding a selection condition.
  */
 abstract class SelectionConditionFormBase extends ConditionFormBase {
 
@@ -25,9 +25,9 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL, $selection_condition_id = NULL) {
+  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL, $condition_id = NULL) {
     $this->pageVariant = $block_page->getPageVariant($page_variant_id);
-    return parent::buildForm($form, $form_state, $block_page, $selection_condition_id);
+    return parent::buildForm($form, $form_state, $block_page, $condition_id);
   }
 
   /**

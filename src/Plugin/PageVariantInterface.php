@@ -178,23 +178,23 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   /**
    * Retrieves a specific selection condition.
    *
-   * @param string $selection_condition_id
+   * @param string $condition_id
    *   The selection condition ID.
    *
    * @return \Drupal\Core\Condition\ConditionInterface
    *   The selection condition object.
    */
-  public function getSelectionCondition($selection_condition_id);
+  public function getSelectionCondition($condition_id);
 
   /**
    * Removes a specific selection condition.
    *
-   * @param string $selection_condition_id
+   * @param string $condition_id
    *   The selection condition ID.
    *
    * @return $this
    */
-  public function removeSelectionCondition($selection_condition_id);
+  public function removeSelectionCondition($condition_id);
 
   /**
    * Returns the logic used to compute selections, either 'and' or 'or'.

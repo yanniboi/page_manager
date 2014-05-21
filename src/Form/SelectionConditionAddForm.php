@@ -51,9 +51,9 @@ class SelectionConditionAddForm extends SelectionConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareCondition($selection_condition_id) {
+  protected function prepareCondition($condition_id) {
     // Create a new selection condition instance.
-    return $this->conditionManager->createInstance($selection_condition_id);
+    return $this->conditionManager->createInstance($condition_id);
   }
 
   /**

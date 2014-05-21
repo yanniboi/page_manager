@@ -22,9 +22,9 @@ class SelectionConditionEditForm extends SelectionConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareCondition($selection_condition_id) {
+  protected function prepareCondition($condition_id) {
     // Load the selection condition directly from the page variant.
-    return $this->pageVariant->getSelectionCondition($selection_condition_id);
+    return $this->pageVariant->getSelectionCondition($condition_id);
   }
 
   /**

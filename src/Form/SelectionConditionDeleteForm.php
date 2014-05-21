@@ -71,10 +71,10 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL, $selection_condition_id = NULL) {
+  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL, $condition_id = NULL) {
     $this->blockPage = $block_page;
     $this->pageVariant = $this->blockPage->getPageVariant($page_variant_id);
-    $this->selectionCondition = $this->pageVariant->getSelectionCondition($selection_condition_id);
+    $this->selectionCondition = $this->pageVariant->getSelectionCondition($condition_id);
     return parent::buildForm($form, $form_state);
   }
 

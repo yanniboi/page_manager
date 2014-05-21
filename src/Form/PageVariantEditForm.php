@@ -227,7 +227,7 @@ class PageVariantEditForm extends PageVariantFormBase {
         'route_parameters' => array(
           'block_page' => $this->blockPage->id(),
           'page_variant_id' => $this->pageVariant->id(),
-          'selection_condition_id' => $selection_id,
+          'condition_id' => $selection_id,
         ),
         'attributes' => $attributes,
       );
@@ -237,7 +237,7 @@ class PageVariantEditForm extends PageVariantFormBase {
         'route_parameters' => array(
           'block_page' => $this->blockPage->id(),
           'page_variant_id' => $this->pageVariant->id(),
-          'selection_condition_id' => $selection_id,
+          'condition_id' => $selection_id,
         ),
         'attributes' => $attributes,
       );

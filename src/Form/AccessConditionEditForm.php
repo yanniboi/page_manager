@@ -22,9 +22,9 @@ class AccessConditionEditForm extends AccessConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareCondition($access_condition_id) {
+  protected function prepareCondition($condition_id) {
     // Load the access condition directly from the block page.
-    return $this->blockPage->getAccessCondition($access_condition_id);
+    return $this->blockPage->getAccessCondition($condition_id);
   }
 
   /**

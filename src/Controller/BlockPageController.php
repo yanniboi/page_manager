@@ -114,14 +114,14 @@ class BlockPageController extends ControllerBase {
    *
    * @param \Drupal\block_page\BlockPageInterface $block_page
    *   The block page.
-   * @param string $access_condition_id
+   * @param string $condition_id
    *   The access condition ID.
    *
    * @return string
    *   The title for the access condition edit form.
    */
-  public function editAccessConditionTitle(BlockPageInterface $block_page, $access_condition_id) {
-    $access_condition = $block_page->getAccessCondition($access_condition_id);
+  public function editAccessConditionTitle(BlockPageInterface $block_page, $condition_id) {
+    $access_condition = $block_page->getAccessCondition($condition_id);
     return $this->t('Edit %label access condition', array('%label' => $access_condition->getPluginDefinition()['label']));
   }
 
@@ -132,15 +132,15 @@ class BlockPageController extends ControllerBase {
    *   The block page.
    * @param string $page_variant_id
    *   The page variant ID.
-   * @param string $selection_condition_id
+   * @param string $condition_id
    *   The selection condition ID.
    *
    * @return string
    *   The title for the selection condition edit form.
    */
-  public function editSelectionConditionTitle(BlockPageInterface $block_page, $page_variant_id, $selection_condition_id) {
+  public function editSelectionConditionTitle(BlockPageInterface $block_page, $page_variant_id, $condition_id) {
     $page_variant = $block_page->getPageVariant($page_variant_id);
-    $selection_condition = $page_variant->getSelectionCondition($selection_condition_id);
+    $selection_condition = $page_variant->getSelectionCondition($condition_id);
     return $this->t('Edit %label selection condition', array('%label' => $selection_condition->getPluginDefinition()['label']));
   }
 
@@ -199,7 +199,7 @@ class BlockPageController extends ControllerBase {
         'route_name' => 'block_page.access_condition_add',
         'route_parameters' => array(
           'block_page' => $block_page->id(),
-          'access_condition_id' => $access_id,
+          'condition_id' => $access_id,
         ),
         'attributes' => array(
           'class' => array('use-ajax'),
@@ -237,7 +237,7 @@ class BlockPageController extends ControllerBase {
         'route_parameters' => array(
           'block_page' => $block_page->id(),
           'page_variant_id' => $page_variant_id,
-          'selection_condition_id' => $selection_id,
+          'condition_id' => $selection_id,
         ),
         'attributes' => array(
           'class' => array('use-ajax'),

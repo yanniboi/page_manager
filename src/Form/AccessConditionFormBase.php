@@ -7,19 +7,10 @@
 
 namespace Drupal\block_page\Form;
 
-use Drupal\block_page\BlockPageInterface;
-
 /**
  * Provides a base form for editing and adding an access condition.
  */
 abstract class AccessConditionFormBase extends ConditionFormBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $access_condition_id = NULL) {
-    return parent::buildForm($form, $form_state, $block_page, $access_condition_id);
-  }
 
   /**
    * {@inheritdoc}

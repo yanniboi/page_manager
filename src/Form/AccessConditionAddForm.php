@@ -51,9 +51,9 @@ class AccessConditionAddForm extends AccessConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareCondition($access_condition_id) {
+  protected function prepareCondition($condition_id) {
     // Create a new access condition instance.
-    return $this->conditionManager->createInstance($access_condition_id);
+    return $this->conditionManager->createInstance($condition_id);
   }
 
   /**

@@ -43,7 +43,7 @@ block_page.access_condition_select:
     _entity_access: block_page.update
 
 block_page.access_condition_add:
-  path: '/admin/structure/block_page/manage/{block_page}/access/add/{access_condition_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/access/add/{condition_id}'
   defaults:
     _form: '\Drupal\block_page\Form\AccessConditionAddForm'
     _title: 'Add new access condition'
@@ -51,7 +51,7 @@ block_page.access_condition_add:
     _entity_access: block_page.update
 
 block_page.access_condition_edit:
-  path: '/admin/structure/block_page/manage/{block_page}/access/edit/{access_condition_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/access/edit/{condition_id}'
   defaults:
     _form: '\Drupal\block_page\Form\AccessConditionEditForm'
     _title_callback: '\Drupal\block_page\Controller\BlockPageController::editAccessConditionTitle'
@@ -59,7 +59,7 @@ block_page.access_condition_edit:
     _entity_access: block_page.update
 
 block_page.access_condition_delete:
-  path: '/admin/structure/block_page/manage/{block_page}/access/delete/{access_condition_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/access/delete/{condition_id}'
   defaults:
     _form: '\Drupal\block_page\Form\AccessConditionDeleteForm'
     _title: 'Delete access condition'
@@ -135,7 +135,7 @@ block_page.selection_condition_select:
     _entity_access: block_page.update
 
 block_page.selection_condition_add:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/add/{selection_condition_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/add/{condition_id}'
   defaults:
     _form: '\Drupal\block_page\Form\SelectionConditionAddForm'
     _title: 'Add new selection condition'
@@ -143,7 +143,7 @@ block_page.selection_condition_add:
     _entity_access: block_page.update
 
 block_page.selection_condition_edit:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/edit/{selection_condition_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/edit/{condition_id}'
   defaults:
     _form: '\Drupal\block_page\Form\SelectionConditionEditForm'
     _title_callback: '\Drupal\block_page\Controller\BlockPageController::editSelectionConditionTitle'
@@ -151,7 +151,7 @@ block_page.selection_condition_edit:
     _entity_access: block_page.update
 
 block_page.selection_condition_delete:
-  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/delete/{selection_condition_id}'
+  path: '/admin/structure/block_page/manage/{block_page}/manage/{page_variant_id}/selection/delete/{condition_id}'
   defaults:
     _form: '\Drupal\block_page\Form\SelectionConditionDeleteForm'
     _title: 'Delete selection condition'
