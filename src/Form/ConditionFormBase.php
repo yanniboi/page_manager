@@ -98,20 +98,27 @@ abstract class ConditionFormBase extends FormBase {
     $element = array();
     $element['#tree'] = TRUE;
     foreach ($condition->getContextDefinitions() as $context_slot => $definition) {
+      // Assume the requirement is required if unspecified.
       $definition['required'] = isset($definition['required']) ? $definition['required'] : TRUE;
       $definition = new DataDefinition($definition);
+
       $valid_contexts = $this->contextHandler()->getValidContexts($contexts, $definition);
       $options = array();
       foreach ($valid_contexts as $context_id => $context) {
         $context_definition = new DataDefinition($context->getContextDefinition());
         $options[$context_id] = $context_definition->getLabel();
       }
+
+      // @todo Find a better way to load context assignments.
+      $configuration = $condition->getConfiguration();
+      $assignments = isset($configuration['context_assignments']) ? $configuration['context_assignments'] : array();
+
       $element[$context_slot] = array(
-        '#title' => t('Select a @context value:', array('@context' => $context_slot)),
+        '#title' => $this->t('Select a @context value:', array('@context' => $context_slot)),
         '#type' => 'select',
         '#options' => $options,
         '#required' => $definition->isRequired(),
-        '#default_value' => !empty($configuration['context map'][$context_slot]) ? $configuration['context map'][$context_slot] : '',
+        '#default_value' => !empty($assignments[$context_slot]) ? $assignments[$context_slot] : '',
       );
     }
     return $element;
