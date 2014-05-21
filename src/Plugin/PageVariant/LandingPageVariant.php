@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\PageVariant\LandingPageVariant.
+ * Contains \Drupal\page_manager\Plugin\PageVariant\LandingPageVariant.
  */
 
-namespace Drupal\block_page\Plugin\PageVariant;
+namespace Drupal\page_manager\Plugin\PageVariant;
 
 /**
  * Provides a page variant that serves as a landing page.

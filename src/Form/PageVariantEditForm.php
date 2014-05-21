@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\PageVariantEditForm.
+ * Contains \Drupal\page_manager\Form\PageVariantEditForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\BlockPageInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Component\Serialization\Json;
 
 /**
@@ -19,7 +19,7 @@ class PageVariantEditForm extends PageVariantFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_page_variant_edit_form';
+    return 'page_manager_page_variant_edit_form';
   }
 
   /**
@@ -32,8 +32,8 @@ class PageVariantEditForm extends PageVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
-    $form = parent::buildForm($form, $form_state, $block_page, $page_variant_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL) {
+    $form = parent::buildForm($form, $form_state, $page_manager, $page_variant_id);
 
     // Set up the attributes used by a modal to prevent duplication later.
     $attributes = array(
@@ -53,9 +53,9 @@ class PageVariantEditForm extends PageVariantFormBase {
     $form['block_section']['add'] = array(
       '#type' => 'link',
       '#title' => $this->t('Add new block'),
-      '#route_name' => 'block_page.page_variant_select_block',
+      '#route_name' => 'page_manager.page_variant_select_block',
       '#route_parameters' => array(
-        'block_page' => $this->blockPage->id(),
+        'page' => $this->page->id(),
         'page_variant_id' => $this->pageVariant->id(),
       ),
       '#attributes' => $attributes,
@@ -156,9 +156,9 @@ class PageVariantEditForm extends PageVariantFormBase {
         $operations = array();
         $operations['edit'] = array(
           'title' => $this->t('Edit'),
-          'route_name' => 'block_page.page_variant_edit_block',
+          'route_name' => 'page_manager.page_variant_edit_block',
           'route_parameters' => array(
-            'block_page' => $this->blockPage->id(),
+            'page' => $this->page->id(),
             'page_variant_id' => $this->pageVariant->id(),
             'block_id' => $block_id,
           ),
@@ -181,9 +181,9 @@ class PageVariantEditForm extends PageVariantFormBase {
     $form['selection_section']['add'] = array(
       '#type' => 'link',
       '#title' => $this->t('Add new selection condition'),
-      '#route_name' => 'block_page.selection_condition_select',
+      '#route_name' => 'page_manager.selection_condition_select',
       '#route_parameters' => array(
-        'block_page' => $this->blockPage->id(),
+        'page' => $this->page->id(),
         'page_variant_id' => $this->pageVariant->id(),
       ),
       '#attributes' => $attributes,
@@ -223,9 +223,9 @@ class PageVariantEditForm extends PageVariantFormBase {
       $operations = array();
       $operations['edit'] = array(
         'title' => $this->t('Edit'),
-        'route_name' => 'block_page.selection_condition_edit',
+        'route_name' => 'page_manager.selection_condition_edit',
         'route_parameters' => array(
-          'block_page' => $this->blockPage->id(),
+          'page' => $this->page->id(),
           'page_variant_id' => $this->pageVariant->id(),
           'condition_id' => $selection_id,
         ),
@@ -233,9 +233,9 @@ class PageVariantEditForm extends PageVariantFormBase {
       );
       $operations['delete'] = array(
         'title' => $this->t('Delete'),
-        'route_name' => 'block_page.selection_condition_delete',
+        'route_name' => 'page_manager.selection_condition_delete',
         'route_parameters' => array(
-          'block_page' => $this->blockPage->id(),
+          'page' => $this->page->id(),
           'page_variant_id' => $this->pageVariant->id(),
           'condition_id' => $selection_id,
         ),
@@ -264,18 +264,18 @@ class PageVariantEditForm extends PageVariantFormBase {
       }
     }
 
-    // Save the block page.
-    $this->blockPage->save();
+    // Save the page entity.
+    $this->page->save();
     drupal_set_message($this->t('The %label page variant has been updated.', array('%label' => $this->pageVariant->label())));
-    $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
+    $form_state['redirect_route'] = $this->page->urlInfo('edit-form');
   }
 
   /**
    * {@inheritdoc}
    */
   protected function preparePageVariant($page_variant_id) {
-    // Load the page variant directly from the block page.
-    return $this->blockPage->getPageVariant($page_variant_id);
+    // Load the page variant directly from the page entity.
+    return $this->page->getPageVariant($page_variant_id);
   }
 
 }

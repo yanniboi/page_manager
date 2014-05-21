@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Provides hook implementations for the Page Manager module.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function page_manager_permission() {
+  return array(
+    'administer pages' => array(
+      'title' => t('Administer pages'),
+    ),
+  );
+}

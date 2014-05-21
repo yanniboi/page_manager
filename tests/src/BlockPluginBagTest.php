@@ -2,21 +2,21 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Tests\BlockPluginBagTest.
+ * Contains \Drupal\page_manager\Tests\BlockPluginBagTest.
  */
 
-namespace Drupal\block_page\Tests;
+namespace Drupal\page_manager\Tests;
 
-use Drupal\block_page\Plugin\BlockPluginBag;
+use Drupal\page_manager\Plugin\BlockPluginBag;
 use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests the block plugin bag.
  *
- * @coversDefaultClass \Drupal\block_page\Plugin\BlockPluginBag
+ * @coversDefaultClass \Drupal\page_manager\Plugin\BlockPluginBag
  *
  * @group Drupal
- * @group BlockPage
+ * @group PageManager
  */
 class BlockPluginBagTest extends UnitTestCase {
 
@@ -25,9 +25,9 @@ class BlockPluginBagTest extends UnitTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => 'Block page bag',
+      'name' => 'Block plugin bag',
       'description' => '',
-      'group' => 'Block Group',
+      'group' => 'Page Manager',
     );
   }
 

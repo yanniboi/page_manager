@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\PageVariantEditBlockForm.
+ * Contains \Drupal\page_manager\Form\PageVariantEditBlockForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
 /**
  * Provides a form for editing a block plugin of a page variant.
@@ -16,7 +16,7 @@ class PageVariantEditBlockForm extends PageVariantConfigureBlockFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_page_variant_edit_block_form';
+    return 'page_manager_page_variant_edit_block_form';
   }
 
   /**

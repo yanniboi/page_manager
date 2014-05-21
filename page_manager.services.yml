@@ -1,22 +1,22 @@
 services:
-  block_page.current_user_context:
-    class: Drupal\block_page\EventSubscriber\CurrentUserContext
+  page_manager.current_user_context:
+    class: Drupal\page_manager\EventSubscriber\CurrentUserContext
     arguments: ['@current_user', '@entity.manager']
     tags:
       - { name: 'event_subscriber' }
-  block_page.route_param_context:
-    class: Drupal\block_page\EventSubscriber\RouteParamContext
+  page_manager.route_param_context:
+    class: Drupal\page_manager\EventSubscriber\RouteParamContext
     arguments: ['@router.route_provider', '@request_stack']
     tags:
       - { name: 'event_subscriber' }
-  block_page.block_page_routes:
-    class: Drupal\block_page\Routing\BlockPageRoutes
+  page_manager.page_manager_routes:
+    class: Drupal\page_manager\Routing\PageManagerRoutes
     arguments: ['@entity.manager']
     tags:
       - { name: 'event_subscriber' }
   plugin.manager.page_variant:
-    class: Drupal\block_page\Plugin\PageVariantManager
+    class: Drupal\page_manager\Plugin\PageVariantManager
     parent: default_plugin_manager
   context.handler:
-    class: Drupal\block_page\ContextHandler
+    class: Drupal\page_manager\ContextHandler
     arguments: ['@typed_data_manager']

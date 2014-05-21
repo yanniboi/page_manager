@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\EventSubscriber\CurrentUserContext.
+ * Contains \Drupal\page_manager\EventSubscriber\CurrentUserContext.
  */
 
-namespace Drupal\block_page\EventSubscriber;
+namespace Drupal\page_manager\EventSubscriber;
 
-use Drupal\block_page\Event\BlockPageContextEvent;
+use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Session\AccountProxyInterface;
@@ -51,24 +51,24 @@ class CurrentUserContext implements EventSubscriberInterface {
   /**
    * Adds in the current user as a context.
    *
-   * @param \Drupal\block_page\Event\BlockPageContextEvent $event
-   *   The block page context event.
+   * @param \Drupal\page_manager\Event\PageManagerContextEvent $event
+   *   The page entity context event.
    */
-  public function onBlockPageContext(BlockPageContextEvent $event) {
+  public function onPageContext(PageManagerContextEvent $event) {
     $current_user = $this->userStorage->load($this->accountProxy->getAccount()->id());
     $context = new Context(array(
       'type' => 'entity:user',
       'label' => $this->t('Current user'),
     ));
     $context->setContextValue($current_user);
-    $event->getBlockPage()->addContext('current_user', $context);
+    $event->getPage()->addContext('current_user', $context);
   }
 
   /**
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events['block_page_context'][] = 'onBlockPageContext';
+    $events['page_manager_context'][] = 'onPageContext';
     return $events;
   }
 

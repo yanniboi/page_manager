@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\ContextHandler.
+ * Contains \Drupal\page_manager\ContextHandler.
  */
 
-namespace Drupal\block_page;
+namespace Drupal\page_manager;
 
 use Drupal\Component\Plugin\Context\ContextInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;

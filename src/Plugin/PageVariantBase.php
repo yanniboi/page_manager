@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\PageVariantBase.
+ * Contains \Drupal\page_manager\Plugin\PageVariantBase.
  */
 
-namespace Drupal\block_page\Plugin;
+namespace Drupal\page_manager\Plugin;
 
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Plugin\PluginDependencyTrait;
@@ -22,7 +22,7 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   /**
    * The plugin bag that holds the block plugins.
    *
-   * @var \Drupal\block_page\Plugin\BlockPluginBag
+   * @var \Drupal\page_manager\Plugin\BlockPluginBag
    */
   protected $blockPluginBag;
 

@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\AccessConditionAddForm.
+ * Contains \Drupal\page_manager\Form\AccessConditionAddForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Condition\ConditionManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -45,7 +45,7 @@ class AccessConditionAddForm extends AccessConditionFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_access_condition_add_form';
+    return 'page_manager_access_condition_add_form';
   }
 
   /**

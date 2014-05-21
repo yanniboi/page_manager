@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\ConditionAccessResolverTrait.
+ * Contains \Drupal\page_manager\Plugin\ConditionAccessResolverTrait.
  */
 
-namespace Drupal\block_page\Plugin;
+namespace Drupal\page_manager\Plugin;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Plugin\Exception\PluginException;

@@ -1,0 +1,5 @@
+page_manager.page_add:
+  route_name: page_manager.page_add
+  title: 'Add page'
+  appears_on:
+    - 'page_manager.page_list'

@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\SelectionConditionDeleteForm.
+ * Contains \Drupal\page_manager\Form\SelectionConditionDeleteForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\BlockPageInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
 
@@ -17,16 +17,16 @@ use Drupal\Core\Url;
 class SelectionConditionDeleteForm extends ConfirmFormBase {
 
   /**
-   * The block page this selection condition belongs to.
+   * The page entity this selection condition belongs to.
    *
-   * @var \Drupal\block_page\BlockPageInterface
+   * @var \Drupal\page_manager\PageInterface
    */
-  protected $blockPage;
+  protected $page;
 
   /**
    * The page variant.
    *
-   * @var \Drupal\block_page\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\PageVariantInterface
    */
   protected $pageVariant;
 
@@ -41,7 +41,7 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_selection_condition_delete_form';
+    return 'page_manager_selection_condition_delete_form';
   }
 
   /**
@@ -55,8 +55,8 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return new Url('block_page.page_variant_edit', array(
-      'block_page' => $this->blockPage->id(),
+    return new Url('page_manager.page_variant_edit', array(
+      'page' => $this->page->id(),
       'page_variant_id' => $this->pageVariant->id(),
     ));
   }
@@ -71,9 +71,9 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL, $condition_id = NULL) {
-    $this->blockPage = $block_page;
-    $this->pageVariant = $this->blockPage->getPageVariant($page_variant_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL, $condition_id = NULL) {
+    $this->page = $page_manager;
+    $this->pageVariant = $this->page->getPageVariant($page_variant_id);
     $this->selectionCondition = $this->pageVariant->getSelectionCondition($condition_id);
     return parent::buildForm($form, $form_state);
   }
@@ -83,7 +83,7 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, array &$form_state) {
     $this->pageVariant->removeSelectionCondition($this->selectionCondition->getConfiguration()['uuid']);
-    $this->blockPage->save();
+    $this->page->save();
     drupal_set_message($this->t('The selection condition %name has been removed.', array('%name' => $this->selectionCondition->getPluginDefinition()['label'])));
     $form_state['redirect_route'] = $this->getCancelRoute();
   }

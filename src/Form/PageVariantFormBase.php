@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\PageVariantFormBase.
+ * Contains \Drupal\page_manager\Form\PageVariantFormBase.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\BlockPageInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
 
 /**
@@ -16,16 +16,16 @@ use Drupal\Core\Form\FormBase;
 abstract class PageVariantFormBase extends FormBase {
 
   /**
-   * The block page this page variant belongs to.
+   * The page entity this page variant belongs to.
    *
-   * @var \Drupal\block_page\BlockPageInterface
+   * @var \Drupal\page_manager\PageInterface
    */
-  protected $blockPage;
+  protected $page;
 
   /**
    * The page variant used by this form.
    *
-   * @var \Drupal\block_page\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\PageVariantInterface
    */
   protected $pageVariant;
 
@@ -35,7 +35,7 @@ abstract class PageVariantFormBase extends FormBase {
    * @param string $page_variant_id
    *   Either a page variant ID, or the plugin ID used to create a new variant.
    *
-   * @return \Drupal\block_page\Plugin\PageVariantInterface
+   * @return \Drupal\page_manager\Plugin\PageVariantInterface
    *   The page variant object.
    */
   abstract protected function preparePageVariant($page_variant_id);
@@ -51,8 +51,8 @@ abstract class PageVariantFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
-    $this->blockPage = $block_page;
+  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL) {
+    $this->page = $page_manager;
     $this->pageVariant = $this->preparePageVariant($page_variant_id);
 
     // Allow the page variant to add to the form.

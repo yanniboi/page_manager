@@ -2,22 +2,22 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Tests\ConditionAccessResolverTraitTest.
+ * Contains \Drupal\page_manager\Tests\ConditionAccessResolverTraitTest.
  */
 
-namespace Drupal\block_page\Tests;
+namespace Drupal\page_manager\Tests;
 
-use Drupal\block_page\Plugin\ConditionAccessResolverTrait;
+use Drupal\page_manager\Plugin\ConditionAccessResolverTrait;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests resolving a set of conditions.
  *
- * @coversDefaultClass \Drupal\block_page\Plugin\ConditionAccessResolverTrait
+ * @coversDefaultClass \Drupal\page_manager\Plugin\ConditionAccessResolverTrait
  *
  * @group Drupal
- * @group BlockPage
+ * @group PageManager
  */
 class ConditionAccessResolverTraitTest extends UnitTestCase {
 
@@ -28,7 +28,7 @@ class ConditionAccessResolverTraitTest extends UnitTestCase {
     return array(
       'name' => 'Tests resolving a set of conditions',
       'description' => '',
-      'group' => 'Block Group',
+      'group' => 'Page Manager',
     );
   }
 

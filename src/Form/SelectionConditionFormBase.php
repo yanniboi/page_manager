@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\SelectionConditionFormBase.
+ * Contains \Drupal\page_manager\Form\SelectionConditionFormBase.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\BlockPageInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Core\Url;
 
 /**
@@ -18,16 +18,16 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
   /**
    * The page variant.
    *
-   * @var \Drupal\block_page\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\PageVariantInterface
    */
   protected $pageVariant;
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL, $condition_id = NULL) {
-    $this->pageVariant = $block_page->getPageVariant($page_variant_id);
-    return parent::buildForm($form, $form_state, $block_page, $condition_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL, $condition_id = NULL) {
+    $this->pageVariant = $page_manager->getPageVariant($page_variant_id);
+    return parent::buildForm($form, $form_state, $page_manager, $condition_id);
   }
 
   /**
@@ -42,11 +42,11 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
       $this->pageVariant->addSelectionCondition($configuration);
     }
 
-    // Save the block page.
-    $this->blockPage->save();
+    // Save the page entity.
+    $this->page->save();
 
-    $form_state['redirect_route'] = new Url('block_page.page_variant_edit', array(
-      'block_page' => $this->blockPage->id(),
+    $form_state['redirect_route'] = new Url('page_manager.page_variant_edit', array(
+      'page' => $this->page->id(),
       'page_variant_id' => $this->pageVariant->id(),
     ));
   }

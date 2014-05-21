@@ -1,5 +1,5 @@
 type: module
-name: Block Page
+name: Page Manager
 description: 'Provides a way to place blocks on a custom page.'
 package: Layout
 version: VERSION

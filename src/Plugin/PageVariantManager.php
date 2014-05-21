@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\PageVariantManager.
+ * Contains \Drupal\page_manager\Plugin\PageVariantManager.
  */
 
-namespace Drupal\block_page\Plugin;
+namespace Drupal\page_manager\Plugin;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -31,7 +31,7 @@ class PageVariantManager extends DefaultPluginManager {
    *   The module handler to invoke the alter hook with.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, LanguageManager $language_manager, ModuleHandlerInterface $module_handler) {
-    parent::__construct('Plugin/PageVariant', $namespaces, $module_handler, 'Drupal\block_page\Annotation\PageVariant');
+    parent::__construct('Plugin/PageVariant', $namespaces, $module_handler, 'Drupal\page_manager\Annotation\PageVariant');
 
     $this->setCacheBackend($cache_backend, $language_manager, 'page_variant_plugins');
     // @todo Set an alter hook.

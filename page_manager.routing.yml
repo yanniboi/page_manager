@@ -1,0 +1,159 @@
+#### Page Managers
+
+page_manager.page_list:
+  path: '/admin/structure/pagePageVariantTest.php_manager'
+  defaults:
+    _entity_list: 'page'
+    _title: 'Page Managers'
+  requirements:
+    _permission: 'administer pages'
+
+page_manager.page_add:
+  path: '/admin/structure/page_manager/add'
+  defaults:
+    _entity_form: 'page_manager.add'
+    _title: 'Add new page'
+  requirements:
+    _entity_create_access: page_manager
+
+page_manager.page_edit:
+  path: '/admin/structure/page_manager/manage/{page_manager}'
+  defaults:
+    _entity_form: 'page_manager.edit'
+    _title_callback: '\Drupal\page_manager\Controller\PageManagerController::editPageTitle'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.page_delete:
+  path: '/admin/structure/page_manager/manage/{page_manager}/delete'
+  defaults:
+    _entity_form: 'page_manager.delete'
+    _title: 'Delete page'
+  requirements:
+    _entity_access: page_manager.delete
+
+#### Access Conditions
+
+page_manager.access_condition_select:
+  path: '/admin/structure/page_manager/manage/{page_manager}/access/select'
+  defaults:
+    _content: '\Drupal\page_manager\Controller\PageManagerController::selectAccessCondition'
+    _title: 'Select access condition'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.access_condition_add:
+  path: '/admin/structure/page_manager/manage/{page_manager}/access/add/{condition_id}'
+  defaults:
+    _form: '\Drupal\page_manager\Form\AccessConditionAddForm'
+    _title: 'Add new access condition'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.access_condition_edit:
+  path: '/admin/structure/page_manager/manage/{page_manager}/access/edit/{condition_id}'
+  defaults:
+    _form: '\Drupal\page_manager\Form\AccessConditionEditForm'
+    _title_callback: '\Drupal\page_manager\Controller\PageManagerController::editAccessConditionTitle'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.access_condition_delete:
+  path: '/admin/structure/page_manager/manage/{page_manager}/access/delete/{condition_id}'
+  defaults:
+    _form: '\Drupal\page_manager\Form\AccessConditionDeleteForm'
+    _title: 'Delete access condition'
+  requirements:
+    _entity_access: page_manager.update
+
+#### Page Variants
+
+page_manager.page_variant_select:
+  path: '/admin/structure/page_manager/manage/{page_manager}/add'
+  defaults:
+    _content: '\Drupal\page_manager\Controller\PageManagerController::selectPageVariant'
+    _title: 'Select page variant'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.page_variant_add:
+  path: '/admin/structure/page_manager/manage/{page_manager}/add/{page_variant_id}'
+  defaults:
+    _form: '\Drupal\page_manager\Form\PageVariantAddForm'
+    _title: 'Add new page variant'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.page_variant_edit:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}'
+  defaults:
+    _form: '\Drupal\page_manager\Form\PageVariantEditForm'
+    _title_callback: '\Drupal\page_manager\Controller\PageManagerController::editPageVariantTitle'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.page_variant_delete:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}/delete'
+  defaults:
+    _form: '\Drupal\page_manager\Form\PageVariantDeleteForm'
+    _title: 'Delete page variant'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.page_variant_select_block:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}/block/select'
+  defaults:
+    _content: '\Drupal\page_manager\Controller\PageManagerController::selectBlock'
+    _title: 'Select block'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.page_variant_add_block:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}/block/add/{block_id}'
+  defaults:
+    _form: 'Drupal\page_manager\Form\PageVariantAddBlockForm'
+    _title: 'Add block to page variant'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.page_variant_edit_block:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}/block/edit/{block_id}'
+  defaults:
+    _form: 'Drupal\page_manager\Form\PageVariantEditBlockForm'
+    _title: 'Edit block in page variant'
+  requirements:
+    _entity_access: page_manager.update
+
+#### Selection Conditions
+
+page_manager.selection_condition_select:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}/selection/select'
+  defaults:
+    _content: '\Drupal\page_manager\Controller\PageManagerController::selectSelectionCondition'
+    _title: 'Select selection condition'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.selection_condition_add:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}/selection/add/{condition_id}'
+  defaults:
+    _form: '\Drupal\page_manager\Form\SelectionConditionAddForm'
+    _title: 'Add new selection condition'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.selection_condition_edit:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}/selection/edit/{condition_id}'
+  defaults:
+    _form: '\Drupal\page_manager\Form\SelectionConditionEditForm'
+    _title_callback: '\Drupal\page_manager\Controller\PageManagerController::editSelectionConditionTitle'
+  requirements:
+    _entity_access: page_manager.update
+
+page_manager.selection_condition_delete:
+  path: '/admin/structure/page_manager/manage/{page_manager}/manage/{page_variant_id}/selection/delete/{condition_id}'
+  defaults:
+    _form: '\Drupal\page_manager\Form\SelectionConditionDeleteForm'
+    _title: 'Delete selection condition'
+  requirements:
+    _entity_access: page_manager.update

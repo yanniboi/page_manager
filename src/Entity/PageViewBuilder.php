@@ -2,25 +2,25 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Entity\BlockPageViewBuilder.
+ * Contains \Drupal\page_manager\Entity\PageViewBuilder.
  */
 
-namespace Drupal\block_page\Entity;
+namespace Drupal\page_manager\Entity;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityViewBuilder;
 
 /**
- * Provides a view builder for block pages.
+ * Provides a view builder for page entities.
  */
-class BlockPageViewBuilder extends EntityViewBuilder {
+class PageViewBuilder extends EntityViewBuilder {
 
   /**
    * {@inheritdoc}
    */
   public function view(EntityInterface $entity, $view_mode = 'full', $langcode = NULL) {
     $build = array();
-    /** @var $entity \Drupal\block_page\BlockPageInterface */
+    /** @var $entity \Drupal\page_manager\PageInterface */
     if ($page_variant = $entity->selectPageVariant()) {
       $build = $page_variant->render();
     }

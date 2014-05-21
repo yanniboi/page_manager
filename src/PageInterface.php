@@ -2,29 +2,29 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\BlockPageInterface.
+ * Contains \Drupal\page_manager\PageInterface.
  */
 
-namespace Drupal\block_page;
+namespace Drupal\page_manager;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 
 /**
- * Provides an interface for block page objects.
+ * Provides an interface for page entities.
  */
-interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBagsInterface {
+interface PageInterface extends ConfigEntityInterface, EntityWithPluginBagsInterface {
 
   /**
-   * Returns the path for the block page.
+   * Returns the path for the page entity.
    *
    * @return string
-   *   The path for the block page.
+   *   The path for the page entity.
    */
   public function getPath();
 
   /**
-   * Adds a new page variant to the block page.
+   * Adds a new page variant to the page entity.
    *
    * @param array $configuration
    *   An array of configuration for the new page variant.
@@ -40,7 +40,7 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBags
    * @param string $page_variant_id
    *   The page variant ID.
    *
-   * @return \Drupal\block_page\Plugin\PageVariantInterface
+   * @return \Drupal\page_manager\Plugin\PageVariantInterface
    *   The page variant object.
    */
   public function getPageVariant($page_variant_id);
@@ -56,34 +56,34 @@ interface BlockPageInterface extends ConfigEntityInterface, EntityWithPluginBags
   public function removePageVariant($page_variant_id);
 
   /**
-   * Returns the page variants available for the block page.
+   * Returns the page variants available for the page entity.
    *
-   * @return \Drupal\block_page\Plugin\PageVariantInterface[]
+   * @return \Drupal\page_manager\Plugin\PageVariantInterface[]
    *   An array of the page variants.
    */
   public function getPageVariants();
 
   /**
-   * Selects the page variant to use for the block page.
+   * Selects the page variant to use for the page entity.
    *
    * This loops through the available page variants and checks each for access,
    * returning the first one that is accessible.
    *
-   * @return \Drupal\block_page\Plugin\PageVariantInterface|null
+   * @return \Drupal\page_manager\Plugin\PageVariantInterface|null
    *   Either the first accessible page variant, or NULL if none are accessible.
    */
   public function selectPageVariant();
 
   /**
-   * Returns the conditions used for determining access for this block page.
+   * Returns the conditions used for determining access for this page entity.
    *
-   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\block_page\Plugin\ConditionPluginBag
+   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\page_manager\Plugin\ConditionPluginBag
    *   An array of configured condition plugins.
    */
   public function getAccessConditions();
 
   /**
-   * Adds a new access condition to the block page.
+   * Adds a new access condition to the page entity.
    *
    * @param array $configuration
    *   An array of configuration for the new access condition.

@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Annotation\PageVariant.
+ * Contains \Drupal\page_manager\Annotation\PageVariant.
  */
 
-namespace Drupal\block_page\Annotation;
+namespace Drupal\page_manager\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 

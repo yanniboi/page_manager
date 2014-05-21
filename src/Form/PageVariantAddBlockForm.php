@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\PageVariantAddBlockForm.
+ * Contains \Drupal\page_manager\Form\PageVariantAddBlockForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -42,7 +42,7 @@ class PageVariantAddBlockForm extends PageVariantConfigureBlockFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_page_variant_add_block_form';
+    return 'page_manager_page_variant_add_block_form';
   }
 
   /**

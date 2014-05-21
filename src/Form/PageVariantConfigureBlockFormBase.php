@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\PageVariantConfigureBlockFormBase.
+ * Contains \Drupal\page_manager\Form\PageVariantConfigureBlockFormBase.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\BlockPageInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Url;
 
@@ -17,16 +17,16 @@ use Drupal\Core\Url;
 abstract class PageVariantConfigureBlockFormBase extends FormBase {
 
   /**
-   * The block page.
+   * The page entity.
    *
-   * @var \Drupal\block_page\BlockPageInterface
+   * @var \Drupal\page_manager\PageInterface
    */
-  protected $blockPage;
+  protected $page;
 
   /**
    * The page variant.
    *
-   * @var \Drupal\block_page\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\PageVariantInterface
    */
   protected $pageVariant;
 
@@ -59,9 +59,9 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL, $block_id = NULL) {
-    $this->blockPage = $block_page;
-    $this->pageVariant = $block_page->getPageVariant($page_variant_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL, $block_id = NULL) {
+    $this->page = $page_manager;
+    $this->pageVariant = $page_manager->getPageVariant($page_variant_id);
     $this->block = $this->prepareBlock($block_id);
 
     $form['#tree'] = TRUE;
@@ -109,10 +109,10 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
     // Call the plugin submit handler.
     $this->block->submitConfigurationForm($form, $settings);
     $this->pageVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state['values']['region']));
-    $this->blockPage->save();
+    $this->page->save();
 
-    $form_state['redirect_route'] = new Url('block_page.page_variant_edit', array(
-      'block_page' => $this->blockPage->id(),
+    $form_state['redirect_route'] = new Url('page_manager.page_variant_edit', array(
+      'page' => $this->page->id(),
       'page_variant_id' => $this->pageVariant->id(),
     ));
   }

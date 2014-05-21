@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\PageVariantDeleteForm.
+ * Contains \Drupal\page_manager\Form\PageVariantDeleteForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\BlockPageInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 
 /**
@@ -16,16 +16,16 @@ use Drupal\Core\Form\ConfirmFormBase;
 class PageVariantDeleteForm extends ConfirmFormBase {
 
   /**
-   * The block page this page variant belongs to.
+   * The page entity this page variant belongs to.
    *
-   * @var \Drupal\block_page\BlockPageInterface
+   * @var \Drupal\page_manager\PageInterface
    */
-  protected $blockPage;
+  protected $page;
 
   /**
    * The page variant.
    *
-   * @var \Drupal\block_page\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\PageVariantInterface
    */
   protected $pageVariant;
 
@@ -33,7 +33,7 @@ class PageVariantDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_page_variant_delete_form';
+    return 'page_manager_page_variant_delete_form';
   }
 
   /**
@@ -47,7 +47,7 @@ class PageVariantDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return $this->blockPage->urlInfo('edit-form');
+    return $this->page->urlInfo('edit-form');
   }
 
   /**
@@ -60,9 +60,9 @@ class PageVariantDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $page_variant_id = NULL) {
-    $this->blockPage = $block_page;
-    $this->pageVariant = $block_page->getPageVariant($page_variant_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL) {
+    $this->page = $page_manager;
+    $this->pageVariant = $page_manager->getPageVariant($page_variant_id);
     return parent::buildForm($form, $form_state);
   }
 
@@ -70,8 +70,8 @@ class PageVariantDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->blockPage->removePageVariant($this->pageVariant->id());
-    $this->blockPage->save();
+    $this->page->removePageVariant($this->pageVariant->id());
+    $this->page->save();
     drupal_set_message($this->t('The page variant %name has been removed.', array('%name' => $this->pageVariant->label())));
     $form_state['redirect_route'] = $this->getCancelRoute();
   }

@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\PageVariantInterface.
+ * Contains \Drupal\page_manager\Plugin\PageVariantInterface.
  */
 
-namespace Drupal\block_page\Plugin;
+namespace Drupal\page_manager\Plugin;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
@@ -159,13 +159,13 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   /**
    * Returns the conditions used for determining if this page variant is selected.
    *
-   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\block_page\Plugin\ConditionPluginBag
+   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\page_manager\Plugin\ConditionPluginBag
    *   An array of configured condition plugins.
    */
   public function getSelectionConditions();
 
   /**
-   * Adds a new selection condition to the block page.
+   * Adds a new selection condition to the page entity.
    *
    * @param array $configuration
    *   An array of configuration for the new selection condition.

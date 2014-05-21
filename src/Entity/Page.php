@@ -2,64 +2,64 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Entity\BlockPage.
+ * Contains \Drupal\page_manager\Entity\Page.
  */
 
-namespace Drupal\block_page\Entity;
+namespace Drupal\page_manager\Entity;
 
-use Drupal\block_page\BlockPageInterface;
-use Drupal\block_page\Event\BlockPageContextEvent;
-use Drupal\block_page\Plugin\ConditionPluginBag;
-use Drupal\block_page\Plugin\PageVariantBag;
+use Drupal\page_manager\PageInterface;
+use Drupal\page_manager\Event\PageManagerContextEvent;
+use Drupal\page_manager\Plugin\ConditionPluginBag;
+use Drupal\page_manager\Plugin\PageVariantBag;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
- * Defines a Block Page entity class.
+ * Defines a Page entity class.
  *
  * @ConfigEntityType(
- *   id = "block_page",
- *   label = @Translation("Block Page"),
+ *   id = "page",
+ *   label = @Translation("Page"),
  *   controllers = {
- *     "access" = "Drupal\block_page\Entity\BlockPageAccess",
- *     "list_builder" = "Drupal\block_page\Entity\BlockPageListBuilder",
- *     "view_builder" = "Drupal\block_page\Entity\BlockPageViewBuilder",
+ *     "access" = "Drupal\page_manager\Entity\PageAccess",
+ *     "list_builder" = "Drupal\page_manager\Entity\PageListBuilder",
+ *     "view_builder" = "Drupal\page_manager\Entity\PageViewBuilder",
  *     "form" = {
- *       "add" = "Drupal\block_page\Form\BlockPageAddForm",
- *       "edit" = "Drupal\block_page\Form\BlockPageEditForm",
- *       "delete" = "Drupal\block_page\Form\BlockPageDeleteForm",
+ *       "add" = "Drupal\page_manager\Form\PageAddForm",
+ *       "edit" = "Drupal\page_manager\Form\PageEditForm",
+ *       "delete" = "Drupal\page_manager\Form\PageDeleteForm",
  *     }
  *   },
- *   admin_permission = "administer block pages",
+ *   admin_permission = "administer pages",
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label"
  *   },
  *   links = {
- *     "add-form" = "block_page.page_add",
- *     "edit-form" = "block_page.page_edit",
- *     "delete-form" = "block_page.page_delete",
+ *     "add-form" = "page_manager.page_add",
+ *     "edit-form" = "page_manager.page_edit",
+ *     "delete-form" = "page_manager.page_delete",
  *   }
  * )
  */
-class BlockPage extends ConfigEntityBase implements BlockPageInterface {
+class Page extends ConfigEntityBase implements PageInterface {
 
   /**
-   * The ID of the block page.
+   * The ID of the page entity.
    *
    * @var string
    */
   protected $id;
 
   /**
-   * The label of the block page.
+   * The label of the page entity.
    *
    * @var string
    */
   protected $label;
 
   /**
-   * The path of the block page.
+   * The path of the page entity.
    *
    * @var string
    */
@@ -282,7 +282,7 @@ class BlockPage extends ConfigEntityBase implements BlockPageInterface {
    */
   public function getContexts() {
     if (!$this->contexts) {
-      $this->eventDispatcher()->dispatch('block_page_context', new BlockPageContextEvent($this));
+      $this->eventDispatcher()->dispatch('page_manager_context', new PageManagerContextEvent($this));
     }
     return $this->contexts;
   }

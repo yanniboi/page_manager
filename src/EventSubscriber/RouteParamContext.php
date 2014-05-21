@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\EventSubscriber\RouteParamContext.
+ * Contains \Drupal\page_manager\EventSubscriber\RouteParamContext.
  */
 
-namespace Drupal\block_page\EventSubscriber;
+namespace Drupal\page_manager\EventSubscriber;
 
-use Drupal\block_page\Event\BlockPageContextEvent;
+use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Routing\RouteProvider;
 use Drupal\Core\TypedData\TypedDataManager;
@@ -49,19 +49,19 @@ class RouteParamContext implements EventSubscriberInterface {
   /**
    * Adds in the current user as a context.
    *
-   * @param \Drupal\block_page\Event\BlockPageContextEvent $event
-   *   The block page context event.
+   * @param \Drupal\page_manager\Event\PageManagerContextEvent $event
+   *   The page entity context event.
    */
-  public function onBlockPageContext(BlockPageContextEvent $event) {
+  public function onPageContext(PageManagerContextEvent $event) {
     $request = $this->requestStack->getCurrentRequest();
-    $block_page = $event->getBlockPage();
-    $routes = $this->routeProvider->getRoutesByPattern('/' . $block_page->getPath())->all();
+    $page_manager = $event->getPage();
+    $routes = $this->routeProvider->getRoutesByPattern('/' . $page_manager->getPath())->all();
     $route = reset($routes);
 
     if ($route_contexts = $route->getOption('parameters')) {
       foreach ($route_contexts as $route_context_name => $route_context) {
         // Skip this parameter.
-        if ($route_context_name == 'block_page') {
+        if ($route_context_name == 'page') {
           continue;
         }
 
@@ -72,7 +72,7 @@ class RouteParamContext implements EventSubscriberInterface {
         else {
           // @todo Find a way to add in a fake value for configuration.
         }
-        $block_page->addContext($route_context_name, $context);
+        $page_manager->addContext($route_context_name, $context);
       }
     }
   }
@@ -81,7 +81,7 @@ class RouteParamContext implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events['block_page_context'][] = 'onBlockPageContext';
+    $events['page_manager_context'][] = 'onPageContext';
     return $events;
   }
 

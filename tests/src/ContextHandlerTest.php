@@ -2,21 +2,21 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Tests\ContextHandlerTest.
+ * Contains \Drupal\page_manager\Tests\ContextHandlerTest.
  */
 
-namespace Drupal\block_page\Tests;
+namespace Drupal\page_manager\Tests;
 
-use Drupal\block_page\ContextHandler;
+use Drupal\page_manager\ContextHandler;
 use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests the ContextHandler class.
  *
- * @coversDefaultClass \Drupal\block_page\ContextHandler
+ * @coversDefaultClass \Drupal\page_manager\ContextHandler
  *
  * @group Drupal
- * @group BlockPage
+ * @group PageManager
  */
 class ContextHandlerTest extends UnitTestCase {
 
@@ -30,7 +30,7 @@ class ContextHandlerTest extends UnitTestCase {
   /**
    * The context handler.
    *
-   * @var \Drupal\block_page\ContextHandler
+   * @var \Drupal\page_manager\ContextHandler
    */
   protected $contextHandler;
 
@@ -41,7 +41,7 @@ class ContextHandlerTest extends UnitTestCase {
     return array(
       'name' => 'Tests the ContextHandler',
       'description' => '',
-      'group' => 'Block Page',
+      'group' => 'Page Manager',
     );
   }
 

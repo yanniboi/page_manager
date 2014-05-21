@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\PageVariantAddForm.
+ * Contains \Drupal\page_manager\Form\PageVariantAddForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\Plugin\PageVariantManager;
+use Drupal\page_manager\Plugin\PageVariantManager;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -19,14 +19,14 @@ class PageVariantAddForm extends PageVariantFormBase {
   /**
    * The page variant manager.
    *
-   * @var \Drupal\block_page\Plugin\PageVariantManager
+   * @var \Drupal\page_manager\Plugin\PageVariantManager
    */
   protected $pageVariantManager;
 
   /**
    * Constructs a new PageVariantAddForm.
    *
-   * @param \Drupal\block_page\Plugin\PageVariantManager $page_variant_manager
+   * @param \Drupal\page_manager\Plugin\PageVariantManager $page_variant_manager
    *   The page variant manager.
    */
   public function __construct(PageVariantManager $page_variant_manager) {
@@ -46,7 +46,7 @@ class PageVariantAddForm extends PageVariantFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_page_variant_add_form';
+    return 'page_manager_page_variant_add_form';
   }
 
   /**
@@ -63,13 +63,13 @@ class PageVariantAddForm extends PageVariantFormBase {
     parent::submitForm($form, $form_state);
 
     // If this page variant is new, add it to the page.
-    $page_variant_id = $this->blockPage->addPageVariant($this->pageVariant->getConfiguration());
+    $page_variant_id = $this->page->addPageVariant($this->pageVariant->getConfiguration());
 
-    // Save the block page.
-    $this->blockPage->save();
+    // Save the page entity.
+    $this->page->save();
     drupal_set_message($this->t('The %label page variant has been added.', array('%label' => $this->pageVariant->label())));
-    $form_state['redirect_route'] = new Url('block_page.page_variant_edit', array(
-      'block_page' => $this->blockPage->id(),
+    $form_state['redirect_route'] = new Url('page_manager.page_variant_edit', array(
+      'page' => $this->page->id(),
       'page_variant_id' => $page_variant_id,
     ));
   }

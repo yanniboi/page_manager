@@ -2,22 +2,22 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\BlockPageFormBase.
+ * Contains \Drupal\page_manager\Form\PageFormBase.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Entity\EntityForm;
 
 /**
- * Provides a base form for editing and adding a block page.
+ * Provides a base form for editing and adding a page entity.
  */
-abstract class BlockPageFormBase extends EntityForm {
+abstract class PageFormBase extends EntityForm {
 
   /**
    * {@inheritdoc}
    *
-   * @var \Drupal\block_page\BlockPageInterface
+   * @var \Drupal\page_manager\PageInterface
    */
   protected $entity;
 
@@ -28,7 +28,7 @@ abstract class BlockPageFormBase extends EntityForm {
     $form['label'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
-      '#description' => $this->t('The label for this block page.'),
+      '#description' => $this->t('The label for this page.'),
       '#default_value' => $this->entity->label(),
       '#maxlength' => '255',
     );
@@ -54,16 +54,16 @@ abstract class BlockPageFormBase extends EntityForm {
   }
 
   /**
-   * Determines if the block page already exists.
+   * Determines if the page entity already exists.
    *
    * @param string $id
-   *   The block page ID.
+   *   The page entity ID.
    *
    * @return bool
    *   TRUE if the format exists, FALSE otherwise.
    */
   public function exists($id) {
-    return (bool) \Drupal::entityQuery('block_page')
+    return (bool) \Drupal::entityQuery('page')
       ->condition('id', $id)
       ->execute();
   }

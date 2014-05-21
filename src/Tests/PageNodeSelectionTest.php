@@ -2,31 +2,31 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Tests\BlockPageNodeSelectionTest.
+ * Contains \Drupal\page_manager\Tests\PageNodeSelectionTest.
  */
 
-namespace Drupal\block_page\Tests;
+namespace Drupal\page_manager\Tests;
 
 use Drupal\simpletest\WebTestBase;
 
 /**
- * Tests selection block pages based on nodes.
+ * Tests selecting page variants based on nodes.
  */
-class BlockPageNodeSelectionTest extends WebTestBase {
+class PageNodeSelectionTest extends WebTestBase {
 
   /**
    * {@inheritdoc}
    */
-  public static $modules = array('block_page', 'node');
+  public static $modules = array('page_manager', 'node');
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
     return array(
-      'name' => 'Block Page node selection test',
-      'description' => 'Tests selection block pages based on nodes.',
-      'group' => 'Block Page',
+      'name' => 'Page Manager node selection test',
+      'description' => 'Tests selecting page variants based on nodes.',
+      'group' => 'Page Manager',
     );
   }
 
@@ -38,7 +38,7 @@ class BlockPageNodeSelectionTest extends WebTestBase {
 
     $this->drupalCreateContentType(array('type' => 'article', 'name' => 'Article'));
     $this->drupalCreateContentType(array('type' => 'page', 'name' => 'Page'));
-    $this->drupalLogin($this->drupalCreateUser(array('administer block pages', 'create article content', 'create page content')));
+    $this->drupalLogin($this->drupalCreateUser(array('administer pages', 'create article content', 'create page content')));
   }
 
   /**
@@ -55,13 +55,13 @@ class BlockPageNodeSelectionTest extends WebTestBase {
     $this->assertResponse(200);
     $this->assertText($node2->label());
 
-    // Create a new block page to take over node pages.
+    // Create a new page entity to take over node pages.
     $edit = array(
       'label' => 'Node View',
       'id' => 'node_view',
       'path' => 'node/%',
     );
-    $this->drupalPostForm('admin/structure/block_page/add', $edit, 'Save');
+    $this->drupalPostForm('admin/structure/page_manager/add', $edit, 'Save');
     // Their pages should now use the default 404 page variant.
     $this->drupalGet('node/' . $node1->id());
     $this->assertResponse(404);
@@ -71,7 +71,7 @@ class BlockPageNodeSelectionTest extends WebTestBase {
     $this->assertNoText($node2->label());
 
     // Add a new page variant.
-    $this->drupalGet('admin/structure/block_page/manage/node_view');
+    $this->drupalGet('admin/structure/page_manager/manage/node_view');
     $this->clickLink('Add new page variant');
     $this->clickLink('Landing page');
     $edit = array(

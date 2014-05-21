@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\AccessConditionDeleteForm.
+ * Contains \Drupal\page_manager\Form\AccessConditionDeleteForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\BlockPageInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 
 /**
@@ -16,11 +16,11 @@ use Drupal\Core\Form\ConfirmFormBase;
 class AccessConditionDeleteForm extends ConfirmFormBase {
 
   /**
-   * The block page this selection condition belongs to.
+   * The page entity this selection condition belongs to.
    *
-   * @var \Drupal\block_page\BlockPageInterface
+   * @var \Drupal\page_manager\PageInterface
    */
-  protected $blockPage;
+  protected $page;
 
   /**
    * The access condition used by this form.
@@ -33,7 +33,7 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_access_condition_delete_form';
+    return 'page_manager_access_condition_delete_form';
   }
 
   /**
@@ -47,7 +47,7 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return $this->blockPage->urlInfo('edit-form');
+    return $this->page->urlInfo('edit-form');
   }
 
   /**
@@ -60,9 +60,9 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $condition_id = NULL) {
-    $this->blockPage = $block_page;
-    $this->accessCondition = $block_page->getAccessCondition($condition_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $condition_id = NULL) {
+    $this->page = $page_manager;
+    $this->accessCondition = $page_manager->getAccessCondition($condition_id);
     return parent::buildForm($form, $form_state);
   }
 
@@ -70,8 +70,8 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->blockPage->removeAccessCondition($this->accessCondition->getConfiguration()['uuid']);
-    $this->blockPage->save();
+    $this->page->removeAccessCondition($this->accessCondition->getConfiguration()['uuid']);
+    $this->page->save();
     drupal_set_message($this->t('The access condition %name has been removed.', array('%name' => $this->accessCondition->getPluginDefinition()['label'])));
     $form_state['redirect_route'] = $this->getCancelRoute();
   }

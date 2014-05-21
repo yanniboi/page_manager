@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\SelectionConditionEditForm.
+ * Contains \Drupal\page_manager\Form\SelectionConditionEditForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
 /**
  * Provides a form for editing an selection condition.
@@ -16,7 +16,7 @@ class SelectionConditionEditForm extends SelectionConditionFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_selection_condition_edit_form';
+    return 'page_manager_selection_condition_edit_form';
   }
 
   /**

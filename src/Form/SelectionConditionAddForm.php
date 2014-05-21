@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\SelectionConditionAddForm.
+ * Contains \Drupal\page_manager\Form\SelectionConditionAddForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Condition\ConditionManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -45,7 +45,7 @@ class SelectionConditionAddForm extends SelectionConditionFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'block_page_selection_condition_add_form';
+    return 'page_manager_selection_condition_add_form';
   }
 
   /**

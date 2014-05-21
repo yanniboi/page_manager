@@ -2,18 +2,18 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Entity\BlockPageListBuilder.
+ * Contains \Drupal\page_manager\Entity\PageListBuilder.
  */
 
-namespace Drupal\block_page\Entity;
+namespace Drupal\page_manager\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Provides a list builder for block pages.
+ * Provides a list builder for page entities.
  */
-class BlockPageListBuilder extends ConfigEntityListBuilder {
+class PageListBuilder extends ConfigEntityListBuilder {
 
   /**
    * {@inheritdoc}
@@ -29,7 +29,7 @@ class BlockPageListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /** @var $entity \Drupal\block_page\BlockPageInterface */
+    /** @var $entity \Drupal\page_manager\PageInterface */
     $row['label'] = $this->getLabel($entity);
     $row['id'] = $entity->id();
     $row['path']['data'] = array(

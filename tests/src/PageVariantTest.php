@@ -2,20 +2,20 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Tests\PageVariantTest.
+ * Contains \Drupal\page_manager\Tests\PageVariantTest.
  */
 
-namespace Drupal\block_page\Tests;
+namespace Drupal\page_manager\Tests;
 
 use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests the page variant plugin.
  *
- * @coversDefaultClass \Drupal\block_page\Plugin\PageVariantBase
+ * @coversDefaultClass \Drupal\page_manager\Plugin\PageVariantBase
  *
  * @group Drupal
- * @group BlockPage
+ * @group PageManager
  */
 class PageVariantTest extends UnitTestCase {
 
@@ -24,9 +24,9 @@ class PageVariantTest extends UnitTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => 'Block page variant',
+      'name' => 'Page Manager page variant',
       'description' => '',
-      'group' => 'Block Group',
+      'group' => 'Page Manager',
     );
   }
 
@@ -38,11 +38,11 @@ class PageVariantTest extends UnitTestCase {
    * @param array $definition
    *   The plugin definition array.
    *
-   * @return \Drupal\block_page\Plugin\PageVariantBase|\PHPUnit_Framework_MockObject_MockObject
+   * @return \Drupal\page_manager\Plugin\PageVariantBase|\PHPUnit_Framework_MockObject_MockObject
    *   A mocked page variant plugin.
    */
   public function setUpPageVariant($configuration = array(), $definition = array()) {
-    return $this->getMockBuilder('Drupal\block_page\Plugin\PageVariantBase')
+    return $this->getMockBuilder('Drupal\page_manager\Plugin\PageVariantBase')
       ->setConstructorArgs(array($configuration, 'test', $definition))
       ->setMethods(array('getRegionNames', 'access', 'render', 'getBlockBag', 'getSelectionConditions'))
       ->getMock();
@@ -122,7 +122,7 @@ class PageVariantTest extends UnitTestCase {
    * @dataProvider providerTestGetRegionAssignments
    */
   public function testGetRegionAssignments($expected, $blocks = array()) {
-    $block_bag = $this->getMockBuilder('Drupal\block_page\Plugin\BlockPluginBag')
+    $block_bag = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginBag')
       ->disableOriginalConstructor()
       ->getMock();
     $block_bag->expects($this->once())
@@ -188,13 +188,13 @@ class PageVariantTest extends UnitTestCase {
    * @covers ::getConfiguration
    */
   public function testGetConfiguration() {
-    $block_bag = $this->getMockBuilder('Drupal\block_page\Plugin\BlockPluginBag')
+    $block_bag = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginBag')
       ->disableOriginalConstructor()
       ->getMock();
     $block_bag->expects($this->once())
       ->method('getConfiguration')
       ->will($this->returnValue(array()));
-    $condition_bag = $this->getMockBuilder('Drupal\block_page\Plugin\ConditionPluginBag')
+    $condition_bag = $this->getMockBuilder('Drupal\page_manager\Plugin\ConditionPluginBag')
       ->disableOriginalConstructor()
       ->getMock();
     $condition_bag->expects($this->once())

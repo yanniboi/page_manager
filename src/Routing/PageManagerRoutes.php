@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Routing\BlockPageRoutes.
+ * Contains \Drupal\page_manager\Routing\PageManagerRoutes.
  */
 
-namespace Drupal\block_page\Routing;
+namespace Drupal\page_manager\Routing;
 
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Routing\RouteCompiler;
@@ -15,9 +15,9 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Provides routes for block pages.
+ * Provides routes for page entities.
  */
-class BlockPageRoutes extends RouteSubscriberBase {
+class PageManagerRoutes extends RouteSubscriberBase {
 
   /**
    * The entity storage.
@@ -27,13 +27,13 @@ class BlockPageRoutes extends RouteSubscriberBase {
   protected $entityStorage;
 
   /**
-   * Constructs a new BlockPageRoutes.
+   * Constructs a new PageManagerRoutes.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
    */
   public function __construct(EntityManagerInterface $entity_manager) {
-    $this->entityStorage = $entity_manager->getStorage('block_page');
+    $this->entityStorage = $entity_manager->getStorage('page');
   }
 
   /**
@@ -41,16 +41,16 @@ class BlockPageRoutes extends RouteSubscriberBase {
    */
   protected function alterRoutes(RouteCollection $collection) {
     foreach ($this->entityStorage->loadMultiple() as $entity_id => $entity) {
-      /** @var $entity \Drupal\block_page\BlockPageInterface */
+      /** @var $entity \Drupal\page_manager\PageInterface */
 
       // Prepare a route name to use if this is a custom page.
-      $route_name = "block_page.page_view_$entity_id";
+      $route_name = "page_manager.page_view_$entity_id";
 
       // Prepare the values that need to be altered for an existing page.
       $path = '/' . $entity->getPath();
       $parameters = array(
-        'block_page' => array(
-          'type' => 'entity:block_page',
+        'page' => array(
+          'type' => 'entity:page',
         ),
       );
 
@@ -79,12 +79,12 @@ class BlockPageRoutes extends RouteSubscriberBase {
       $route = new Route(
         $path,
         array(
-          '_entity_view' => 'block_page',
-          'block_page' => $entity_id,
+          '_entity_view' => 'page',
+          'page' => $entity_id,
           '_title' => $entity->label(),
         ),
         array(
-          '_entity_access' => 'block_page.view',
+          '_entity_access' => 'page_manager.view',
         ),
         array(
           'parameters' => $parameters,

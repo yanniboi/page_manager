@@ -2,19 +2,19 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\BlockPageEditForm.
+ * Contains \Drupal\page_manager\Form\PageEditForm.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
 
 /**
- * Provides a form for editing a block page.
+ * Provides a form for editing a page entity.
  */
-class BlockPageEditForm extends BlockPageFormBase {
+class PageEditForm extends PageFormBase {
 
   /**
    * {@inheritdoc}
@@ -34,12 +34,12 @@ class BlockPageEditForm extends BlockPageFormBase {
       '#title' => $this->t('Page Variants'),
       '#open' => TRUE,
     );
-    $form['page_variant_section']['add_new_block_page'] = array(
+    $form['page_variant_section']['add_new_page'] = array(
       '#type' => 'link',
       '#title' => $this->t('Add new page variant'),
-      '#route_name' => 'block_page.page_variant_select',
+      '#route_name' => 'page_manager.page_variant_select',
       '#route_parameters' => array(
-        'block_page' => $this->entity->id(),
+        'page' => $this->entity->id(),
       ),
       '#attributes' => $attributes,
       '#attached' => array(
@@ -90,17 +90,17 @@ class BlockPageEditForm extends BlockPageFormBase {
       $operations = array();
       $operations['edit'] = array(
         'title' => $this->t('Edit'),
-        'route_name' => 'block_page.page_variant_edit',
+        'route_name' => 'page_manager.page_variant_edit',
         'route_parameters' => array(
-          'block_page' => $this->entity->id(),
+          'page' => $this->entity->id(),
           'page_variant_id' => $page_variant_id,
         ),
       );
       $operations['delete'] = array(
         'title' => $this->t('Delete'),
-        'route_name' => 'block_page.page_variant_delete',
+        'route_name' => 'page_manager.page_variant_delete',
         'route_parameters' => array(
-          'block_page' => $this->entity->id(),
+          'page' => $this->entity->id(),
           'page_variant_id' => $page_variant_id,
         ),
       );
@@ -119,9 +119,9 @@ class BlockPageEditForm extends BlockPageFormBase {
     $form['access_section_section']['add'] = array(
       '#type' => 'link',
       '#title' => $this->t('Add new access condition'),
-      '#route_name' => 'block_page.access_condition_select',
+      '#route_name' => 'page_manager.access_condition_select',
       '#route_parameters' => array(
-        'block_page' => $this->entity->id(),
+        'page' => $this->entity->id(),
       ),
       '#attributes' => $attributes,
       '#attached' => array(
@@ -160,18 +160,18 @@ class BlockPageEditForm extends BlockPageFormBase {
       $operations = array();
       $operations['edit'] = array(
         'title' => $this->t('Edit'),
-        'route_name' => 'block_page.access_condition_edit',
+        'route_name' => 'page_manager.access_condition_edit',
         'route_parameters' => array(
-          'block_page' => $this->entity->id(),
+          'page' => $this->entity->id(),
           'condition_id' => $access_id,
         ),
         'attributes' => $attributes,
       );
       $operations['delete'] = array(
         'title' => $this->t('Delete'),
-        'route_name' => 'block_page.access_condition_delete',
+        'route_name' => 'page_manager.access_condition_delete',
         'route_parameters' => array(
-          'block_page' => $this->entity->id(),
+          'page' => $this->entity->id(),
           'condition_id' => $access_id,
         ),
         'attributes' => $attributes,
@@ -197,8 +197,8 @@ class BlockPageEditForm extends BlockPageFormBase {
       }
     }
     parent::save($form, $form_state);
-    drupal_set_message($this->t('The %label block page has been updated.', array('%label' => $this->entity->label())));
-    $form_state['redirect_route'] = new Url('block_page.page_list');
+    drupal_set_message($this->t('The %label page has been updated.', array('%label' => $this->entity->label())));
+    $form_state['redirect_route'] = new Url('page_manager.page_list');
   }
 
   /**

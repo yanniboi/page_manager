@@ -2,32 +2,32 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Tests\BlockPageAdminTest.
+ * Contains \Drupal\page_manager\Tests\PageManagerAdminTest.
  */
 
-namespace Drupal\block_page\Tests;
+namespace Drupal\page_manager\Tests;
 
 use Drupal\Component\Utility\String;
 use Drupal\simpletest\WebTestBase;
 
 /**
- * Tests the admin UI for block pages.
+ * Tests the admin UI for page entities.
  */
-class BlockPageAdminTest extends WebTestBase {
+class PageManagerAdminTest extends WebTestBase {
 
   /**
    * {@inheritdoc}
    */
-  public static $modules = array('block_page');
+  public static $modules = array('page_manager');
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
     return array(
-      'name' => 'Block Page admin test',
-      'description' => 'Tests the admin UI for block pages.',
-      'group' => 'Block Page',
+      'name' => 'Page Manager admin test',
+      'description' => 'Tests the admin UI for page entities.',
+      'group' => 'Page Manager',
     );
   }
 
@@ -36,14 +36,14 @@ class BlockPageAdminTest extends WebTestBase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->drupalLogin($this->drupalCreateUser(array('administer block pages')));
+    $this->drupalLogin($this->drupalCreateUser(array('administer pages')));
   }
 
   /**
-   * Tests the block page admin UI.
+   * Tests the Page Manager admin UI.
    */
   public function testAdmin() {
-    $this->doTestAddBlockPage();
+    $this->doTestAddPage();
     $this->doTestAddPageVariant();
     $this->doTestAddBlock();
     $this->doTestEditPageVariant();
@@ -51,37 +51,37 @@ class BlockPageAdminTest extends WebTestBase {
   }
 
   /**
-   * Tests adding a block page.
+   * Tests adding a page.
    */
-  protected function doTestAddBlockPage() {
-    $this->drupalGet('admin/structure/block_page');
-    $this->assertText('There is no Block Page yet.');
+  protected function doTestAddPage() {
+    $this->drupalGet('admin/structure/page_manager');
+    $this->assertText('There is no Page Manager yet.');
 
-    // Add a new block page.
-    $this->clickLink('Add block page');
+    // Add a new page.
+    $this->clickLink('Add page');
     $edit = array(
       'label' => 'Foo',
       'id' => 'foo',
       'path' => 'admin/foo',
     );
     $this->drupalPostForm(NULL, $edit, 'Save');
-    $this->assertRaw(String::format('The %label block page has been added.', array('%label' => 'Foo')));
+    $this->assertRaw(String::format('The %label page has been added.', array('%label' => 'Foo')));
 
     // Test that it is available immediately.
     $this->drupalGet('admin/foo');
     $this->assertResponse(404);
-    $this->drupalGet('admin/structure/block_page/manage/foo');
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
     $this->drupalPostForm(NULL, array('page_variant[status_code]' => 200), 'Update page variant');
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     $this->assertTitle('Foo | Drupal');
-    $this->drupalGet('admin/structure/block_page/manage/foo');
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
     $this->drupalPostForm(NULL, array('page_variant[status_code]' => 403), 'Update page variant');
 
     // Assert that a page variant was added by default.
-    $this->drupalGet('admin/structure/block_page/manage/foo');
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->assertNoText('There are no page variants.');
   }
 
@@ -132,7 +132,7 @@ class BlockPageAdminTest extends WebTestBase {
     }
 
     $block_config = $block->getConfiguration();
-    $this->drupalGet('admin/structure/block_page/manage/foo');
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
     $this->assertTitle('Edit First page variant | Drupal');
     $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-region', 'top');
@@ -167,16 +167,16 @@ class BlockPageAdminTest extends WebTestBase {
     $edit = array(
       'page_variants[' . $page_variant->getConfiguration()['uuid'] . '][weight]' => -10,
     );
-    $this->drupalPostForm('admin/structure/block_page/manage/foo', $edit, 'Save');
+    $this->drupalPostForm('admin/structure/page_manager/manage/foo', $edit, 'Save');
     $this->drupalGet('admin/foo');
     $this->assertResponse(403);
   }
 
   /**
-   * Finds a block based on its block page, variant, and block label.
+   * Finds a block based on its page, variant, and block label.
    *
-   * @param string $block_page_id
-   *   The ID of the block page.
+   * @param string $page_manager_id
+   *   The ID of the page entity.
    * @param string $page_variant_label
    *   The label of the page variant.
    * @param string $block_label
@@ -185,8 +185,8 @@ class BlockPageAdminTest extends WebTestBase {
    * @return \Drupal\block\BlockPluginInterface|null
    *   Either a block plugin, or NULL.
    */
-  protected function findBlockByLabel($block_page_id, $page_variant_label, $block_label) {
-    $page_variant = $this->findPageVariantByLabel($block_page_id, $page_variant_label);
+  protected function findBlockByLabel($page_manager_id, $page_variant_label, $block_label) {
+    $page_variant = $this->findPageVariantByLabel($page_manager_id, $page_variant_label);
     foreach ($page_variant->getRegionAssignments() as $blocks) {
       /** @var $blocks \Drupal\block\BlockPluginInterface[] */
       foreach ($blocks as $block) {
@@ -199,20 +199,20 @@ class BlockPageAdminTest extends WebTestBase {
   }
 
   /**
-   * Finds a page variant based on its block page and page variant label.
+   * Finds a page variant based on its page and page variant label.
    *
-   * @param string $block_page_id
-   *   The ID of the block page.
+   * @param string $page_manager_id
+   *   The ID of the page entity.
    * @param string $page_variant_label
    *   The label of the page variant.
    *
-   * @return \Drupal\block_page\Plugin\PageVariantInterface|null
+   * @return \Drupal\page_manager\Plugin\PageVariantInterface|null
    *   Either a page variant, or NULL.
    */
-  protected function findPageVariantByLabel($block_page_id, $page_variant_label) {
-    $block_page = \Drupal::entityManager()->getStorage('block_page')->load($block_page_id);
-    /** @var $block_page \Drupal\block_page\BlockPageInterface */
-    foreach ($block_page->getPageVariants() as $page_variant) {
+  protected function findPageVariantByLabel($page_manager_id, $page_variant_label) {
+    $page_manager = \Drupal::entityManager()->getStorage('page')->load($page_manager_id);
+    /** @var $page_manager \Drupal\page_manager\PageInterface */
+    foreach ($page_manager->getPageVariants() as $page_variant) {
       if ($page_variant->label() == $page_variant_label) {
         return $page_variant;
       }

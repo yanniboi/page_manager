@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\AccessConditionFormBase.
+ * Contains \Drupal\page_manager\Form\AccessConditionFormBase.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
 /**
  * Provides a base form for editing and adding an access condition.
@@ -21,13 +21,13 @@ abstract class AccessConditionFormBase extends ConditionFormBase {
     $configuration = $this->condition->getConfiguration();
     // If this access condition is new, add it to the page.
     if (!isset($configuration['uuid'])) {
-      $this->blockPage->addAccessCondition($configuration);
+      $this->page->addAccessCondition($configuration);
     }
 
-    // Save the block page.
-    $this->blockPage->save();
+    // Save the page entity.
+    $this->page->save();
 
-    $form_state['redirect_route'] = $this->blockPage->urlInfo('edit-form');
+    $form_state['redirect_route'] = $this->page->urlInfo('edit-form');
   }
 
 }

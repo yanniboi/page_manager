@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Form\ConditionFormBase.
+ * Contains \Drupal\page_manager\Form\ConditionFormBase.
  */
 
-namespace Drupal\block_page\Form;
+namespace Drupal\page_manager\Form;
 
-use Drupal\block_page\BlockPageInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\TypedData\DataDefinition;
@@ -18,11 +18,11 @@ use Drupal\Core\TypedData\DataDefinition;
 abstract class ConditionFormBase extends FormBase {
 
   /**
-   * The block page this condition belongs to.
+   * The page entity this condition belongs to.
    *
-   * @var \Drupal\block_page\BlockPageInterface
+   * @var \Drupal\page_manager\PageInterface
    */
-  protected $blockPage;
+  protected $page;
 
   /**
    * The condition used by this form.
@@ -60,7 +60,7 @@ abstract class ConditionFormBase extends FormBase {
   abstract protected function submitMessageText();
 
   /**
-   * @return \Drupal\block_page\ContextHandler
+   * @return \Drupal\page_manager\ContextHandler
    */
   protected function contextHandler() {
     return \Drupal::service('context.handler');
@@ -69,8 +69,8 @@ abstract class ConditionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, BlockPageInterface $block_page = NULL, $condition_id = NULL) {
-    $this->blockPage = $block_page;
+  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $condition_id = NULL) {
+    $this->page = $page_manager;
     $this->condition = $this->prepareCondition($condition_id);
 
     // Allow the condition to add to the form.
@@ -78,7 +78,7 @@ abstract class ConditionFormBase extends FormBase {
     $form['condition']['#tree'] = TRUE;
 
     if ($this->condition instanceof ContextAwarePluginInterface) {
-      $form['context_assignments'] = $this->addContextAssignmentElement($this->condition, $this->blockPage->getContexts());
+      $form['context_assignments'] = $this->addContextAssignmentElement($this->condition, $this->page->getContexts());
     }
 
     $form['actions'] = array('#type' => 'actions');

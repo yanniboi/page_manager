@@ -2,20 +2,20 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Entity\BlockPageAccess.
+ * Contains \Drupal\page_manager\Entity\PageAccess.
  */
 
-namespace Drupal\block_page\Entity;
+namespace Drupal\page_manager\Entity;
 
-use Drupal\block_page\Plugin\ConditionAccessResolverTrait;
+use Drupal\page_manager\Plugin\ConditionAccessResolverTrait;
 use Drupal\Core\Entity\EntityAccessController;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 
 /**
- * Defines the access controller for the block page entity type.
+ * Defines the access controller for the page entity type.
  */
-class BlockPageAccess extends EntityAccessController {
+class PageAccess extends EntityAccessController {
 
   use ConditionAccessResolverTrait;
 
@@ -23,7 +23,7 @@ class BlockPageAccess extends EntityAccessController {
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, $langcode, AccountInterface $account) {
-    /** @var $entity \Drupal\block_page\BlockPageInterface */
+    /** @var $entity \Drupal\page_manager\PageInterface */
     if ($operation == 'view') {
       return $this->resolveConditions($entity->getAccessConditions(), $entity->getAccessLogic(), $entity->getContexts());
     }

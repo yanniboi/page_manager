@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\ConditionPluginBag.
+ * Contains \Drupal\page_manager\Plugin\ConditionPluginBag.
  */
 
-namespace Drupal\block_page\Plugin;
+namespace Drupal\page_manager\Plugin;
 
 use Drupal\Core\Plugin\DefaultPluginBag;
 

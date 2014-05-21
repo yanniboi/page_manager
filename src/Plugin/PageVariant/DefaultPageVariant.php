@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\PageVariant\DefaultPageVariant.
+ * Contains \Drupal\page_manager\Plugin\PageVariant\DefaultPageVariant.
  */
 
-namespace Drupal\block_page\Plugin\PageVariant;
+namespace Drupal\page_manager\Plugin\PageVariant;
 
-use Drupal\block_page\Plugin\PageVariantBase;
+use Drupal\page_manager\Plugin\PageVariantBase;
 
 /**
  * Provides a default page variant.

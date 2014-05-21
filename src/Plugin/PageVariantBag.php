@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\PageVariantBag.
+ * Contains \Drupal\page_manager\Plugin\PageVariantBag.
  */
 
-namespace Drupal\block_page\Plugin;
+namespace Drupal\page_manager\Plugin;
 
 use Drupal\Core\Plugin\DefaultPluginBag;
 
@@ -17,7 +17,7 @@ class PageVariantBag extends DefaultPluginBag {
   /**
    * {@inheritdoc}
    *
-   * @return \Drupal\block_page\Plugin\PageVariantInterface
+   * @return \Drupal\page_manager\Plugin\PageVariantInterface
    */
   public function &get($instance_id) {
     return parent::get($instance_id);

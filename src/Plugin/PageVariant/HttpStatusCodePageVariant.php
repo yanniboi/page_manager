@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\block_page\Plugin\PageVariant\HttpStatusCodePageVariant.
+ * Contains \Drupal\page_manager\Plugin\PageVariant\HttpStatusCodePageVariant.
  */
 
-namespace Drupal\block_page\Plugin\PageVariant;
+namespace Drupal\page_manager\Plugin\PageVariant;
 
-use Drupal\block_page\Plugin\PageVariantBase;
+use Drupal\page_manager\Plugin\PageVariantBase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
