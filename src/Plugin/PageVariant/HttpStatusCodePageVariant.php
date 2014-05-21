@@ -31,13 +31,6 @@ class HttpStatusCodePageVariant extends PageVariantBase {
   /**
    * {@inheritdoc}
    */
-  public function access() {
-    return TRUE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function buildConfigurationForm(array $form, array &$form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 

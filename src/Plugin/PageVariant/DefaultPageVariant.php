@@ -7,15 +7,12 @@
 
 namespace Drupal\block_page\Plugin\PageVariant;
 
-use Drupal\block_page\Plugin\ConditionAccessResolverTrait;
 use Drupal\block_page\Plugin\PageVariantBase;
 
 /**
  * Provides a default page variant.
  */
 class DefaultPageVariant extends PageVariantBase {
-
-  use ConditionAccessResolverTrait;
 
   /**
    * {@inheritdoc}
@@ -26,13 +23,6 @@ class DefaultPageVariant extends PageVariantBase {
       'top' => 'Top',
       'bottom' => 'Bottom',
     );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function access() {
-    return $this->resolveConditions($this->getSelectionConditions(), $this->getSelectionLogic(), $this->getContexts());
   }
 
   /**

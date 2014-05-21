@@ -17,6 +17,8 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
 
   use PluginDependencyTrait;
 
+  use ConditionAccessResolverTrait;
+
   /**
    * The plugin bag that holds the block plugins.
    *
@@ -280,6 +282,13 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   public function setContexts(array $contexts) {
     $this->contexts = $contexts;
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function access() {
+    return $this->resolveConditions($this->getSelectionConditions(), $this->getSelectionLogic(), $this->getContexts());
   }
 
   /**
