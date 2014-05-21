@@ -249,23 +249,23 @@ class ContextHandlerTest extends UnitTestCase {
     // Satisfied context with constraint, all plugins available.
     $data[] = array(array($context), $plugins, $plugins);
 
-    $typed_data = array(array('expected_data_type', array('required' => FALSE)));
+    $typed_data = array(array('expected_data_type', TRUE, array('required' => FALSE)));
     // Optional unsatisfied context from TypedData, all plugins available.
     $data[] = array(array(), $plugins, $plugins, $typed_data);
 
-    $typed_data = array(array('expected_data_type', array('required' => TRUE)));
+    $typed_data = array(array('expected_data_type', TRUE, array('required' => TRUE)));
     // Required unsatisfied context from TypedData, no plugins available.
     $data[] = array(array(), $plugins, array(), $typed_data);
 
-    $typed_data = array(array('expected_data_type', array('constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value'), 'required' => FALSE)));
+    $typed_data = array(array('expected_data_type', TRUE, array('constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value'), 'required' => FALSE)));
     // Optional mismatched constraint from TypedData, all plugins available.
     $data[] = array(array(), $plugins, $plugins, $typed_data);
 
-    $typed_data = array(array('expected_data_type', array('constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value'), 'required' => TRUE)));
+    $typed_data = array(array('expected_data_type', TRUE, array('constraints' => array('mismatched_constraint_name' => 'mismatched_constraint_value'), 'required' => TRUE)));
     // Required mismatched constraint from TypedData, no plugins available.
     $data[] = array(array(), $plugins, array(), $typed_data);
 
-    $typed_data = array(array('expected_data_type', array('constraints' => array('expected_constraint_name' => 'expected_constraint_value'))));
+    $typed_data = array(array('expected_data_type', TRUE, array('constraints' => array('expected_constraint_name' => 'expected_constraint_value'))));
     // Satisfied constraint from TypedData, all plugins available.
     $data[] = array(array($context), $plugins, $plugins, $typed_data);
 
@@ -274,8 +274,8 @@ class ContextHandlerTest extends UnitTestCase {
       'expected_plugin' => array('context' => array('context2' => array('type' => 'expected_data_type'))),
     );
     $typed_data = array(
-      array('unexpected_data_type', array()),
-      array('expected_data_type', array('constraints' => array('expected_constraint_name' => 'expected_constraint_value'))),
+      array('unexpected_data_type', TRUE, array()),
+      array('expected_data_type', TRUE, array('constraints' => array('expected_constraint_name' => 'expected_constraint_value'))),
     );
     // Context only satisfies one plugin.
     $data[] = array(array($context), $plugins, array('expected_plugin' => $plugins['expected_plugin']), $typed_data);
