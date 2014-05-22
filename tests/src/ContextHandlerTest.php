@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Tests;
 
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\page_manager\ContextHandler;
 use Drupal\Tests\UnitTestCase;
 
@@ -57,6 +58,10 @@ class ContextHandlerTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
     $this->contextHandler = new ContextHandler($this->typedDataManager);
+
+    $container = new ContainerBuilder();
+    $container->set('typed_data_manager', $this->typedDataManager);
+    \Drupal::setContainer($container);
   }
 
   /**
