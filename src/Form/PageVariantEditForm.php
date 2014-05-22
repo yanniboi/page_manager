@@ -32,8 +32,8 @@ class PageVariantEditForm extends PageVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL) {
-    $form = parent::buildForm($form, $form_state, $page_manager, $page_variant_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL) {
+    $form = parent::buildForm($form, $form_state, $page, $page_variant_id);
 
     // Set up the attributes used by a modal to prevent duplication later.
     $attributes = array(

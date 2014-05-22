@@ -55,7 +55,7 @@ class PageManagerAdminTest extends WebTestBase {
    */
   protected function doTestAddPage() {
     $this->drupalGet('admin/structure/page_manager');
-    $this->assertText('There is no Page Manager yet.');
+    $this->assertText('There is no Page yet.');
 
     // Add a new page.
     $this->clickLink('Add page');
@@ -175,7 +175,7 @@ class PageManagerAdminTest extends WebTestBase {
   /**
    * Finds a block based on its page, variant, and block label.
    *
-   * @param string $page_manager_id
+   * @param string $page_id
    *   The ID of the page entity.
    * @param string $page_variant_label
    *   The label of the page variant.
@@ -185,8 +185,8 @@ class PageManagerAdminTest extends WebTestBase {
    * @return \Drupal\block\BlockPluginInterface|null
    *   Either a block plugin, or NULL.
    */
-  protected function findBlockByLabel($page_manager_id, $page_variant_label, $block_label) {
-    $page_variant = $this->findPageVariantByLabel($page_manager_id, $page_variant_label);
+  protected function findBlockByLabel($page_id, $page_variant_label, $block_label) {
+    $page_variant = $this->findPageVariantByLabel($page_id, $page_variant_label);
     foreach ($page_variant->getRegionAssignments() as $blocks) {
       /** @var $blocks \Drupal\block\BlockPluginInterface[] */
       foreach ($blocks as $block) {
@@ -201,7 +201,7 @@ class PageManagerAdminTest extends WebTestBase {
   /**
    * Finds a page variant based on its page and page variant label.
    *
-   * @param string $page_manager_id
+   * @param string $page_id
    *   The ID of the page entity.
    * @param string $page_variant_label
    *   The label of the page variant.
@@ -209,10 +209,10 @@ class PageManagerAdminTest extends WebTestBase {
    * @return \Drupal\page_manager\Plugin\PageVariantInterface|null
    *   Either a page variant, or NULL.
    */
-  protected function findPageVariantByLabel($page_manager_id, $page_variant_label) {
-    $page_manager = \Drupal::entityManager()->getStorage('page')->load($page_manager_id);
-    /** @var $page_manager \Drupal\page_manager\PageInterface */
-    foreach ($page_manager->getPageVariants() as $page_variant) {
+  protected function findPageVariantByLabel($page_id, $page_variant_label) {
+    $page = \Drupal::entityManager()->getStorage('page')->load($page_id);
+    /** @var $page \Drupal\page_manager\PageInterface */
+    foreach ($page->getPageVariants() as $page_variant) {
       if ($page_variant->label() == $page_variant_label) {
         return $page_variant;
       }

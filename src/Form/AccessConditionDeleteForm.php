@@ -60,9 +60,9 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $condition_id = NULL) {
-    $this->page = $page_manager;
-    $this->accessCondition = $page_manager->getAccessCondition($condition_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $condition_id = NULL) {
+    $this->page = $page;
+    $this->accessCondition = $page->getAccessCondition($condition_id);
     return parent::buildForm($form, $form_state);
   }
 

@@ -25,9 +25,9 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL, $condition_id = NULL) {
-    $this->pageVariant = $page_manager->getPageVariant($page_variant_id);
-    return parent::buildForm($form, $form_state, $page_manager, $condition_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $condition_id = NULL) {
+    $this->pageVariant = $page->getPageVariant($page_variant_id);
+    return parent::buildForm($form, $form_state, $page, $condition_id);
   }
 
   /**

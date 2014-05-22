@@ -51,8 +51,8 @@ abstract class PageVariantFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $page_variant_id = NULL) {
-    $this->page = $page_manager;
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL) {
+    $this->page = $page;
     $this->pageVariant = $this->preparePageVariant($page_variant_id);
 
     // Allow the page variant to add to the form.

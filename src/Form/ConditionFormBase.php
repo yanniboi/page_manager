@@ -69,8 +69,8 @@ abstract class ConditionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page_manager = NULL, $condition_id = NULL) {
-    $this->page = $page_manager;
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $condition_id = NULL) {
+    $this->page = $page;
     $this->condition = $this->prepareCondition($condition_id);
 
     // Allow the condition to add to the form.

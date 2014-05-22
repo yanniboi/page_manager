@@ -84,7 +84,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
           '_title' => $entity->label(),
         ),
         array(
-          '_entity_access' => 'page_manager.view',
+          '_entity_access' => 'page.view',
         ),
         array(
           'parameters' => $parameters,

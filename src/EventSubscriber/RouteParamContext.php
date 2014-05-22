@@ -10,7 +10,6 @@ namespace Drupal\page_manager\EventSubscriber;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Routing\RouteProvider;
-use Drupal\Core\TypedData\TypedDataManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -54,8 +53,8 @@ class RouteParamContext implements EventSubscriberInterface {
    */
   public function onPageContext(PageManagerContextEvent $event) {
     $request = $this->requestStack->getCurrentRequest();
-    $page_manager = $event->getPage();
-    $routes = $this->routeProvider->getRoutesByPattern('/' . $page_manager->getPath())->all();
+    $page = $event->getPage();
+    $routes = $this->routeProvider->getRoutesByPattern('/' . $page->getPath())->all();
     $route = reset($routes);
 
     if ($route_contexts = $route->getOption('parameters')) {
@@ -72,7 +71,7 @@ class RouteParamContext implements EventSubscriberInterface {
         else {
           // @todo Find a way to add in a fake value for configuration.
         }
-        $page_manager->addContext($route_context_name, $context);
+        $page->addContext($route_context_name, $context);
       }
     }
   }
