@@ -9,12 +9,20 @@ namespace Drupal\page_manager\Plugin;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Plugin\Exception\PluginException;
-use Drupal\Core\Condition\ConditionInterface;
 
 /**
  * Resolves a set of conditions.
  */
 trait ConditionAccessResolverTrait {
+
+  /**
+   * Wraps the context handler.
+   *
+   * @return \Drupal\page_manager\ContextHandler
+   */
+  protected function contextHandler() {
+    return \Drupal::service('context.handler');
+  }
 
   /**
    * Resolves the given conditions based on the condition logic ('and'/'or').
@@ -31,7 +39,9 @@ trait ConditionAccessResolverTrait {
    */
   protected function resolveConditions($conditions, $condition_logic, $contexts = array()) {
     foreach ($conditions as $condition) {
-      $this->prepareCondition($condition, $contexts);
+      if ($condition instanceof ContextAwarePluginInterface) {
+        $this->contextHandler()->preparePluginContext($condition, $contexts);
+      }
 
       try {
         $pass = $condition->execute();
@@ -53,33 +63,6 @@ trait ConditionAccessResolverTrait {
 
     // If no conditions passed and one condition was required, deny access.
     return $condition_logic == 'and';
-  }
-
-  /**
-   * Prepares a condition for evaluation.
-   *
-   * @param \Drupal\Core\Condition\ConditionInterface $condition
-   *   A condition about to be evaluated.
-   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
-   *   An array of contexts to set on the condition.
-   */
-  protected function prepareCondition(ConditionInterface $condition, $contexts) {
-    if ($condition instanceof ContextAwarePluginInterface) {
-      // @todo Find a better way to handle unwanted context.
-      $condition_contexts = $condition->getContextDefinitions();
-
-      // @todo Find a better way to load context assignments.
-      $configuration = $condition->getConfiguration();
-      $assignments = isset($configuration['context_assignments']) ? array_flip($configuration['context_assignments']) : array();
-
-      foreach ($contexts as $name => $context) {
-        // If this context was given a specific name, use that.
-        $name = isset($assignments[$name]) ? $assignments[$name] : $name;
-        if (isset($condition_contexts[$name])) {
-          $condition->setContextValue($name, $context->getContextValue());
-        }
-      }
-    }
   }
 
 }

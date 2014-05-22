@@ -7,7 +7,9 @@
 
 namespace Drupal\page_manager;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\Context\ContextInterface;
+use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
@@ -136,6 +138,36 @@ class ContextHandler {
       // All contexts with matching data type and contexts are valid.
       return TRUE;
     });
+  }
+
+  /**
+   * Prepares a plugin for evaluation.
+   *
+   * @param \Drupal\Component\Plugin\ContextAwarePluginInterface $plugin
+   *   A plugin about to be evaluated.
+   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
+   *   An array of contexts to set on the plugin.
+   */
+  public function preparePluginContext(ContextAwarePluginInterface $plugin, $contexts) {
+    // @todo Find a better way to handle unwanted context.
+    $plugin_contexts = $plugin->getContextDefinitions();
+
+    $assignments = array();
+    // @todo Find a better way to load context assignments.
+    if ($plugin instanceof ConfigurablePluginInterface) {
+      $configuration = $plugin->getConfiguration();
+      if (isset($configuration['context_assignments'])) {
+        $assignments = array_flip($configuration['context_assignments']);
+      }
+    }
+
+    foreach ($contexts as $name => $context) {
+      // If this context was given a specific name, use that.
+      $name = isset($assignments[$name]) ? $assignments[$name] : $name;
+      if (isset($plugin_contexts[$name])) {
+        $plugin->setContextValue($name, $context->getContextValue());
+      }
+    }
   }
 
 }

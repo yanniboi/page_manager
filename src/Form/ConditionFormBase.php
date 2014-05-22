@@ -10,12 +10,14 @@ namespace Drupal\page_manager\Form;
 use Drupal\page_manager\PageInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
-use Drupal\Core\TypedData\DataDefinition;
+use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
 
 /**
  * Provides a base form for editing and adding a condition.
  */
 abstract class ConditionFormBase extends FormBase {
+
+  use ContextAwarePluginAssignmentTrait;
 
   /**
    * The page entity this condition belongs to.
@@ -60,13 +62,6 @@ abstract class ConditionFormBase extends FormBase {
   abstract protected function submitMessageText();
 
   /**
-   * @return \Drupal\page_manager\ContextHandler
-   */
-  protected function contextHandler() {
-    return \Drupal::service('context.handler');
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $condition_id = NULL) {
@@ -92,47 +87,6 @@ abstract class ConditionFormBase extends FormBase {
   }
 
   /**
-   * Builds a form element for assigning a context to a given slot.
-   *
-   * @param \Drupal\Component\Plugin\ContextAwarePluginInterface $condition
-   *   The context-aware condition plugin.
-   * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
-   *   An array of contexts.
-   *
-   * @return array
-   *   A form element for assigning context.
-   */
-  protected function addContextAssignmentElement(ContextAwarePluginInterface $condition, $contexts) {
-    $element = array();
-    $element['#tree'] = TRUE;
-    foreach ($condition->getContextDefinitions() as $context_slot => $definition) {
-      // Assume the requirement is required if unspecified.
-      $definition['required'] = isset($definition['required']) ? $definition['required'] : TRUE;
-      $definition = new DataDefinition($definition);
-
-      $valid_contexts = $this->contextHandler()->getValidContexts($contexts, $definition);
-      $options = array();
-      foreach ($valid_contexts as $context_id => $context) {
-        $context_definition = new DataDefinition($context->getContextDefinition());
-        $options[$context_id] = $context_definition->getLabel();
-      }
-
-      // @todo Find a better way to load context assignments.
-      $configuration = $condition->getConfiguration();
-      $assignments = isset($configuration['context_assignments']) ? $configuration['context_assignments'] : array();
-
-      $element[$context_slot] = array(
-        '#title' => $this->t('Select a @context value:', array('@context' => $context_slot)),
-        '#type' => 'select',
-        '#options' => $options,
-        '#required' => $definition->isRequired(),
-        '#default_value' => !empty($assignments[$context_slot]) ? $assignments[$context_slot] : '',
-      );
-    }
-    return $element;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, array &$form_state) {
@@ -154,10 +108,7 @@ abstract class ConditionFormBase extends FormBase {
     $this->condition->submitConfigurationForm($form, $condition_values);
 
     if (!empty($form_state['values']['context_assignments'])) {
-      // @todo Consider creating a ContextAwareConditionPluginBase to handle this.
-      $configuration = $this->condition->getConfiguration();
-      $configuration['context_assignments'] = $form_state['values']['context_assignments'];
-      $this->condition->setConfiguration($configuration);
+      $this->submitContextAssignment($this->condition, $form_state['values']['context_assignments']);
     }
 
     // Set the submission message.
