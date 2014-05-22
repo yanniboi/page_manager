@@ -8,6 +8,8 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\page_manager\PageInterface;
+use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
+use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Url;
 
@@ -15,6 +17,8 @@ use Drupal\Core\Url;
  * Provides a base form for configuring a block as part of a page variant.
  */
 abstract class PageVariantConfigureBlockFormBase extends FormBase {
+
+  use ContextAwarePluginAssignmentTrait;
 
   /**
    * The page entity.
@@ -78,6 +82,10 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
       '#required' => TRUE,
     );
 
+    if ($this->block instanceof ContextAwarePluginInterface) {
+      $form['context_assignments'] = $this->addContextAssignmentElement($this->block, $this->page->getContexts());
+    }
+
     $form['actions']['submit'] = array(
       '#type' => 'submit',
       '#value' => $this->submitText(),
@@ -108,6 +116,11 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
 
     // Call the plugin submit handler.
     $this->block->submitConfigurationForm($form, $settings);
+
+    if (!empty($form_state['values']['context_assignments'])) {
+      $this->submitContextAssignment($this->block, $form_state['values']['context_assignments']);
+    }
+
     $this->pageVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state['values']['region']));
     $this->page->save();
 

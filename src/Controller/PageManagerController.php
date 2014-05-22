@@ -272,7 +272,8 @@ class PageManagerController extends ControllerBase {
         ),
       ),
     );
-    foreach ($this->blockManager->getSortedDefinitions() as $plugin_id => $plugin_definition) {
+    $available_plugins = $this->contextHandler->getAvailablePlugins($page->getContexts(), $this->blockManager);
+    foreach ($available_plugins as $plugin_id => $plugin_definition) {
       // Make a section for each region.
       $category = String::checkPlain($plugin_definition['category']);
       $category_key = 'category-' . $category;
