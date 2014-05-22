@@ -26,6 +26,15 @@ class PageVariantBag extends DefaultPluginBag {
   /**
    * {@inheritdoc}
    */
+  public function sort() {
+    // @todo Determine the reason this needs error suppression.
+    @uasort($this->instanceIDs, array($this, 'sortHelper'));
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function sortHelper($aID, $bID) {
     $a_weight = $this->get($aID)->getWeight();
     $b_weight = $this->get($bID)->getWeight();
