@@ -16,8 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Provides a block to view a specific entity.
  *
- * @todo Provide the ability to select a view mode.
- *
  * @Block(
  *   id = "entity_view",
  *   derivative = "Drupal\page_manager\Plugin\Deriver\EntityViewDeriver",
@@ -65,11 +63,40 @@ class EntityView extends BlockBase implements ContextAwarePluginInterface, Conta
   /**
    * {@inheritdoc}
    */
+  public function defaultConfiguration() {
+    return array(
+      'view_mode' => 'default',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function blockForm($form, &$form_state) {
+    $form['view_mode'] = array(
+      '#type' => 'select',
+      '#options' => $this->entityManager->getViewModeOptions($this->getDerivativeId()),
+      '#title' => $this->t('View mode'),
+      '#default_value' => $this->configuration['view_mode'],
+    );
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function blockSubmit($form, &$form_state) {
+    $this->configuration['view_mode'] = $form_state['values']['view_mode'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function build() {
     /** @var $entity \Drupal\Core\Entity\EntityInterface */
     $entity = $this->getContextValue('entity');
     $view_builder = $this->entityManager->getViewBuilder($entity->getEntityTypeId());
-    return $view_builder->view($entity);
+    return $view_builder->view($entity, $this->configuration['view_mode']);
   }
 
 }
