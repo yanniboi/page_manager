@@ -92,7 +92,7 @@ class PageManagerAdminTest extends WebTestBase {
   protected function doTestAddPageVariant() {
     // Add a new page variant.
     $this->clickLink('Add new page variant');
-    $this->clickLink('Landing page');
+    $this->clickLink('Block page');
     $edit = array(
       'page_variant[label]' => 'First',
     );

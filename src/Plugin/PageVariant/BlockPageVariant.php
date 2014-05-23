@@ -2,23 +2,27 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Plugin\PageVariant\DefaultPageVariant.
+ * Contains \Drupal\page_manager\Plugin\PageVariant\BlockPageVariant.
  */
 
 namespace Drupal\page_manager\Plugin\PageVariant;
 
-use Drupal\Core\Session\AccountInterface;
-use Drupal\page_manager\ContextHandler;
-use Drupal\page_manager\Plugin\ConditionAccessResolverTrait;
-use Drupal\page_manager\Plugin\PageVariantBase;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\page_manager\ContextHandler;
+use Drupal\page_manager\Plugin\PageVariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides a default page variant.
+ * Provides a page variant that simply contains blocks.
+ *
+ * @PageVariant(
+ *   id = "block_page",
+ *   admin_label = @Translation("Block page")
+ * )
  */
-class DefaultPageVariant extends PageVariantBase implements ContainerFactoryPluginInterface {
+class BlockPageVariant extends PageVariantBase implements ContainerFactoryPluginInterface {
 
   /**
    * The context handler.
@@ -35,7 +39,7 @@ class DefaultPageVariant extends PageVariantBase implements ContainerFactoryPlug
   protected $account;
 
   /**
-   * Constructs a new DefaultPageVariant.
+   * Constructs a new BlockPageVariant.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -72,7 +76,6 @@ class DefaultPageVariant extends PageVariantBase implements ContainerFactoryPlug
    * {@inheritdoc}
    */
   public function getRegionNames() {
-    // @todo Reference an external object of some kind, like a Layout.
     return array(
       'top' => 'Top',
       'bottom' => 'Bottom',

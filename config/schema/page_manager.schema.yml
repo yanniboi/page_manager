@@ -56,9 +56,9 @@ page_manager.page_variant:
       type: string
       label: 'UUID'
 
-page_manager.page_variant.landing:
+page_manager.page_variant.block_page:
   type: page_manager.page_variant
-  label: 'Landing page variant'
+  label: 'Block page variant'
 
 page_manager.page_variant.http_status_code:
   type: page_manager.page_variant
