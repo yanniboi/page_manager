@@ -186,12 +186,13 @@ class PageManagerAdminTest extends WebTestBase {
    *   Either a block plugin, or NULL.
    */
   protected function findBlockByLabel($page_id, $page_variant_label, $block_label) {
-    $page_variant = $this->findPageVariantByLabel($page_id, $page_variant_label);
-    foreach ($page_variant->getRegionAssignments() as $blocks) {
-      /** @var $blocks \Drupal\block\BlockPluginInterface[] */
-      foreach ($blocks as $block) {
-        if ($block->label() == $block_label) {
-          return $block;
+    if ($page_variant = $this->findPageVariantByLabel($page_id, $page_variant_label)) {
+      foreach ($page_variant->getRegionAssignments() as $blocks) {
+        /** @var $blocks \Drupal\block\BlockPluginInterface[] */
+        foreach ($blocks as $block) {
+          if ($block->label() == $block_label) {
+            return $block;
+          }
         }
       }
     }
@@ -210,11 +211,12 @@ class PageManagerAdminTest extends WebTestBase {
    *   Either a page variant, or NULL.
    */
   protected function findPageVariantByLabel($page_id, $page_variant_label) {
-    $page = \Drupal::entityManager()->getStorage('page')->load($page_id);
-    /** @var $page \Drupal\page_manager\PageInterface */
-    foreach ($page->getPageVariants() as $page_variant) {
-      if ($page_variant->label() == $page_variant_label) {
-        return $page_variant;
+    if ($page = \Drupal::entityManager()->getStorage('page')->load($page_id)) {
+      /** @var $page \Drupal\page_manager\PageInterface */
+      foreach ($page->getPageVariants() as $page_variant) {
+        if ($page_variant->label() == $page_variant_label) {
+          return $page_variant;
+        }
       }
     }
     return NULL;
