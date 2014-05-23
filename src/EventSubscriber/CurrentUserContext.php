@@ -56,8 +56,12 @@ class CurrentUserContext implements EventSubscriberInterface {
    */
   public function onPageContext(PageManagerContextEvent $event) {
     $current_user = $this->userStorage->load($this->accountProxy->getAccount()->id());
+
+    // @todo Remove constraints and change type to 'entity:user' once
+    //   https://drupal.org/node/2272161 is in.
     $context = new Context(array(
-      'type' => 'entity:user',
+      'type' => 'entity',
+      'constraints' => array('EntityType' => 'user'),
       'label' => $this->t('Current user'),
     ));
     $context->setContextValue($current_user);
