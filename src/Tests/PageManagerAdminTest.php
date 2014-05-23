@@ -48,6 +48,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestAddBlock();
     $this->doTestEditPageVariant();
     $this->doTestReorderPageVariants();
+    $this->doTestAddPageWithDuplicatePath();
   }
 
   /**
@@ -170,6 +171,22 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalPostForm('admin/structure/page_manager/manage/foo', $edit, 'Save');
     $this->drupalGet('admin/foo');
     $this->assertResponse(403);
+  }
+
+  /**
+   * Tests adding a page with a duplicate path.
+   */
+  protected function doTestAddPageWithDuplicatePath() {
+    // Try to add a second page with the same path.
+    $edit = array(
+      'label' => 'Bar',
+      'id' => 'bar',
+      'path' => 'admin/foo',
+    );
+    $this->drupalPostForm('admin/structure/page_manager/add', $edit, 'Save');
+    $this->assertText('The page path must be unique.');
+    $this->drupalGet('admin/structure/page_manager');
+    $this->assertNoText('Bar');
   }
 
   /**

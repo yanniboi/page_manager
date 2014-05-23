@@ -8,6 +8,8 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Entity\Query\QueryFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a base form for editing and adding a page entity.
@@ -20,6 +22,32 @@ abstract class PageFormBase extends EntityForm {
    * @var \Drupal\page_manager\PageInterface
    */
   protected $entity;
+
+  /**
+   * The entity query factory.
+   *
+   * @var \Drupal\Core\Entity\Query\QueryFactory
+   */
+  protected $entityQuery;
+
+  /**
+   * Construct a new PageFormBase.
+   *
+   * @param \Drupal\Core\Entity\Query\QueryFactory
+   *   The entity query factory.
+   */
+  public function __construct(QueryFactory $entity_query) {
+    $this->entityQuery = $entity_query;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity.query')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -44,7 +72,7 @@ abstract class PageFormBase extends EntityForm {
     );
     $form['path'] = array(
       '#type' => 'textfield',
-      '#title' => t('Path'),
+      '#title' => $this->t('Path'),
       '#maxlength' => 255,
       '#default_value' => $this->entity->getPath(),
       '#required' => TRUE,
@@ -63,9 +91,26 @@ abstract class PageFormBase extends EntityForm {
    *   TRUE if the format exists, FALSE otherwise.
    */
   public function exists($id) {
-    return (bool) \Drupal::entityQuery('page')
+    return (bool) $this->entityQuery->get('page')
       ->condition('id', $id)
       ->execute();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validate(array $form, array &$form_state) {
+    parent::validate($form, $form_state);
+
+    // Ensure each path is unique.
+    $path = $this->entityQuery->get('page')
+      ->condition('path', $form_state['values']['path'])
+      ->condition('id', $form_state['values']['id'], '<>')
+      ->execute();
+    if ($path) {
+      $this->setFormError('path', $form_state, $this->t('The page path must be unique.'));
+    }
+
   }
 
   /**
