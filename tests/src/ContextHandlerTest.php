@@ -7,6 +7,8 @@
 
 namespace Drupal\page_manager\Tests;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
+use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\page_manager\ContextHandler;
 use Drupal\Tests\UnitTestCase;
@@ -288,4 +290,91 @@ class ContextHandlerTest extends UnitTestCase {
     return $data;
   }
 
+  /**
+   * @covers ::preparePluginContext
+   */
+  public function testPreparePluginContext() {
+    $context_hit = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context_hit->expects($this->atLeastOnce())
+      ->method('getContextValue')
+      ->will($this->returnValue(array('foo')));
+    $context_miss = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context_miss->expects($this->never())
+      ->method('getContextValue');
+
+    $contexts = array(
+      'hit' => $context_hit,
+      'miss' => $context_miss,
+    );
+
+    $plugin = $this->getMock('Drupal\Component\Plugin\ContextAwarePluginInterface');
+    $plugin->expects($this->once())
+      ->method('getContextDefinitions')
+      ->will($this->returnValue(array('hit' => 'hit')));
+    $plugin->expects($this->once())
+      ->method('setContextValue')
+      ->with('hit', array('foo'));
+
+    $this->contextHandler->preparePluginContext($plugin, $contexts);
+  }
+
+  /**
+   * @covers ::preparePluginContext
+   */
+  public function testPreparePluginContextConfigurable() {
+    $context = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context->expects($this->never())
+      ->method('getContextValue');
+
+    $contexts = array(
+      'name' => $context,
+    );
+
+    $plugin = $this->getMock('Drupal\page_manager\Tests\TestConfigurableContextAwarePluginInterface');
+    $plugin->expects($this->once())
+      ->method('getContextDefinitions')
+      ->will($this->returnValue(array('hit' => 'hit')));
+    $plugin->expects($this->once())
+      ->method('getConfiguration')
+      ->will($this->returnValue(array()));
+    $plugin->expects($this->never())
+      ->method('setContextValue');
+
+    $this->contextHandler->preparePluginContext($plugin, $contexts);
+  }
+
+  /**
+   * @covers ::preparePluginContext
+   */
+  public function testPreparePluginContextConfigurableAssigned() {
+    $context = $this->getMock('Drupal\Component\Plugin\Context\ContextInterface');
+    $context->expects($this->atLeastOnce())
+      ->method('getContextValue')
+      ->will($this->returnValue(array('foo')));
+
+    $contexts = array(
+      'name' => $context,
+    );
+
+    $plugin = $this->getMock('Drupal\page_manager\Tests\TestConfigurableContextAwarePluginInterface');
+    $plugin->expects($this->once())
+      ->method('getContextDefinitions')
+      ->will($this->returnValue(array('hit' => 'hit')));
+    $plugin->expects($this->once())
+      ->method('getConfiguration')
+      ->will($this->returnValue(array(
+        'context_assignments' => array(
+          'hit' => 'name',
+        ),
+      )));
+    $plugin->expects($this->once())
+      ->method('setContextValue')
+      ->with('hit', array('foo'));
+
+    $this->contextHandler->preparePluginContext($plugin, $contexts);
+  }
+
+}
+
+interface TestConfigurableContextAwarePluginInterface extends ContextAwarePluginInterface, ConfigurablePluginInterface {
 }
