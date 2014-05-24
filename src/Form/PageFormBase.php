@@ -76,6 +76,7 @@ abstract class PageFormBase extends EntityForm {
       '#maxlength' => 255,
       '#default_value' => $this->entity->getPath(),
       '#required' => TRUE,
+      '#element_validate' => array(array($this, 'validatePath')),
     );
 
     return parent::form($form, $form_state);
@@ -99,12 +100,14 @@ abstract class PageFormBase extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function validate(array $form, array &$form_state) {
-    parent::validate($form, $form_state);
+  public function validatePath(&$element, &$form_state) {
+    // Ensure the path has a leading slash.
+    $value = '/' . trim($element['#value'], '/');
+    form_set_value($element, $value, $form_state);
 
     // Ensure each path is unique.
     $path = $this->entityQuery->get('page')
-      ->condition('path', $form_state['values']['path'])
+      ->condition('path', $value)
       ->condition('id', $form_state['values']['id'], '<>')
       ->execute();
     if ($path) {

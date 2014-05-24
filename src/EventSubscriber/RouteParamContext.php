@@ -54,7 +54,7 @@ class RouteParamContext implements EventSubscriberInterface {
   public function onPageContext(PageManagerContextEvent $event) {
     $request = $this->requestStack->getCurrentRequest();
     $page = $event->getPage();
-    $routes = $this->routeProvider->getRoutesByPattern('/' . $page->getPath())->all();
+    $routes = $this->routeProvider->getRoutesByPattern($page->getPath())->all();
     $route = reset($routes);
 
     if ($route_contexts = $route->getOption('parameters')) {
