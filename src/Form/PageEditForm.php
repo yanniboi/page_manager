@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
 
@@ -28,6 +29,13 @@ class PageEditForm extends PageFormBase {
         'width' => 'auto',
       )),
     );
+    $add_button_attributes = NestedArray::mergeDeep($attributes, array(
+      'class' => array(
+        'button',
+        'button--small',
+        'button-action',
+      )
+    ));
 
     $form['page_variant_section'] = array(
       '#type' => 'details',
@@ -41,7 +49,7 @@ class PageEditForm extends PageFormBase {
       '#route_parameters' => array(
         'page' => $this->entity->id(),
       ),
-      '#attributes' => $attributes,
+      '#attributes' => $add_button_attributes,
       '#attached' => array(
         'library' => array(
           'core/drupal.ajax',
@@ -124,7 +132,7 @@ class PageEditForm extends PageFormBase {
         '#route_parameters' => array(
           'page' => $this->entity->id(),
         ),
-        '#attributes' => $attributes,
+        '#attributes' => $add_button_attributes,
         '#attached' => array(
           'library' => array(
             'core/drupal.ajax',

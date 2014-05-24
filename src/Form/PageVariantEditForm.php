@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\page_manager\PageInterface;
 use Drupal\Component\Serialization\Json;
 
@@ -43,6 +44,13 @@ class PageVariantEditForm extends PageVariantFormBase {
         'width' => 'auto',
       )),
     );
+    $add_button_attributes = NestedArray::mergeDeep($attributes, array(
+      'class' => array(
+        'button',
+        'button--small',
+        'button-action',
+      )
+    ));
 
     if ($block_assignments = $this->pageVariant->getRegionAssignments()) {
       // Build a table of all blocks used by this page variant.
@@ -59,7 +67,7 @@ class PageVariantEditForm extends PageVariantFormBase {
           'page' => $this->page->id(),
           'page_variant_id' => $this->pageVariant->id(),
         ),
-        '#attributes' => $attributes,
+        '#attributes' => $add_button_attributes,
         '#attached' => array(
           'library' => array(
             'core/drupal.ajax',
@@ -189,7 +197,7 @@ class PageVariantEditForm extends PageVariantFormBase {
           'page' => $this->page->id(),
           'page_variant_id' => $this->pageVariant->id(),
         ),
-        '#attributes' => $attributes,
+        '#attributes' => $add_button_attributes,
         '#attached' => array(
           'library' => array(
             'core/drupal.ajax',
