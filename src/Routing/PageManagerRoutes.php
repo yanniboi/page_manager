@@ -43,6 +43,11 @@ class PageManagerRoutes extends RouteSubscriberBase {
     foreach ($this->entityStorage->loadMultiple() as $entity_id => $entity) {
       /** @var $entity \Drupal\page_manager\PageInterface */
 
+      // If the page is disabled skip making a route for it.
+      if (!$entity->status()) {
+        continue;
+      }
+
       // Prepare a route name to use if this is a custom page.
       $route_name = "page_manager.page_view_$entity_id";
 

@@ -9,6 +9,7 @@ namespace Drupal\page_manager\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\page_manager\PageInterface;
 
 /**
  * Provides a list builder for page entities.
@@ -32,12 +33,36 @@ class PageListBuilder extends ConfigEntityListBuilder {
     /** @var $entity \Drupal\page_manager\PageInterface */
     $row['label'] = $this->getLabel($entity);
     $row['id'] = $entity->id();
-    $row['path']['data'] = array(
-      '#type' => 'link',
-      '#href' => $entity->getPath(),
-      '#title' => $entity->getPath(),
-    );
+    $row['path'] = $this->getPath($entity);
+
     return $row + parent::buildRow($entity);
+  }
+
+  /**
+   * Gets the displayable path of a page entity.
+   *
+   * @param \Drupal\page_manager\PageInterface $entity
+   *   The page entity.
+   *
+   * @return array|string
+   *   The value of the path.
+   */
+  protected function getPath(PageInterface $entity) {
+    // If the page is enabled and not dynamic, show the path as a link,
+    // otherwise as plain text.
+    $path = $entity->getPath();
+    if ($entity->status() && strpos($path, '%') === FALSE) {
+      return array(
+        'data' => array(
+          '#type' => 'link',
+          '#href' => $path,
+          '#title' => $path,
+        ),
+      );
+    }
+    else {
+      return $path;
+    }
   }
 
 }

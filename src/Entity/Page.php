@@ -33,12 +33,15 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *   admin_permission = "administer pages",
  *   entity_keys = {
  *     "id" = "id",
- *     "label" = "label"
+ *     "label" = "label",
+ *     "status" = "status"
  *   },
  *   links = {
  *     "add-form" = "page_manager.page_add",
  *     "edit-form" = "page_manager.page_edit",
  *     "delete-form" = "page_manager.page_delete",
+ *     "enable" = "page_manager.page_enable",
+ *     "disable" = "page_manager.page_disable"
  *   }
  * )
  */

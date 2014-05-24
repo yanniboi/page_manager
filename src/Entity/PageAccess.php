@@ -25,6 +25,10 @@ class PageAccess extends EntityAccessController {
   protected function checkAccess(EntityInterface $entity, $operation, $langcode, AccountInterface $account) {
     /** @var $entity \Drupal\page_manager\PageInterface */
     if ($operation == 'view') {
+      if (!$entity->status()) {
+        return FALSE;
+      }
+
       return $this->resolveConditions($entity->getAccessConditions(), $entity->getAccessLogic(), $entity->getContexts());
     }
     return parent::checkAccess($entity, $operation, $langcode, $account);

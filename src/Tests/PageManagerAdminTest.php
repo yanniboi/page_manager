@@ -44,6 +44,7 @@ class PageManagerAdminTest extends WebTestBase {
    */
   public function testAdmin() {
     $this->doTestAddPage();
+    $this->doTestDisablePage();
     $this->doTestAddPageVariant();
     $this->doTestAddBlock();
     $this->doTestEditPageVariant();
@@ -87,9 +88,31 @@ class PageManagerAdminTest extends WebTestBase {
   }
 
   /**
+   * Tests disabling a page.
+   */
+  protected function doTestDisablePage() {
+    $this->drupalGet('admin/foo');
+    $this->assertResponse(403);
+
+    $this->drupalGet('admin/structure/page_manager');
+    $this->clickLink('Disable');
+    $this->drupalGet('admin/foo');
+    // The page should not be found if the page is enabled.
+    $this->assertResponse(404);
+
+    $this->drupalGet('admin/structure/page_manager');
+    $this->clickLink('Enable');
+    $this->drupalGet('admin/foo');
+    // Re-enabling the page should make this path available.
+    $this->assertResponse(403);
+  }
+
+  /**
    * Tests adding a page variant.
    */
   protected function doTestAddPageVariant() {
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
+
     // Add a new page variant.
     $this->clickLink('Add new page variant');
     $this->clickLink('Block page');

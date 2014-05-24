@@ -145,6 +145,30 @@ class PageManagerController extends ControllerBase {
   }
 
   /**
+   * Enables or disables a Page.
+   *
+   * @param \Drupal\page_manager\PageInterface $page
+   *   The page entity.
+   * @param string $op
+   *   The operation to perform, usually 'enable' or 'disable'.
+   *
+   * @return \Symfony\Component\HttpFoundation\RedirectResponse
+   *   A redirect back to the pages list page.
+   */
+  public function performPageOperation(PageInterface $page, $op) {
+    $page->$op()->save();
+
+    if ($op == 'enable') {
+      drupal_set_message($this->t('The %label page has been enabled.', array('%label' => $page->label())));
+    }
+    elseif ($op == 'disable') {
+      drupal_set_message($this->t('The %label page has been disabled.', array('%label' => $page->label())));
+    }
+
+    return $this->redirect('page_manager.page_list');
+  }
+
+  /**
    * Presents a list of page variants to add to the page entity.
    *
    * @param \Drupal\page_manager\PageInterface $page

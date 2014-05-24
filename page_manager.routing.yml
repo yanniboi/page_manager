@@ -32,6 +32,22 @@ page_manager.page_delete:
   requirements:
     _entity_access: page.delete
 
+page_manager.page_enable:
+  path: '/admin/structure/page_manager/manage/{page}/enable'
+  defaults:
+    _controller: '\Drupal\page_manager\Controller\PageManagerController::performPageOperation'
+    op: 'enable'
+  requirements:
+    _entity_access: 'page.update'
+
+page_manager.page_disable:
+  path: '/admin/structure/page_manager/manage/{page}/disable'
+  defaults:
+    _controller: '\Drupal\page_manager\Controller\PageManagerController::performPageOperation'
+    op: 'disable'
+  requirements:
+    _entity_access: 'page.update'
+
 #### Access Conditions
 
 page_manager.access_condition_select:
