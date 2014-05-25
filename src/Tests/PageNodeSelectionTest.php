@@ -79,6 +79,15 @@ class PageNodeSelectionTest extends WebTestBase {
     );
     $this->drupalPostForm(NULL, $edit, 'Add page variant');
 
+    // Add the entity view block.
+    $this->clickLink('Add new block');
+    $this->clickLink('Entity view (Content)');
+    $edit = array(
+      'region' => 'top',
+      'context_assignments[entity]' => 'node',
+    );
+    $this->drupalPostForm(NULL, $edit, 'Add block');
+
     // Add a node bundle condition for articles.
     $this->clickLink('Add new selection condition');
     $this->clickLink('Node Bundle');
@@ -90,10 +99,13 @@ class PageNodeSelectionTest extends WebTestBase {
     // The page node will 404, but the article node will display the page variant.
     $this->drupalGet('node/' . $node1->id());
     $this->assertResponse(404);
+    $this->assertNoText('Node View');
     $this->assertNoText($node1->label());
+
     $this->drupalGet('node/' . $node2->id());
     $this->assertResponse(200);
     $this->assertText('Node View');
+    $this->assertText($node2->label());
   }
 
 }
