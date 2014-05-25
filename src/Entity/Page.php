@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Entity;
 
+use Drupal\page_manager\Event\PageManagerEvents;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Plugin\ConditionPluginBag;
@@ -300,7 +301,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function getContexts() {
     if (!$this->contexts) {
-      $this->eventDispatcher()->dispatch('page_manager_context', new PageManagerContextEvent($this));
+      $this->eventDispatcher()->dispatch(PageManagerEvents::PAGE_CONTEXT, new PageManagerContextEvent($this));
     }
     return $this->contexts;
   }

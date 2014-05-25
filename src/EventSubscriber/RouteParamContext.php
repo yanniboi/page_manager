@@ -10,6 +10,7 @@ namespace Drupal\page_manager\EventSubscriber;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Routing\RouteProvider;
+use Drupal\page_manager\Event\PageManagerEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -88,7 +89,7 @@ class RouteParamContext implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events['page_manager_context'][] = 'onPageContext';
+    $events[PageManagerEvents::PAGE_CONTEXT][] = 'onPageContext';
     return $events;
   }
 

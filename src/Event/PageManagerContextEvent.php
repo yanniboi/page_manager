@@ -13,6 +13,8 @@ use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Wraps a page entity for event subscribers.
+ *
+ * @see \Drupal\page_manager\Event\PageManagerEvents::PAGE_CONTEXT
  */
 class PageManagerContextEvent extends Event {
 
