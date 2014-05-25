@@ -36,7 +36,7 @@ page_manager.page.*:
       type: sequence
       label: 'Access Conditions'
       sequence:
-        - type: page_manager.access_condition
+        - type: page_manager.condition
           label: 'Access Condition'
     dependencies:
       type: config_dependencies
@@ -58,6 +58,12 @@ page_manager.page_variant:
     uuid:
       type: string
       label: 'UUID'
+    selection_conditions:
+      type: sequence
+      label: 'Selection Conditions'
+      sequence:
+        - type: page_manager.condition
+          label: 'Selection Condition'
 
 page_manager.page_variant.block_page:
   type: page_manager.page_variant
@@ -67,9 +73,9 @@ page_manager.page_variant.http_status_code:
   type: page_manager.page_variant
   label: 'HTTP status code page variant'
 
-page_manager.access_condition:
+page_manager.condition:
   type: mapping
-  label: 'Access Condition'
+  label: 'Condition'
   mapping:
     id:
       type: string
