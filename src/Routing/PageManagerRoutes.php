@@ -93,6 +93,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
         ),
         array(
           'parameters' => $parameters,
+          '_admin_route' => $entity->usesAdminTheme(),
         )
       );
       $collection->add($route_name, $route);

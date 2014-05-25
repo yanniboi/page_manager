@@ -22,6 +22,12 @@ class PageEditForm extends PageFormBase {
    */
   public function form(array $form, array &$form_state) {
     $form = parent::form($form, $form_state);
+
+    $form['use_admin_theme'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use admin theme'),
+      '#default_value' => $this->entity->usesAdminTheme(),
+    );
     $attributes = array(
       'class' => array('use-ajax'),
       'data-accepts' => 'application/vnd.drupal-modal',

@@ -24,6 +24,14 @@ interface PageInterface extends ConfigEntityInterface, EntityWithPluginBagsInter
   public function getPath();
 
   /**
+   * Indicates if this page is an admin page or not.
+   *
+   * @return bool
+   *   TRUE if this is an admin page, FALSE otherwise.
+   */
+  public function usesAdminTheme();
+
+  /**
    * Adds a new page variant to the page entity.
    *
    * @param array $configuration

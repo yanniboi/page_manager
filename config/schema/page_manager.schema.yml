@@ -14,6 +14,9 @@ page_manager.page.*:
     status:
       type: boolean
       label: 'Enabled status of the configuration entity'
+    uses_admin_theme:
+      type: boolean
+      label: 'Whether the page is displayed using the admin theme or not'
     langcode:
       type: string
       label: 'Default language'

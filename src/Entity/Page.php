@@ -113,6 +113,13 @@ class Page extends ConfigEntityBase implements PageInterface {
   protected $contexts = array();
 
   /**
+   * Indicates if this page should be displayed in the admin theme.
+   *
+   * @var bool
+   */
+  protected $use_admin_theme;
+
+  /**
    * {@inheritdoc}
    */
   public function toArray() {
@@ -124,6 +131,7 @@ class Page extends ConfigEntityBase implements PageInterface {
       'page_variants',
       'access_conditions',
       'access_logic',
+      'use_admin_theme',
     );
     foreach ($names as $name) {
       $properties[$name] = $this->get($name);
@@ -136,6 +144,13 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function getPath() {
     return $this->path;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function usesAdminTheme() {
+    return isset($this->use_admin_theme) ? $this->use_admin_theme : strpos($this->getPath(), '/admin/') === 0;
   }
 
   /**

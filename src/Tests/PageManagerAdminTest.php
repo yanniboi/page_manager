@@ -37,7 +37,11 @@ class PageManagerAdminTest extends WebTestBase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->drupalLogin($this->drupalCreateUser(array('administer pages')));
+
+    \Drupal::service('theme_handler')->enable(array('bartik'));
+    \Drupal::config('system.theme')->set('admin', 'stark')->save();
+
+    $this->drupalLogin($this->drupalCreateUser(array('administer pages', 'view the administration theme')));
   }
 
   /**
@@ -51,6 +55,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestEditPageVariant();
     $this->doTestReorderPageVariants();
     $this->doTestAddPageWithDuplicatePath();
+    $this->doTestAdminPath();
   }
 
   /**
@@ -219,6 +224,34 @@ class PageManagerAdminTest extends WebTestBase {
     $this->assertText('The page path must be unique.');
     $this->drupalGet('admin/structure/page_manager');
     $this->assertNoText('Bar');
+  }
+
+  /**
+   * Tests changing the admin theme of a page.
+   */
+  protected function doTestAdminPath() {
+    \Drupal::config('system.theme')->set('default', 'bartik')->save();
+    $this->drupalGet('admin/foo');
+    $this->assertTheme('stark');
+
+    $edit = array(
+      'use_admin_theme' => FALSE,
+    );
+    $this->drupalPostForm('admin/structure/page_manager/manage/foo', $edit, 'Save');
+    $this->drupalGet('admin/foo');
+    $this->assertTheme('bartik');
+  }
+
+  /**
+   * Asserts that a theme was used for the page.
+   *
+   * @param string $theme_name
+   *   The theme name.
+   */
+  protected function assertTheme($theme_name) {
+    $url = url('core/themes/' . $theme_name . '/logo.png', array('absolute' => TRUE));
+    $elements = $this->xpath('//img[@src=:url]', array(':url' => $url));
+    $this->assertEqual(count($elements), 1, String::format('Page is rendered in @theme', array('@theme' => $theme_name)));
   }
 
   /**
