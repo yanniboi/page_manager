@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\Component\Utility\String;
+use Drupal\page_manager\Entity\Page;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -137,6 +138,7 @@ class PageManagerAdminTest extends WebTestBase {
 
     // Test that the block is displayed.
     $this->drupalGet('admin/foo');
+    $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-top"]/div/ul[@class="menu"]/li/a');
     $expected = array('My account', 'Log out');
     $links = array();
@@ -179,6 +181,7 @@ class PageManagerAdminTest extends WebTestBase {
    */
   protected function doTestReorderPageVariants() {
     $this->drupalGet('admin/foo');
+    $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-bottom"]/div/ul[@class="menu"]/li/a');
     $expected = array('My account', 'Log out');
     $links = array();
@@ -189,7 +192,7 @@ class PageManagerAdminTest extends WebTestBase {
 
     $page_variant = $this->findPageVariantByLabel('foo', 'Default');
     $edit = array(
-      'page_variants[' . $page_variant->getConfiguration()['uuid'] . '][weight]' => -10,
+      'page_variants[' . $page_variant->id() . '][weight]' => -10,
     );
     $this->drupalPostForm('admin/structure/page_manager/manage/foo', $edit, 'Save');
     $this->drupalGet('admin/foo');
@@ -251,7 +254,7 @@ class PageManagerAdminTest extends WebTestBase {
    *   Either a page variant, or NULL.
    */
   protected function findPageVariantByLabel($page_id, $page_variant_label) {
-    if ($page = \Drupal::entityManager()->getStorage('page')->load($page_id)) {
+    if ($page = Page::load($page_id)) {
       /** @var $page \Drupal\page_manager\PageInterface */
       foreach ($page->getPageVariants() as $page_variant) {
         if ($page_variant->label() == $page_variant_label) {
