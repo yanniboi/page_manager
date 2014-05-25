@@ -122,12 +122,18 @@ class PageManagerAdminTest extends WebTestBase {
     );
     $this->drupalPostForm(NULL, $edit, 'Add page variant');
     $this->assertRaw(String::format('The %label page variant has been added.', array('%label' => 'First')));
+
+    // Test that the variant is not used because it has no blocks.
+    $this->drupalGet('admin/foo');
+    $this->assertResponse(403);
   }
 
   /**
    * Tests adding a block to a variant.
    */
   protected function doTestAddBlock() {
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
+    $this->clickLink('Edit');
     // Add a block to the variant.
     $this->clickLink('Add new block');
     $this->clickLink('User account menu');

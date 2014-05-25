@@ -115,4 +115,15 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
     return $build;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function access() {
+    // If no blocks are configured for this variant, deny access.
+    if (!$this->getBlockCount()) {
+      return FALSE;
+    }
+
+    return parent::access();
+  }
 }
