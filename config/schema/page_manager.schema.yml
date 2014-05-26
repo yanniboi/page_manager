@@ -14,7 +14,7 @@ page_manager.page.*:
     status:
       type: boolean
       label: 'Enabled status of the configuration entity'
-    uses_admin_theme:
+    use_admin_theme:
       type: boolean
       label: 'Whether the page is displayed using the admin theme or not'
     langcode:
@@ -36,7 +36,7 @@ page_manager.page.*:
       type: sequence
       label: 'Access Conditions'
       sequence:
-        - type: page_manager.condition
+        - type: condition.plugin.[id]
           label: 'Access Condition'
     dependencies:
       type: config_dependencies
@@ -58,12 +58,20 @@ page_manager.page_variant:
     uuid:
       type: string
       label: 'UUID'
+    selection_logic:
+      type: string
+      label: 'Selection logic'
     selection_conditions:
       type: sequence
       label: 'Selection Conditions'
       sequence:
-        - type: page_manager.condition
+        - type: condition.plugin.[id]
           label: 'Selection Condition'
+    blocks:
+      type: sequence
+      label: 'Blocks'
+      sequence:
+        - type: ignore
 
 page_manager.page_variant.block_page:
   type: page_manager.page_variant
@@ -72,8 +80,13 @@ page_manager.page_variant.block_page:
 page_manager.page_variant.http_status_code:
   type: page_manager.page_variant
   label: 'HTTP status code page variant'
+  mapping:
+    status_code:
+      type: integer
+      label: 'Status code'
 
-page_manager.condition:
+# @todo Move to core.data_types.schema.yml.
+condition.plugin:
   type: mapping
   label: 'Condition'
   mapping:
@@ -86,3 +99,17 @@ page_manager.condition:
     uuid:
       type: string
       label: 'UUID'
+    context_assignments:
+      type: sequence
+      label: 'Context assignments'
+      sequence:
+        - type: string
+
+# @todo Move to node.schema.yml.
+condition.plugin.node_type:
+  type: condition.plugin
+  mapping:
+    bundles:
+      type: sequence
+      sequence:
+        - type: string
