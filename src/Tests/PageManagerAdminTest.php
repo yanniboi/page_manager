@@ -56,6 +56,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestReorderPageVariants();
     $this->doTestAddPageWithDuplicatePath();
     $this->doTestAdminPath();
+    $this->doTestRemovePageVariant();
   }
 
   /**
@@ -240,6 +241,20 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalPostForm('admin/structure/page_manager/manage/foo', $edit, 'Save');
     $this->drupalGet('admin/foo');
     $this->assertTheme('bartik');
+
+    // Reset theme.
+    \Drupal::config('system.theme')->set('default', 'stark')->save();
+  }
+
+  /**
+   * Tests removing a page variant.
+   */
+  protected function doTestRemovePageVariant() {
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
+    $this->clickLink('Delete');
+    $this->assertRaw(String::format('Are you sure you want to delete the page variant %label?', array('%label' => 'Default')));
+    $this->drupalPostForm(NULL, array(), 'Delete');
+    $this->assertRaw(String::format('The page variant %label has been removed.', array('%label' => 'Default')));
   }
 
   /**
