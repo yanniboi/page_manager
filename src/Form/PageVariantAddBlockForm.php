@@ -8,7 +8,9 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
+use Drupal\page_manager\PageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Provides a form for adding a block plugin to a page variant.
@@ -52,6 +54,15 @@ class PageVariantAddBlockForm extends PageVariantConfigureBlockFormBase {
     $block = $this->blockManager->createInstance($plugin_id);
     $block_id = $this->pageVariant->addBlock($block->getConfiguration());
     return $this->pageVariant->getBlock($block_id);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, array &$form_state, Request $request = NULL, PageInterface $page = NULL, $page_variant_id = NULL, $block_id = NULL) {
+    $form = parent::buildForm($form, $form_state, $page, $page_variant_id, $block_id);
+    $form['region']['#default_value'] = $request->query->get('region');
+    return $form;
   }
 
   /**

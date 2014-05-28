@@ -15,6 +15,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\String;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Provides route controllers for Page Manager.
@@ -278,6 +279,8 @@ class PageManagerController extends ControllerBase {
   /**
    * Presents a list of blocks to add to the page variant.
    *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request.
    * @param \Drupal\page_manager\PageInterface $page
    *   The page entity.
    * @param string $page_variant_id
@@ -286,7 +289,7 @@ class PageManagerController extends ControllerBase {
    * @return array
    *   The block selection page.
    */
-  public function selectBlock(PageInterface $page, $page_variant_id) {
+  public function selectBlock(Request $request, PageInterface $page, $page_variant_id) {
     // Add a section containing the available blocks to be added to the variant.
     $build = array(
       '#type' => 'container',
@@ -318,6 +321,7 @@ class PageManagerController extends ControllerBase {
           'page' => $page->id(),
           'page_variant_id' => $page_variant_id,
           'block_id' => $plugin_id,
+          'region' => $request->query->get('region'),
         ),
         'attributes' => array(
           'class' => array('use-ajax'),
