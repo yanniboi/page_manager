@@ -121,6 +121,15 @@ class Page extends ConfigEntityBase implements PageInterface {
   protected $use_admin_theme;
 
   /**
+   * The selected page variant.
+   *
+   * Only used during runtime.
+   *
+   * @var \Drupal\page_manager\Plugin\PageVariantInterface|null
+   */
+  protected $selectedPageVariant;
+
+  /**
    * {@inheritdoc}
    */
   public function toArray() {
@@ -246,13 +255,16 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function selectPageVariant() {
-    foreach ($this->getPageVariants() as $page_variant) {
-      $page_variant->setContexts($this->getContexts());
-      if ($page_variant->access()) {
-        return $page_variant;
+    if (!$this->selectedPageVariant) {
+      foreach ($this->getPageVariants() as $page_variant) {
+        $page_variant->setContexts($this->getContexts());
+        if ($page_variant->access()) {
+          $this->selectedPageVariant = $page_variant->init($this);
+          break;
+        }
       }
     }
-    return NULL;
+    return $this->selectedPageVariant;
   }
 
   /**

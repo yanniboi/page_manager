@@ -10,11 +10,24 @@ namespace Drupal\page_manager\Plugin;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
+use Drupal\page_manager\PageInterface;
 
 /**
  * Provides an interface for PageVariant plugins.
  */
 interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
+
+  /**
+   * Initializes the page variant.
+   *
+   * Only used during runtime.
+   *
+   * @param \Drupal\page_manager\PageInterface $page
+   *  The page entity.
+   *
+   * @return $this
+   */
+  public function init(PageInterface $page);
 
   /**
    * Returns the user-facing page variant label.

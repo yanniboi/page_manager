@@ -9,6 +9,7 @@ namespace Drupal\page_manager\Plugin;
 
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Plugin\PluginDependencyTrait;
+use Drupal\page_manager\PageInterface;
 
 /**
  * Provides a base class for PageVariant plugins.
@@ -18,6 +19,13 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   use PluginDependencyTrait;
 
   use ConditionAccessResolverTrait;
+
+  /**
+   * The page entity.
+   *
+   * @var \Drupal\page_manager\PageInterface
+   */
+  protected $page;
 
   /**
    * The plugin bag that holds the block plugins.
@@ -49,6 +57,13 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->setConfiguration($configuration);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function init(PageInterface $page) {
+    $this->page = $page;
   }
 
   /**
