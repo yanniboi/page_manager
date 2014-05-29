@@ -64,6 +64,7 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    */
   public function init(PageInterface $page) {
     $this->page = $page;
+    return $this;
   }
 
   /**
