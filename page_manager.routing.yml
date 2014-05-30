@@ -140,6 +140,14 @@ page_manager.page_variant_edit_block:
   requirements:
     _entity_access: page.update
 
+page_manager.page_variant_delete_block:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/block/delete/{block_id}'
+  defaults:
+    _form: 'Drupal\page_manager\Form\PageVariantDeleteBlockForm'
+    _title: 'Delete block in page variant'
+  requirements:
+    _entity_access: page.update
+
 #### Selection Conditions
 
 page_manager.selection_condition_select:

@@ -267,6 +267,16 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
             ),
             'attributes' => $attributes,
           );
+          $operations['delete'] = array(
+            'title' => $this->t('Delete'),
+            'route_name' => 'page_manager.page_variant_delete_block',
+            'route_parameters' => array(
+              'page' => $this->page->id(),
+              'page_variant_id' => $this->id(),
+              'block_id' => $block_id,
+            ),
+            'attributes' => $attributes,
+          );
 
           $row['operations'] = array(
             '#type' => 'operations',

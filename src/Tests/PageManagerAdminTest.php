@@ -57,6 +57,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestAddPageWithDuplicatePath();
     $this->doTestAdminPath();
     $this->doTestRemovePageVariant();
+    $this->doTestRemoveBlock();
   }
 
   /**
@@ -256,6 +257,36 @@ class PageManagerAdminTest extends WebTestBase {
     $this->assertRaw(String::format('Are you sure you want to delete the page variant %label?', array('%label' => 'Default')));
     $this->drupalPostForm(NULL, array(), 'Delete');
     $this->assertRaw(String::format('The page variant %label has been removed.', array('%label' => 'Default')));
+  }
+
+  /**
+   * Tests removing a block.
+   */
+  protected function doTestRemoveBlock() {
+    // Assert that the block is displayed.
+    $this->drupalGet('admin/foo');
+    $this->assertResponse(200);
+    $elements = $this->xpath('//div[@class="block-region-bottom"]/div/ul[@class="menu"]/li/a');
+    $expected = array('My account', 'Log out');
+    debug($elements);
+    $links = array();
+    foreach ($elements as $element) {
+      $links[] = (string) $element;
+    }
+    $this->assertEqual($expected, $links);
+
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
+    $this->clickLink('Edit');
+    $this->clickLink('Delete');
+    $this->assertRaw(String::format('Are you sure you want to delete the block %label?', array('%label' => 'User account menu')));
+    $this->drupalPostForm(NULL, array(), 'Delete');
+    $this->assertRaw(String::format('The block %label has been removed.', array('%label' => 'User account menu')));
+
+    // Assert that the block is now gone.
+    $this->drupalGet('admin/foo');
+    $this->assertResponse(200);
+    $elements = $this->xpath('//div[@class="block-region-bottom"]/div/ul[@class="menu"]/li/a');
+    $this->assertTrue(empty($elements));
   }
 
   /**

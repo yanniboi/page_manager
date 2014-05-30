@@ -106,6 +106,16 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function updateBlock($block_id, array $configuration);
 
   /**
+   * Removes a specific block from this page variant.
+   *
+   * @param string $block_id
+   *   The block ID.
+   *
+   * @return $this
+   */
+  public function removeBlock($block_id);
+
+  /**
    * Returns the region a specific block is assigned to.
    *
    * @param string $block_id

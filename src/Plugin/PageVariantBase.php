@@ -204,6 +204,14 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
   /**
    * {@inheritdoc}
    */
+  public function removeBlock($block_id) {
+    $this->getBlockBag()->removeInstanceId($block_id);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function updateBlock($block_id, array $configuration) {
     $existing_configuration = $this->getBlock($block_id)->getConfiguration();
     $this->getBlockBag()->setInstanceConfiguration($block_id, $configuration + $existing_configuration);
