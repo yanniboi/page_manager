@@ -8,6 +8,8 @@
 namespace Drupal\page_manager\Plugin\PageVariant;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
+use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\page_manager\ContextHandler;
@@ -113,6 +115,182 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
       }
     }
     return $build;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, array &$form_state) {
+    $form = parent::buildConfigurationForm($form, $form_state);
+
+    // Do not allow blocks to be added until the page variant has been saved.
+    if (!$this->id()) {
+      return $form;
+    }
+
+    // Set up the attributes used by a modal to prevent duplication later.
+    $attributes = array(
+      'class' => array('use-ajax'),
+      'data-accepts' => 'application/vnd.drupal-modal',
+      'data-dialog-options' => Json::encode(array(
+        'width' => 'auto',
+      )),
+    );
+    $add_button_attributes = NestedArray::mergeDeep($attributes, array(
+      'class' => array(
+        'button',
+        'button--small',
+        'button-action',
+      ),
+    ));
+
+    if ($block_assignments = $this->getRegionAssignments()) {
+      // Build a table of all blocks used by this page variant.
+      $form['block_section'] = array(
+        '#type' => 'details',
+        '#title' => $this->t('Blocks'),
+        '#open' => TRUE,
+      );
+      $form['block_section']['add'] = array(
+        '#type' => 'link',
+        '#title' => $this->t('Add new block'),
+        '#route_name' => 'page_manager.page_variant_select_block',
+        '#route_parameters' => array(
+          'page' => $this->page->id(),
+          'page_variant_id' => $this->id(),
+        ),
+        '#attributes' => $add_button_attributes,
+        '#attached' => array(
+          'library' => array(
+            'core/drupal.ajax',
+          ),
+        ),
+      );
+      $form['block_section']['blocks'] = array(
+        '#type' => 'table',
+        '#header' => array(
+          $this->t('Label'),
+          $this->t('Plugin ID'),
+          $this->t('Region'),
+          $this->t('Weight'),
+          $this->t('Operations'),
+        ),
+        '#empty' => $this->t('There are no regions for blocks.'),
+        // @todo This should utilize https://drupal.org/node/2065485.
+        '#parents' => array('page_variant', 'blocks'),
+      );
+      // Loop through the blocks per region.
+      foreach ($block_assignments as $region => $blocks) {
+        // Add a section for each region and allow blocks to be dragged between
+        // them.
+        $form['block_section']['blocks']['#tabledrag'][] = array(
+          'action' => 'match',
+          'relationship' => 'sibling',
+          'group' => 'block-region-select',
+          'subgroup' => 'block-region-' . $region,
+          'hidden' => FALSE,
+        );
+        $form['block_section']['blocks']['#tabledrag'][] = array(
+          'action' => 'order',
+          'relationship' => 'sibling',
+          'group' => 'block-weight',
+          'subgroup' => 'block-weight-' . $region,
+        );
+        $form['block_section']['blocks'][$region] = array(
+          '#attributes' => array(
+            'class' => array('region-title', 'region-title-' . $region),
+            'no_striping' => TRUE,
+          ),
+        );
+        $form['block_section']['blocks'][$region]['title'] = array(
+          '#markup' => $this->getRegionName($region),
+          '#wrapper_attributes' => array(
+            'colspan' => 5,
+          ),
+        );
+        $form['block_section']['blocks'][$region . '-message'] = array(
+          '#attributes' => array(
+            'class' => array(
+              'region-message',
+              'region-' . $region . '-message',
+              empty($blocks) ? 'region-empty' : 'region-populated',
+            ),
+          ),
+        );
+        $form['block_section']['blocks'][$region . '-message']['message'] = array(
+          '#markup' => '<em>' . t('No blocks in this region') . '</em>',
+          '#wrapper_attributes' => array(
+            'colspan' => 5,
+          ),
+        );
+
+        /** @var $blocks \Drupal\block\BlockPluginInterface[] */
+        foreach ($blocks as $block_id => $block) {
+          $row = array(
+            '#attributes' => array(
+              'class' => array('draggable'),
+            ),
+          );
+          $row['label']['#markup'] = $block->label();
+          $row['id']['#markup'] = $block->getPluginId();
+          // Allow the region to be changed for each block.
+          $row['region'] = array(
+            '#title' => $this->t('Region'),
+            '#title_display' => 'invisible',
+            '#type' => 'select',
+            '#options' => $this->getRegionNames(),
+            '#default_value' => $this->getRegionAssignment($block_id),
+            '#attributes' => array(
+              'class' => array('block-region-select', 'block-region-' . $region),
+            ),
+          );
+          // Allow the weight to be changed for each block.
+          $configuration = $block->getConfiguration();
+          $row['weight'] = array(
+            '#type' => 'weight',
+            '#default_value' => isset($configuration['weight']) ? $configuration['weight'] : 0,
+            '#title' => t('Weight for @block block', array('@block' => $block->label())),
+            '#title_display' => 'invisible',
+            '#attributes' => array(
+              'class' => array('block-weight', 'block-weight-' . $region),
+            ),
+          );
+          // Add the operation links.
+          $operations = array();
+          $operations['edit'] = array(
+            'title' => $this->t('Edit'),
+            'route_name' => 'page_manager.page_variant_edit_block',
+            'route_parameters' => array(
+              'page' => $this->page->id(),
+              'page_variant_id' => $this->id(),
+              'block_id' => $block_id,
+            ),
+            'attributes' => $attributes,
+          );
+
+          $row['operations'] = array(
+            '#type' => 'operations',
+            '#links' => $operations,
+          );
+          $form['block_section']['blocks'][$block_id] = $row;
+        }
+      }
+    }
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, array &$form_state) {
+    parent::submitConfigurationForm($form, $form_state);
+
+    // If the blocks were rearranged, update their values.
+    if (!empty($form_state['values']['blocks'])) {
+      foreach ($form_state['values']['blocks'] as $block_id => $block_values) {
+        $this->updateBlock($block_id, $block_values);
+      }
+    }
   }
 
   /**

@@ -173,10 +173,11 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
     $this->assertTitle('Edit First page variant | Drupal');
-    $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-region', 'top');
-    $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-weight', 0);
 
-    $form_name = 'blocks[' . $block_config['uuid'] . ']';
+    $this->assertOptionSelected('edit-page-variant-blocks-' . $block_config['uuid'] . '-region', 'top');
+    $this->assertOptionSelected('edit-page-variant-blocks-' . $block_config['uuid'] . '-weight', 0);
+
+    $form_name = 'page_variant[blocks][' . $block_config['uuid'] . ']';
     $edit = array(
       $form_name . '[region]' => 'bottom',
       $form_name . '[weight]' => -10,
@@ -184,8 +185,8 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalPostForm(NULL, $edit, 'Update page variant');
     $this->assertRaw(String::format('The %label page variant has been updated.', array('%label' => 'First')));
     $this->clickLink('Edit');
-    $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-region', 'bottom');
-    $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-weight', -10);
+    $this->assertOptionSelected('edit-page-variant-blocks-' . $block_config['uuid'] . '-region', 'bottom');
+    $this->assertOptionSelected('edit-page-variant-blocks-' . $block_config['uuid'] . '-weight', -10);
   }
 
   /**
