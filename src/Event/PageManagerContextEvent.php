@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Event;
 
-use Drupal\page_manager\PageInterface;
+use Drupal\page_manager\PageExecutable;
 use Drupal\page_manager\Plugin\PageVariantInterface;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -35,23 +35,23 @@ class PageManagerContextEvent extends Event {
   /**
    * Creates a new PageManagerContextEvent.
    *
-   * @param \Drupal\page_manager\PageInterface $page
-   *   The page.
+   * @param \Drupal\page_manager\PageExecutable $page
+   *   The page executable.
    * @param \Drupal\page_manager\Plugin\PageVariantInterface $page_variant
    *   (optional) The page variant.
    */
-  public function __construct(PageInterface $page, PageVariantInterface $page_variant = NULL) {
+  public function __construct(PageExecutable $page, PageVariantInterface $page_variant = NULL) {
     $this->page = $page;
     $this->pageVariant = $page_variant;
   }
 
   /**
-   * Returns the page entity for this event.
+   * Returns the page executable for this event.
    *
-   * @return \Drupal\page_manager\PageInterface
-   *   The page entity.
+   * @return \Drupal\page_manager\PageExecutable
+   *   The page executable.
    */
-  public function getPage() {
+  public function getPageExecutable() {
     return $this->page;
   }
 

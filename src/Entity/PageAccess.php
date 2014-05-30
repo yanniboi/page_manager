@@ -29,7 +29,7 @@ class PageAccess extends EntityAccessController {
         return FALSE;
       }
 
-      return $this->resolveConditions($entity->getAccessConditions(), $entity->getAccessLogic(), $entity->getContexts());
+      return $this->resolveConditions($entity->getAccessConditions(), $entity->getAccessLogic(), $entity->getExecutable()->getContexts());
     }
     return parent::checkAccess($entity, $operation, $langcode, $account);
   }

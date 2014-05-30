@@ -66,7 +66,7 @@ class CurrentUserContext implements EventSubscriberInterface {
       'label' => $this->t('Current user'),
     ));
     $context->setContextValue($current_user);
-    $event->getPage()->addContext('current_user', $context);
+    $event->getPageExecutable()->addContext('current_user', $context);
   }
 
   /**

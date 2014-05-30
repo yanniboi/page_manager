@@ -54,8 +54,8 @@ class RouteParamContext implements EventSubscriberInterface {
    */
   public function onPageContext(PageManagerContextEvent $event) {
     $request = $this->requestStack->getCurrentRequest();
-    $page = $event->getPage();
-    $routes = $this->routeProvider->getRoutesByPattern($page->getPath())->all();
+    $executable = $event->getPageExecutable();
+    $routes = $this->routeProvider->getRoutesByPattern($executable->getPage()->getPath())->all();
     $route = reset($routes);
 
     if ($route_contexts = $route->getOption('parameters')) {
@@ -80,7 +80,7 @@ class RouteParamContext implements EventSubscriberInterface {
         else {
           // @todo Find a way to add in a fake value for configuration.
         }
-        $page->addContext($route_context_name, $context);
+        $executable->addContext($route_context_name, $context);
       }
     }
   }

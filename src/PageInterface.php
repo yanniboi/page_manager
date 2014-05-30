@@ -16,6 +16,13 @@ use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 interface PageInterface extends ConfigEntityInterface, EntityWithPluginBagsInterface {
 
   /**
+   * Returns the executable instance for this page.
+   *
+   * @return \Drupal\page_manager\PageExecutable
+   */
+  public function getExecutable();
+
+  /**
    * Returns the path for the page entity.
    *
    * @return string
@@ -72,17 +79,6 @@ interface PageInterface extends ConfigEntityInterface, EntityWithPluginBagsInter
   public function getPageVariants();
 
   /**
-   * Selects the page variant to use for the page entity.
-   *
-   * This loops through the available page variants and checks each for access,
-   * returning the first one that is accessible.
-   *
-   * @return \Drupal\page_manager\Plugin\PageVariantInterface|null
-   *   Either the first accessible page variant, or NULL if none are accessible.
-   */
-  public function selectPageVariant();
-
-  /**
    * Returns the conditions used for determining access for this page entity.
    *
    * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\page_manager\Plugin\ConditionPluginBag
@@ -137,17 +133,5 @@ interface PageInterface extends ConfigEntityInterface, EntityWithPluginBagsInter
    *   An array of set context values, keyed by context name.
    */
   public function getContexts();
-
-  /**
-   * Sets the context for a given name.
-   *
-   * @param string $name
-   *   The name of the context.
-   * @param \Drupal\Component\Plugin\Context\ContextInterface $value
-   *   The context to add.
-   *
-   * @return $this
-   */
-  public function addContext($name, $value);
 
 }

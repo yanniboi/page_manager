@@ -7,9 +7,8 @@
 
 namespace Drupal\page_manager\Entity;
 
-use Drupal\page_manager\Event\PageManagerEvents;
+use Drupal\page_manager\PageExecutable;
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Plugin\ConditionPluginBag;
 use Drupal\page_manager\Plugin\PageVariantBag;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -105,15 +104,6 @@ class Page extends ConfigEntityBase implements PageInterface {
   protected $accessConditionBag;
 
   /**
-   * An array of collected contexts.
-   *
-   * This is only used on runtime, and is not stored.
-   *
-   * @var \Drupal\Component\Plugin\Context\ContextInterface[]
-   */
-  protected $contexts = array();
-
-  /**
    * Indicates if this page should be displayed in the admin theme.
    *
    * @var bool
@@ -121,13 +111,24 @@ class Page extends ConfigEntityBase implements PageInterface {
   protected $use_admin_theme;
 
   /**
-   * The selected page variant.
+   * Stores a reference to the executable version of this page.
    *
-   * Only used during runtime.
+   * This is only used on runtime, and is not stored.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface|null
+   * @var \Drupal\page_manager\PageExecutable
    */
-  protected $selectedPageVariant;
+  protected $executable;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getExecutable() {
+    if (!isset($this->executable)) {
+      // @todo Use a factory.
+      $this->executable = new PageExecutable($this);
+    }
+    return $this->executable;
+  }
 
   /**
    * {@inheritdoc}
@@ -197,16 +198,6 @@ class Page extends ConfigEntityBase implements PageInterface {
   }
 
   /**
-   * Wraps the event dispatcher.
-   *
-   * @return \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   *   The event dispatcher.
-   */
-  protected function eventDispatcher() {
-    return \Drupal::service('event_dispatcher');
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function addPageVariant(array $configuration) {
@@ -254,22 +245,6 @@ class Page extends ConfigEntityBase implements PageInterface {
   /**
    * {@inheritdoc}
    */
-  public function selectPageVariant() {
-    if (!$this->selectedPageVariant) {
-      foreach ($this->getPageVariants() as $page_variant) {
-        $page_variant->setContexts($this->getContexts());
-        if ($page_variant->access()) {
-          $this->selectedPageVariant = $page_variant->init($this);
-          break;
-        }
-      }
-    }
-    return $this->selectedPageVariant;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getAccessConditions() {
     if (!$this->accessConditionBag) {
       $this->accessConditionBag = new ConditionPluginBag(\Drupal::service('plugin.manager.condition'), $this->get('access_conditions'));
@@ -312,17 +287,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function getContexts() {
-    if (!$this->contexts) {
-      $this->eventDispatcher()->dispatch(PageManagerEvents::PAGE_CONTEXT, new PageManagerContextEvent($this));
-    }
-    return $this->contexts;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function addContext($name, $value) {
-    $this->contexts[$name] = $value;
+    return $this->getExecutable()->getContexts();
   }
 
 }

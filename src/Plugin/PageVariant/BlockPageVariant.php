@@ -128,6 +128,9 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
       return $form;
     }
 
+    // Determine the page ID, used for links below.
+    $page_id = $this->executable->getPage()->id();
+
     // Set up the attributes used by a modal to prevent duplication later.
     $attributes = array(
       'class' => array('use-ajax'),
@@ -156,7 +159,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
         '#title' => $this->t('Add new block'),
         '#route_name' => 'page_manager.page_variant_select_block',
         '#route_parameters' => array(
-          'page' => $this->page->id(),
+          'page' => $page_id,
           'page_variant_id' => $this->id(),
         ),
         '#attributes' => $add_button_attributes,
@@ -261,7 +264,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
             'title' => $this->t('Edit'),
             'route_name' => 'page_manager.page_variant_edit_block',
             'route_parameters' => array(
-              'page' => $this->page->id(),
+              'page' => $page_id,
               'page_variant_id' => $this->id(),
               'block_id' => $block_id,
             ),
@@ -271,7 +274,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
             'title' => $this->t('Delete'),
             'route_name' => 'page_manager.page_variant_delete_block',
             'route_parameters' => array(
-              'page' => $this->page->id(),
+              'page' => $page_id,
               'page_variant_id' => $this->id(),
               'block_id' => $block_id,
             ),
