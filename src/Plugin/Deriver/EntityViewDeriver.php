@@ -56,11 +56,6 @@ class EntityViewDeriver extends DerivativeBase implements ContainerDerivativeInt
       $this->derivatives[$entity_type_id]['context'] = array(
         'entity' => array(
           'type' => 'entity:' . $entity_type_id,
-          // @todo Remove once https://drupal.org/node/2272161 is in.
-          'type' => 'entity',
-          'constraints' => array(
-            'EntityType' => $entity_type_id,
-          )
         ),
       );
     }
