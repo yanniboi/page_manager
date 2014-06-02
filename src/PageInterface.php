@@ -7,13 +7,21 @@
 
 namespace Drupal\page_manager;
 
-use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityWithPluginBagsInterface;
 
 /**
  * Provides an interface for page entities.
  */
-interface PageInterface extends ConfigEntityInterface, EntityWithPluginBagsInterface {
+interface PageInterface extends EntityInterface, EntityWithPluginBagsInterface {
+
+  /**
+   * Returns whether the page entity is enabled.
+   *
+   * @return bool
+   *   Whether the page entity is enabled or not.
+   */
+  public function status();
 
   /**
    * Returns the executable instance for this page.
