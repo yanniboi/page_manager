@@ -71,7 +71,14 @@ page_manager.page_variant:
       type: sequence
       label: 'Blocks'
       sequence:
-        - type: ignore
+        - type: page_manager.block_plugin.[id]
+
+page_manager.block_plugin.*:
+  type: block_settings
+  mapping:
+    uuid:
+      type: string
+      label: 'UUID'
 
 page_manager.page_variant.block_page:
   type: page_manager.page_variant

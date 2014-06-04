@@ -73,6 +73,14 @@ class PageConfigSchemaTest extends ConfigSchemaTestBase {
       ),
     ));
 
+    // Add a block.
+    $page_variant->addBlock(array(
+      'id' => 'entity_view:node',
+      'label' => 'View the node',
+      'provider' => 'page_manager',
+      'label_display' => 'visible',
+      'view_mode' => 'default',
+    ));
     $page->save();
 
     $config = \Drupal::config("page_manager.page.$id");
