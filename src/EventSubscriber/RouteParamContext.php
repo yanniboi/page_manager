@@ -65,9 +65,6 @@ class RouteParamContext implements EventSubscriberInterface {
           continue;
         }
 
-        // @todo Remove once https://drupal.org/node/2116341 is in.
-        $route_context += \Drupal::typedDataManager()->getDefinition($route_context['type']);
-
         $context = new Context($route_context);
         if ($request->attributes->has($route_context_name)) {
           $context->setContextValue($request->attributes->get($route_context_name));

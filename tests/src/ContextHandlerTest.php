@@ -59,6 +59,9 @@ class ContextHandlerTest extends UnitTestCase {
     $this->typedDataManager = $this->getMockBuilder('Drupal\Core\TypedData\TypedDataManager')
       ->disableOriginalConstructor()
       ->getMock();
+    $this->typedDataManager->expects($this->any())
+      ->method('getDefaultConstraints')
+      ->will($this->returnValue(array()));
     $this->contextHandler = new ContextHandler($this->typedDataManager);
 
     $container = new ContainerBuilder();
