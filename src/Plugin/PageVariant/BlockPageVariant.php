@@ -7,12 +7,13 @@
 
 namespace Drupal\page_manager\Plugin\PageVariant;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\page_manager\ContextHandler;
 use Drupal\page_manager\Plugin\PageVariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -29,7 +30,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
   /**
    * The context handler.
    *
-   * @var \Drupal\page_manager\ContextHandler
+   * @var \Drupal\Core\Plugin\Context\ContextHandlerInterface
    */
   protected $contextHandler;
 
@@ -49,12 +50,12 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
    *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\page_manager\ContextHandler $context_handler
+   * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
    *   The context handler.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandler $context_handler, AccountInterface $account) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->contextHandler = $context_handler;
@@ -102,7 +103,14 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
       /** @var $blocks \Drupal\block\BlockPluginInterface[] */
       foreach ($blocks as $block_id => $block) {
         if ($block instanceof ContextAwarePluginInterface) {
-          $this->contextHandler->preparePluginContext($block, $contexts);
+          $assignments = array();
+          if ($block instanceof ConfigurablePluginInterface) {
+            $configuration = $block->getConfiguration();
+            if (isset($configuration['context_assignments'])) {
+              $assignments = array_flip($configuration['context_assignments']);
+            }
+          }
+          $this->contextHandler->applyContextMapping($block, $contexts, $assignments);
         }
         if ($block->access($this->account)) {
           $row = $block->build();

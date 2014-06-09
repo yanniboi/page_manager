@@ -27,7 +27,7 @@ trait ContextAwarePluginAssignmentTrait {
   /**
    * Wraps the context handler.
    *
-   * @return \Drupal\page_manager\ContextHandler
+   * @return \Drupal\Core\Plugin\Context\ContextHandlerInterface
    */
   protected function contextHandler() {
     return \Drupal::service('context.handler');
@@ -52,7 +52,7 @@ trait ContextAwarePluginAssignmentTrait {
       $definition['required'] = isset($definition['required']) ? $definition['required'] : TRUE;
       $definition = new DataDefinition($definition);
 
-      $valid_contexts = $this->contextHandler()->getValidContexts($contexts, $definition);
+      $valid_contexts = $this->contextHandler()->getMatchingContexts($contexts, $definition);
       $options = array();
       foreach ($valid_contexts as $context_id => $context) {
         $context_definition = new DataDefinition($context->getContextDefinition());

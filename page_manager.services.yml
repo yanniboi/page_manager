@@ -17,6 +17,3 @@ services:
   plugin.manager.page_variant:
     class: Drupal\page_manager\Plugin\PageVariantManager
     parent: default_plugin_manager
-  context.handler:
-    class: Drupal\page_manager\ContextHandler
-    arguments: ['@typed_data_manager']

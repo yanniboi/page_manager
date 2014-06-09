@@ -9,7 +9,7 @@ namespace Drupal\page_manager\Controller;
 
 use Drupal\block\BlockManagerInterface;
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\ContextHandler;
+use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\String;
@@ -46,7 +46,7 @@ class PageManagerController extends ControllerBase {
   /**
    * The context handler.
    *
-   * @var \Drupal\page_manager\ContextHandler
+   * @var \Drupal\Core\Plugin\Context\ContextHandlerInterface
    */
   protected $contextHandler;
 
@@ -59,10 +59,10 @@ class PageManagerController extends ControllerBase {
    *   The condition manager.
    * @param \Drupal\Component\Plugin\PluginManagerInterface $page_variant_manager
    *   The page variant manager.
-   * @param \Drupal\page_manager\ContextHandler $context_handler
+   * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
    *   The context handler.
    */
-  public function __construct(BlockManagerInterface $block_manager, PluginManagerInterface $condition_manager, PluginManagerInterface $page_variant_manager, ContextHandler $context_handler) {
+  public function __construct(BlockManagerInterface $block_manager, PluginManagerInterface $condition_manager, PluginManagerInterface $page_variant_manager, ContextHandlerInterface $context_handler) {
     $this->blockManager = $block_manager;
     $this->conditionManager = $condition_manager;
     $this->pageVariantManager = $page_variant_manager;
@@ -217,7 +217,7 @@ class PageManagerController extends ControllerBase {
       '#theme' => 'links',
       '#links' => array(),
     );
-    $available_plugins = $this->contextHandler->getAvailablePlugins($page->getContexts(), $this->conditionManager);
+    $available_plugins = $this->conditionManager->getDefinitionsForContexts($page->getContexts());
     foreach ($available_plugins as $access_id => $access_condition) {
       $build['#links'][$access_id] = array(
         'title' => $access_condition['label'],
@@ -254,7 +254,7 @@ class PageManagerController extends ControllerBase {
       '#theme' => 'links',
       '#links' => array(),
     );
-    $available_plugins = $this->contextHandler->getAvailablePlugins($page->getContexts(), $this->conditionManager);
+    $available_plugins = $this->conditionManager->getDefinitionsForContexts($page->getContexts());
     foreach ($available_plugins as $selection_id => $selection_condition) {
       $build['#links'][$selection_id] = array(
         'title' => $selection_condition['label'],
@@ -299,7 +299,7 @@ class PageManagerController extends ControllerBase {
         ),
       ),
     );
-    $available_plugins = $this->contextHandler->getAvailablePlugins($page->getContexts(), $this->blockManager);
+    $available_plugins = $this->blockManager->getDefinitionsForContexts($page->getContexts());
     foreach ($available_plugins as $plugin_id => $plugin_definition) {
       // Make a section for each region.
       $category = String::checkPlain($plugin_definition['category']);

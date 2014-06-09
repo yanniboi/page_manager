@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Plugin;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Plugin\Exception\PluginException;
 
@@ -18,7 +19,7 @@ trait ConditionAccessResolverTrait {
   /**
    * Wraps the context handler.
    *
-   * @return \Drupal\page_manager\ContextHandler
+   * @return \Drupal\Core\Plugin\Context\ContextHandlerInterface
    */
   protected function contextHandler() {
     return \Drupal::service('context.handler');
@@ -40,7 +41,14 @@ trait ConditionAccessResolverTrait {
   protected function resolveConditions($conditions, $condition_logic, $contexts = array()) {
     foreach ($conditions as $condition) {
       if ($condition instanceof ContextAwarePluginInterface) {
-        $this->contextHandler()->preparePluginContext($condition, $contexts);
+        $assignments = array();
+        if ($condition instanceof ConfigurablePluginInterface) {
+          $configuration = $condition->getConfiguration();
+          if (isset($configuration['context_assignments'])) {
+            $assignments = array_flip($configuration['context_assignments']);
+          }
+        }
+        $this->contextHandler()->applyContextMapping($condition, $contexts, $assignments);
       }
 
       try {
