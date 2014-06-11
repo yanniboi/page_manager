@@ -50,7 +50,7 @@ class PageConfigSchemaTest extends ConfigSchemaTestBase {
         'article' => 'article',
       ),
       'negate' => TRUE,
-      'context_assignments' => array(
+      'context_mapping' => array(
         'node' => 'node',
       ),
     ));
@@ -68,7 +68,7 @@ class PageConfigSchemaTest extends ConfigSchemaTestBase {
       'bundles' => array(
         'page' => 'page',
       ),
-      'context_assignments' => array(
+      'context_mapping' => array(
         'node' => 'node',
       ),
     ));

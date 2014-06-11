@@ -103,14 +103,14 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
       /** @var $blocks \Drupal\block\BlockPluginInterface[] */
       foreach ($blocks as $block_id => $block) {
         if ($block instanceof ContextAwarePluginInterface) {
-          $assignments = array();
+          $mapping = array();
           if ($block instanceof ConfigurablePluginInterface) {
             $configuration = $block->getConfiguration();
-            if (isset($configuration['context_assignments'])) {
-              $assignments = array_flip($configuration['context_assignments']);
+            if (isset($configuration['context_mapping'])) {
+              $mapping = array_flip($configuration['context_mapping']);
             }
           }
-          $this->contextHandler->applyContextMapping($block, $contexts, $assignments);
+          $this->contextHandler->applyContextMapping($block, $contexts, $mapping);
         }
         if ($block->access($this->account)) {
           $row = $block->build();

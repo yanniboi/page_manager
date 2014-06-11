@@ -63,8 +63,8 @@ trait ContextAwarePluginAssignmentTrait {
       // @todo Find a better way to load context assignments.
       if ($plugin instanceof ConfigurablePluginInterface) {
         $configuration = $plugin->getConfiguration();
-        if (isset($configuration['context_assignments'])) {
-          $assignments = $configuration['context_assignments'];
+        if (isset($configuration['context_mapping'])) {
+          $assignments = $configuration['context_mapping'];
         }
       }
 
@@ -90,7 +90,7 @@ trait ContextAwarePluginAssignmentTrait {
   protected function submitContextAssignment(ContextAwarePluginInterface $plugin, $assignments) {
     if ($plugin instanceof ConfigurablePluginInterface) {
       $configuration = $plugin->getConfiguration();
-      $configuration['context_assignments'] = $assignments;
+      $configuration['context_mapping'] = $assignments;
       $plugin->setConfiguration($configuration);
     }
     else {

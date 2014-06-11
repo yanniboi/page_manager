@@ -83,7 +83,7 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
     );
 
     if ($this->block instanceof ContextAwarePluginInterface) {
-      $form['context_assignments'] = $this->addContextAssignmentElement($this->block, $this->page->getContexts());
+      $form['context_mapping'] = $this->addContextAssignmentElement($this->block, $this->page->getContexts());
     }
 
     $form['actions']['submit'] = array(
@@ -117,8 +117,8 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
     // Call the plugin submit handler.
     $this->block->submitConfigurationForm($form, $settings);
 
-    if (!empty($form_state['values']['context_assignments'])) {
-      $this->submitContextAssignment($this->block, $form_state['values']['context_assignments']);
+    if (!empty($form_state['values']['context_mapping'])) {
+      $this->submitContextAssignment($this->block, $form_state['values']['context_mapping']);
     }
 
     $this->pageVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state['values']['region']));

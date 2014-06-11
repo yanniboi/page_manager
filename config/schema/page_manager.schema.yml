@@ -106,7 +106,7 @@ condition.plugin:
     uuid:
       type: string
       label: 'UUID'
-    context_assignments:
+    context_mapping:
       type: sequence
       label: 'Context assignments'
       sequence:

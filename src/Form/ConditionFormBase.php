@@ -73,7 +73,7 @@ abstract class ConditionFormBase extends FormBase {
     $form['condition']['#tree'] = TRUE;
 
     if ($this->condition instanceof ContextAwarePluginInterface) {
-      $form['context_assignments'] = $this->addContextAssignmentElement($this->condition, $this->page->getContexts());
+      $form['context_mapping'] = $this->addContextAssignmentElement($this->condition, $this->page->getContexts());
     }
 
     $form['actions'] = array('#type' => 'actions');
@@ -107,8 +107,8 @@ abstract class ConditionFormBase extends FormBase {
     );
     $this->condition->submitConfigurationForm($form, $condition_values);
 
-    if (!empty($form_state['values']['context_assignments'])) {
-      $this->submitContextAssignment($this->condition, $form_state['values']['context_assignments']);
+    if (!empty($form_state['values']['context_mapping'])) {
+      $this->submitContextAssignment($this->condition, $form_state['values']['context_mapping']);
     }
 
     // Set the submission message.
