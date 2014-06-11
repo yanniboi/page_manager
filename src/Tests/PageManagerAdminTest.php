@@ -41,7 +41,7 @@ class PageManagerAdminTest extends WebTestBase {
     \Drupal::service('theme_handler')->enable(array('bartik'));
     \Drupal::config('system.theme')->set('admin', 'stark')->save();
 
-    $this->drupalLogin($this->drupalCreateUser(array('administer pages', 'view the administration theme')));
+    $this->drupalLogin($this->drupalCreateUser(array('administer pages', 'access administration pages', 'view the administration theme')));
   }
 
   /**
@@ -58,6 +58,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestAdminPath();
     $this->doTestRemovePageVariant();
     $this->doTestRemoveBlock();
+    $this->doTestExistingPathWithoutParameters();
   }
 
   /**
@@ -268,7 +269,6 @@ class PageManagerAdminTest extends WebTestBase {
     $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-bottom"]/div/ul[@class="menu"]/li/a');
     $expected = array('My account', 'Log out');
-    debug($elements);
     $links = array();
     foreach ($elements as $element) {
       $links[] = (string) $element;
@@ -287,6 +287,32 @@ class PageManagerAdminTest extends WebTestBase {
     $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-bottom"]/div/ul[@class="menu"]/li/a');
     $this->assertTrue(empty($elements));
+  }
+
+  /**
+   * Tests adding a page with an existing path with no route parameters.
+   */
+  protected function doTestExistingPathWithoutParameters() {
+    // Test an existing path.
+    $this->drupalGet('admin');
+    $this->assertResponse(200);
+
+    $this->drupalGet('admin/structure/page_manager');
+    // Add a new page with existing path 'admin'.
+    $this->clickLink('Add page');
+    $edit = array(
+      'label' => 'existing',
+      'id' => 'existing',
+      'path' => 'admin',
+    );
+    $this->drupalPostForm(NULL, $edit, 'Save');
+
+    // Regular result is displayed.
+    $this->assertText('The existing page has been added');
+
+    // Ensure the existing path leads to the new page.
+    $this->drupalGet('admin');
+    $this->assertResponse(404);
   }
 
   /**

@@ -70,7 +70,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
           $path = $collection_route->getPath();
 
           // Merge in any route parameter definitions.
-          $parameters += $collection_route->getOption('parameters');
+          $parameters += $collection_route->getOption('parameters') ?: array();
 
           // Update the route name this will be added to.
           $route_name = $name;
