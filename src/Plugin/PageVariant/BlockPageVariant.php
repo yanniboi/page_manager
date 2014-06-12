@@ -96,7 +96,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
         continue;
       }
 
-      $region_name = drupal_html_class("block-region-$region");
+      $region_name = $this->drupalHtmlClass("block-region-$region");
       $build[$region]['#prefix'] = '<div class="' . $region_name . '">';
       $build[$region]['#suffix'] = '</div>';
 
@@ -114,7 +114,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
         }
         if ($block->access($this->account)) {
           $row = $block->build();
-          $block_name = drupal_html_class("block-$block_id");
+          $block_name = $this->drupalHtmlClass("block-$block_id");
           $row['#prefix'] = '<div class="' . $block_name . '">';
           $row['#suffix'] = '</div>';
 
@@ -325,4 +325,14 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
 
     return parent::access();
   }
+
+  /**
+   * Wraps drupal_html_class().
+   *
+   * @return string
+   */
+  protected function drupalHtmlClass($class) {
+    return drupal_html_class($class);
+  }
+
 }
