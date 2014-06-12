@@ -9,7 +9,7 @@ namespace Drupal\page_manager\EventSubscriber;
 
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Plugin\Context\Context;
-use Drupal\Core\Routing\RouteProvider;
+use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\page_manager\Event\PageManagerEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,7 +22,7 @@ class RouteParamContext implements EventSubscriberInterface {
   /**
    * The route provider.
    *
-   * @var \Drupal\Core\Routing\RouteProvider
+   * @var \Drupal\Core\Routing\RouteProviderInterface
    */
   protected $routeProvider;
 
@@ -36,12 +36,12 @@ class RouteParamContext implements EventSubscriberInterface {
   /**
    * Constructs a new CurrentUserContext.
    *
-   * @param \Drupal\Core\Routing\RouteProvider $route_provider
+   * @param \Drupal\Core\Routing\RouteProviderInterface $route_provider
    *   The route provider.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
    */
-  public function __construct(RouteProvider $route_provider, RequestStack $request_stack) {
+  public function __construct(RouteProviderInterface $route_provider, RequestStack $request_stack) {
     $this->routeProvider = $route_provider;
     $this->requestStack = $request_stack;
   }

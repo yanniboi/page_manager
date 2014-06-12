@@ -7,10 +7,10 @@
 
 namespace Drupal\page_manager\EventSubscriber;
 
+use Drupal\Core\Session\AccountInterface;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Plugin\Context\Context;
-use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\page_manager\Event\PageManagerEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -27,7 +27,7 @@ class CurrentUserContext implements EventSubscriberInterface {
    *
    * @var \Drupal\Core\Session\AccountProxyInterface
    */
-  protected $accountProxy;
+  protected $account;
 
   /**
    * The user storage.
@@ -39,13 +39,13 @@ class CurrentUserContext implements EventSubscriberInterface {
   /**
    * Constructs a new CurrentUserContext.
    *
-   * @param \Drupal\Core\Session\AccountProxyInterface $account_proxy
-   *   The account proxy.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The current account.
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
    */
-  public function __construct(AccountProxyInterface $account_proxy, EntityManagerInterface $entity_manager) {
-    $this->accountProxy = $account_proxy;
+  public function __construct(AccountInterface $account, EntityManagerInterface $entity_manager) {
+    $this->account = $account;
     $this->userStorage = $entity_manager->getStorage('user');
   }
 
@@ -56,7 +56,8 @@ class CurrentUserContext implements EventSubscriberInterface {
    *   The page entity context event.
    */
   public function onPageContext(PageManagerContextEvent $event) {
-    $current_user = $this->userStorage->load($this->accountProxy->getAccount()->id());
+    $id = $this->account->id();
+    $current_user = $this->userStorage->load($id);
 
     $context = new Context(array(
       'type' => 'entity:user',
