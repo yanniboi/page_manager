@@ -7,12 +7,11 @@
 
 namespace Drupal\page_manager\Entity;
 
-use Drupal\page_manager\PageExecutable;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\ConditionPluginBag;
-use Drupal\page_manager\Plugin\PageVariantBag;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\page_manager\Plugin\VariantAwareTrait;
 
 /**
  * Defines a Page entity class.
@@ -46,6 +45,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
  * )
  */
 class Page extends ConfigEntityBase implements PageInterface {
+
+  use VariantAwareTrait;
 
   /**
    * The ID of the page entity.
@@ -90,13 +91,6 @@ class Page extends ConfigEntityBase implements PageInterface {
   protected $access_logic = 'and';
 
   /**
-   * The plugin bag that holds the page variants.
-   *
-   * @var \Drupal\Component\Plugin\PluginBag
-   */
-  protected $pageVariantBag;
-
-  /**
    * The plugin bag that holds the access conditions.
    *
    * @var \Drupal\Component\Plugin\PluginBag
@@ -122,7 +116,7 @@ class Page extends ConfigEntityBase implements PageInterface {
   /**
    * Returns a factory for page executables.
    *
-   * @return Drupal\page_manager\PageExecutableFactoryInterface
+   * @return \Drupal\page_manager\PageExecutableFactoryInterface
    */
   protected function executableFactory() {
     return \Drupal::service('page_manager.executable_factory');
@@ -178,8 +172,8 @@ class Page extends ConfigEntityBase implements PageInterface {
   public function postCreate(EntityStorageInterface $storage) {
     parent::postCreate($storage);
     // Ensure there is at least one page variant.
-    if (!$this->getPageVariants()->count()) {
-      $this->addPageVariant(array(
+    if (!$this->getVariants()->count()) {
+      $this->addVariant(array(
         'id' => 'http_status_code',
         'label' => 'Default',
         'weight' => 10,
@@ -208,36 +202,8 @@ class Page extends ConfigEntityBase implements PageInterface {
   /**
    * {@inheritdoc}
    */
-  public function addPageVariant(array $configuration) {
-    $configuration['uuid'] = $this->uuidGenerator()->generate();
-    $this->getPageVariants()->addInstanceId($configuration['uuid'], $configuration);
-    return $configuration['uuid'];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getPageVariant($page_variant_id) {
-    return $this->getPageVariants()->get($page_variant_id);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function removePageVariant($page_variant_id) {
-    $this->getPageVariants()->removeInstanceId($page_variant_id);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getPageVariants() {
-    if (!$this->pageVariantBag) {
-      $this->pageVariantBag = new PageVariantBag(\Drupal::service('plugin.manager.page_variant'), $this->get('page_variants'));
-      $this->pageVariantBag->sort();
-    }
-    return $this->pageVariantBag;
+  protected function getVariantConfig() {
+    return $this->get('page_variants');
   }
 
   /**
@@ -245,7 +211,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function getPluginBags() {
     return array(
-      'page_variants' => $this->getPageVariants(),
+      'page_variants' => $this->getVariants(),
       'access_conditions' => $this->getAccessConditions(),
     );
   }

@@ -56,11 +56,11 @@ class PageConfigSchemaTest extends ConfigSchemaTestBase {
     ));
 
     // Add a block page variant.
-    $page_variant_id = $page->addPageVariant(array(
+    $page_variant_id = $page->addVariant(array(
       'id' => 'block_page',
       'label' => 'Block page',
     ));
-    $page_variant = $page->getPageVariant($page_variant_id);
+    $page_variant = $page->getVariant($page_variant_id);
 
     // Add a selection condition.
     $page_variant->addSelectionCondition(array(

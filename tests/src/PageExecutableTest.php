@@ -87,7 +87,7 @@ class PageExecutableTest extends UnitTestCase {
       ->with($this->exectuable)
       ->will($this->returnValue($page_variant2));
     $this->page->expects($this->once())
-      ->method('getPageVariants')
+      ->method('getVariants')
       ->will($this->returnValue(array(
         'variant1' => $page_variant1,
         'variant2' => $page_variant2,

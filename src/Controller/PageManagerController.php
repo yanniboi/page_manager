@@ -106,7 +106,7 @@ class PageManagerController extends ControllerBase {
    *   The title for the page variant edit form.
    */
   public function editPageVariantTitle(PageInterface $page, $page_variant_id) {
-    $page_variant = $page->getPageVariant($page_variant_id);
+    $page_variant = $page->getVariant($page_variant_id);
     return $this->t('Edit %label page variant', array('%label' => $page_variant->label()));
   }
 
@@ -140,7 +140,7 @@ class PageManagerController extends ControllerBase {
    *   The title for the selection condition edit form.
    */
   public function editSelectionConditionTitle(PageInterface $page, $page_variant_id, $condition_id) {
-    $page_variant = $page->getPageVariant($page_variant_id);
+    $page_variant = $page->getVariant($page_variant_id);
     $selection_condition = $page_variant->getSelectionCondition($condition_id);
     return $this->t('Edit %label selection condition', array('%label' => $selection_condition->getPluginDefinition()['label']));
   }

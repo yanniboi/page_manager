@@ -58,7 +58,7 @@ class PageExecutable implements PageExecutableInterface {
    */
   public function selectPageVariant() {
     if (!$this->selectedPageVariant) {
-      foreach ($this->page->getPageVariants() as $page_variant) {
+      foreach ($this->page->getVariants() as $page_variant) {
         $page_variant->setContexts($this->getContexts());
         if ($page_variant->access()) {
           $this->selectedPageVariant = $page_variant->init($this);

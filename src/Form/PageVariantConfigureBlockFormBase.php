@@ -65,7 +65,7 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
    */
   public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $block_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $page->getPageVariant($page_variant_id);
+    $this->pageVariant = $page->getVariant($page_variant_id);
     $this->block = $this->prepareBlock($block_id);
 
     $form['#tree'] = TRUE;

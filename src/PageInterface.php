@@ -9,11 +9,12 @@ namespace Drupal\page_manager;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityWithPluginBagsInterface;
+use Drupal\page_manager\Plugin\VariantAwareInterface;
 
 /**
  * Provides an interface for page entities.
  */
-interface PageInterface extends EntityInterface, EntityWithPluginBagsInterface {
+interface PageInterface extends EntityInterface, EntityWithPluginBagsInterface, VariantAwareInterface {
 
   /**
    * Returns whether the page entity is enabled.
@@ -45,46 +46,6 @@ interface PageInterface extends EntityInterface, EntityWithPluginBagsInterface {
    *   TRUE if this is an admin page, FALSE otherwise.
    */
   public function usesAdminTheme();
-
-  /**
-   * Adds a new page variant to the page entity.
-   *
-   * @param array $configuration
-   *   An array of configuration for the new page variant.
-   *
-   * @return string
-   *   The page variant ID.
-   */
-  public function addPageVariant(array $configuration);
-
-  /**
-   * Retrieves a specific page variant.
-   *
-   * @param string $page_variant_id
-   *   The page variant ID.
-   *
-   * @return \Drupal\page_manager\Plugin\PageVariantInterface
-   *   The page variant object.
-   */
-  public function getPageVariant($page_variant_id);
-
-  /**
-   * Removes a specific page variant.
-   *
-   * @param string $page_variant_id
-   *   The page variant ID.
-   *
-   * @return $this
-   */
-  public function removePageVariant($page_variant_id);
-
-  /**
-   * Returns the page variants available for the page entity.
-   *
-   * @return \Drupal\page_manager\Plugin\PageVariantInterface[]
-   *   An array of the page variants.
-   */
-  public function getPageVariants();
 
   /**
    * Returns the conditions used for determining access for this page entity.

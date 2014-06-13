@@ -63,7 +63,7 @@ class PageVariantAddForm extends PageVariantFormBase {
     parent::submitForm($form, $form_state);
 
     // If this page variant is new, add it to the page.
-    $page_variant_id = $this->page->addPageVariant($this->pageVariant->getConfiguration());
+    $page_variant_id = $this->page->addVariant($this->pageVariant->getConfiguration());
 
     // Save the page entity.
     $this->page->save();

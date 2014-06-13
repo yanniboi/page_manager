@@ -79,7 +79,7 @@ class PageEditForm extends PageFormBase {
         'group' => 'page-variant-weight',
       )),
     );
-    foreach ($this->entity->getPageVariants() as $page_variant_id => $page_variant) {
+    foreach ($this->entity->getVariants() as $page_variant_id => $page_variant) {
       $row = array(
         '#attributes' => array(
           'class' => array('draggable'),
@@ -206,7 +206,7 @@ class PageEditForm extends PageFormBase {
   public function save(array $form, array &$form_state) {
     if (!empty($form_state['values']['page_variants'])) {
       foreach ($form_state['values']['page_variants'] as $page_variant_id => $data) {
-        if ($page_variant = $this->entity->getPageVariant($page_variant_id)) {
+        if ($page_variant = $this->entity->getVariant($page_variant_id)) {
           $page_variant->setWeight($data['weight']);
         }
       }

@@ -149,7 +149,7 @@ class PageVariantEditForm extends PageVariantFormBase {
    */
   protected function preparePageVariant($page_variant_id) {
     // Load the page variant directly from the page entity.
-    return $this->page->getPageVariant($page_variant_id)->init($this->page->getExecutable());
+    return $this->page->getVariant($page_variant_id)->init($this->page->getExecutable());
   }
 
 }

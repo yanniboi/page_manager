@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Plugin\PageVariantBag.
+ * Contains \Drupal\page_manager\Plugin\VariantBag.
  */
 
 namespace Drupal\page_manager\Plugin;
@@ -10,9 +10,9 @@ namespace Drupal\page_manager\Plugin;
 use Drupal\Core\Plugin\DefaultPluginBag;
 
 /**
- * Provides a collection of page variants.
+ * Provides a collection of variants plugins.
  */
-class PageVariantBag extends DefaultPluginBag {
+class VariantBag extends DefaultPluginBag {
 
   /**
    * {@inheritdoc}

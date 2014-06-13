@@ -368,7 +368,7 @@ class PageManagerAdminTest extends WebTestBase {
   protected function findPageVariantByLabel($page_id, $page_variant_label) {
     if ($page = Page::load($page_id)) {
       /** @var $page \Drupal\page_manager\PageInterface */
-      foreach ($page->getPageVariants() as $page_variant) {
+      foreach ($page->getVariants() as $page_variant) {
         if ($page_variant->label() == $page_variant_label) {
           return $page_variant;
         }
