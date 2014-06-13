@@ -9,7 +9,6 @@ namespace Drupal\page_manager;
 
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
-use Drupal\page_manager\PageExecutableInterface;
 
 /**
  * Represents a page entity during runtime execution.
