@@ -9,11 +9,12 @@ namespace Drupal\page_manager;
 
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
+use Drupal\page_manager\PageExecutableInterface;
 
 /**
  * Represents a page entity during runtime execution.
  */
-class PageExecutable {
+class PageExecutable implements PageExecutableInterface {
 
   /**
    * The page entity.
@@ -47,23 +48,14 @@ class PageExecutable {
   }
 
   /**
-   * Retrieves the underlying page entity.
-   *
-   * @return \Drupal\page_manager\PageInterface
-   *   The page entity.
+   * {@inheritdoc}
    */
   public function getPage() {
     return $this->page;
   }
 
   /**
-   * Selects the page variant to use for the page entity.
-   *
-   * This loops through the available page variants and checks each for access,
-   * returning the first one that is accessible.
-   *
-   * @return \Drupal\page_manager\Plugin\PageVariantInterface|null
-   *   Either the first accessible page variant, or NULL if none are accessible.
+   * {@inheritdoc}
    */
   public function selectPageVariant() {
     if (!$this->selectedPageVariant) {
@@ -79,10 +71,7 @@ class PageExecutable {
   }
 
   /**
-   * Gets the values for all defined contexts.
-   *
-   * @return \Drupal\Component\Plugin\Context\ContextInterface[]
-   *   An array of set context values, keyed by context name.
+   * {@inheritdoc}
    */
   public function getContexts() {
     if (!$this->contexts) {
@@ -92,14 +81,7 @@ class PageExecutable {
   }
 
   /**
-   * Sets the context for a given name.
-   *
-   * @param string $name
-   *   The name of the context.
-   * @param \Drupal\Component\Plugin\Context\ContextInterface $value
-   *   The context to add.
-   *
-   * @return $this
+   * {@inheritdoc}
    */
   public function addContext($name, $value) {
     $this->contexts[$name] = $value;

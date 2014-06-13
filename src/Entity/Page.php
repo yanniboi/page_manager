@@ -120,12 +120,20 @@ class Page extends ConfigEntityBase implements PageInterface {
   protected $executable;
 
   /**
+   * Returns a factory for page executables.
+   *
+   * @return Drupal\page_manager\PageExecutableFactoryInterface
+   */
+  protected function executableFactory() {
+    return \Drupal::service('page_manager.executable_factory');
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getExecutable() {
     if (!isset($this->executable)) {
-      // @todo Use a factory.
-      $this->executable = new PageExecutable($this);
+      $this->executable = $this->executableFactory()->get($this);
     }
     return $this->executable;
   }

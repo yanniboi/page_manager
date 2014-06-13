@@ -26,7 +26,7 @@ interface PageInterface extends EntityInterface, EntityWithPluginBagsInterface {
   /**
    * Returns the executable instance for this page.
    *
-   * @return \Drupal\page_manager\PageExecutable
+   * @return \Drupal\page_manager\PageExecutableInterface
    */
   public function getExecutable();
 
