@@ -28,7 +28,7 @@ interface VariantAwareInterface {
    * @param string $variant_id
    *   The variant ID.
    *
-   * @return \Drupal\page_manager\Plugin\VariantAwareInterface
+   * @return \Drupal\page_manager\Plugin\PageVariantInterface
    *   The variant object.
    */
   public function getVariant($variant_id);
@@ -46,7 +46,7 @@ interface VariantAwareInterface {
   /**
    * Returns the variants available for the entity.
    *
-   * @return \Drupal\page_manager\Plugin\VariantAwareInterface[]
+   * @return \Drupal\page_manager\Plugin\PageVariantInterface[]
    *   An array of the variants.
    */
   public function getVariants();
