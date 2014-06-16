@@ -7,18 +7,21 @@
 
 namespace Drupal\page_manager\Tests;
 
-use Drupal\config\Tests\ConfigSchemaTestBase;
+use Drupal\config\Tests\SchemaCheckTestTrait;
 use Drupal\page_manager\Entity\Page;
+use Drupal\simpletest\KernelTestBase;
 
 /**
  * Ensures that page entities have valid config schema.
  */
-class PageConfigSchemaTest extends ConfigSchemaTestBase {
+class PageConfigSchemaTest extends KernelTestBase {
+
+  use SchemaCheckTestTrait;
 
   /**
    * {@inheritdoc}
    */
-  public static $modules = array('page_manager', 'node');
+  public static $modules = array('page_manager', 'block', 'node');
 
   /**
    * {@inheritdoc}
