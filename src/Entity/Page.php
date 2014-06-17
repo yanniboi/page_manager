@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Entity;
 
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\Plugin\ConditionPluginBag;
+use Drupal\Core\Condition\ConditionPluginBag;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\page_manager\Plugin\VariantAwareTrait;

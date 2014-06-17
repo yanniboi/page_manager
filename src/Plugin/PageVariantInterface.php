@@ -182,7 +182,7 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   /**
    * Returns the conditions used for determining if this page variant is selected.
    *
-   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\page_manager\Plugin\ConditionPluginBag
+   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\Core\Condition\ConditionPluginBag
    *   An array of configured condition plugins.
    */
   public function getSelectionConditions();

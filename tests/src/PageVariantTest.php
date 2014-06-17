@@ -194,7 +194,7 @@ class PageVariantTest extends UnitTestCase {
     $block_bag->expects($this->once())
       ->method('getConfiguration')
       ->will($this->returnValue(array()));
-    $condition_bag = $this->getMockBuilder('Drupal\page_manager\Plugin\ConditionPluginBag')
+    $condition_bag = $this->getMockBuilder('Drupal\Core\Condition\ConditionPluginBag')
       ->disableOriginalConstructor()
       ->getMock();
     $condition_bag->expects($this->once())

@@ -50,7 +50,7 @@ interface PageInterface extends EntityInterface, EntityWithPluginBagsInterface, 
   /**
    * Returns the conditions used for determining access for this page entity.
    *
-   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\page_manager\Plugin\ConditionPluginBag
+   * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\Core\Condition\ConditionPluginBag
    *   An array of configured condition plugins.
    */
   public function getAccessConditions();

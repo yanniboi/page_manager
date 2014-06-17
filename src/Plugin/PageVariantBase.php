@@ -7,6 +7,9 @@
 
 namespace Drupal\page_manager\Plugin;
 
+use Drupal\Component\Plugin\ContextAwarePluginInterface;
+use Drupal\Core\Condition\ConditionAccessResolverTrait;
+use Drupal\Core\Condition\ConditionPluginBag;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Plugin\PluginDependencyTrait;
 use Drupal\page_manager\PageExecutable;
@@ -312,7 +315,14 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    * {@inheritdoc}
    */
   public function access() {
-    return $this->resolveConditions($this->getSelectionConditions(), $this->getSelectionLogic(), $this->getContexts());
+    $conditions = $this->getSelectionConditions();
+    $contexts = $this->getContexts();
+    foreach ($conditions as $condition) {
+      if ($condition instanceof ContextAwarePluginInterface) {
+        $this->contextHandler()->applyContextMapping($condition, $contexts);
+      }
+    }
+    return $this->resolveConditions($conditions, $this->getSelectionLogic(), $contexts);
   }
 
   /**
@@ -322,6 +332,15 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
    */
   protected function uuidGenerator() {
     return \Drupal::service('uuid');
+  }
+
+  /**
+   * Wraps the context handler.
+   *
+   * @return \Drupal\Core\Plugin\Context\ContextHandlerInterface
+   */
+  protected function contextHandler() {
+    return \Drupal::service('context.handler');
   }
 
 }

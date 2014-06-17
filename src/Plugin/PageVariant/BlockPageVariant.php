@@ -7,7 +7,6 @@
 
 namespace Drupal\page_manager\Plugin\PageVariant;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
@@ -103,14 +102,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
       /** @var $blocks \Drupal\block\BlockPluginInterface[] */
       foreach ($blocks as $block_id => $block) {
         if ($block instanceof ContextAwarePluginInterface) {
-          $mapping = array();
-          if ($block instanceof ConfigurablePluginInterface) {
-            $configuration = $block->getConfiguration();
-            if (isset($configuration['context_mapping'])) {
-              $mapping = array_flip($configuration['context_mapping']);
-            }
-          }
-          $this->contextHandler->applyContextMapping($block, $contexts, $mapping);
+          $this->contextHandler->applyContextMapping($block, $contexts);
         }
         if ($block->access($this->account)) {
           $row = $block->build();
