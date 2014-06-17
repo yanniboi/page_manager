@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\BlockPageVariantTest.
+ * Contains \Drupal\page_manager\Tests\BlockDisplayVariantTest.
  */
 
 namespace Drupal\page_manager\Tests;
@@ -12,21 +12,21 @@ use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Tests the block page variant plugin.
+ * Tests the block display variant plugin.
  *
- * @coversDefaultClass \Drupal\page_manager\Plugin\PageVariant\BlockPageVariant
+ * @coversDefaultClass \Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant
  *
  * @group Drupal
  * @group PageManager
  */
-class BlockPageVariantTest extends UnitTestCase {
+class BlockDisplayVariantTest extends UnitTestCase {
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
     return array(
-      'name' => 'Page Manager block page variant',
+      'name' => 'Page Manager block display variant',
       'description' => '',
       'group' => 'Page Manager',
     );
@@ -38,21 +38,21 @@ class BlockPageVariantTest extends UnitTestCase {
    * @covers ::access
    */
   public function testAccess() {
-    $page_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\PageVariant\BlockPageVariant')
+    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->disableOriginalConstructor()
       ->setMethods(NULL)
       ->getMock();
-    $this->assertSame(FALSE, $page_variant->access());
+    $this->assertSame(FALSE, $display_variant->access());
 
-    $page_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\PageVariant\BlockPageVariant')
+    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->disableOriginalConstructor()
       ->setMethods(array('getBlockBag', 'getSelectionConditions'))
       ->getMock();
-    $page_variant->setConfiguration(array('blocks' => array('foo' => array())));
-    $page_variant->expects($this->once())
+    $display_variant->setConfiguration(array('blocks' => array('foo' => array())));
+    $display_variant->expects($this->once())
       ->method('getSelectionConditions')
       ->will($this->returnValue(array()));
-    $this->assertSame(TRUE, $page_variant->access());
+    $this->assertSame(TRUE, $display_variant->access());
   }
 
   /**
@@ -94,14 +94,14 @@ class BlockPageVariantTest extends UnitTestCase {
       ->method('applyContextMapping')
       ->with($block2, array());
     $account = $this->getMock('Drupal\Core\Session\AccountInterface');
-    $page_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\PageVariant\BlockPageVariant')
+    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->setConstructorArgs(array(array(), 'test', array(), $context_handler, $account))
       ->setMethods(array('getBlockBag', 'drupalHtmlClass'))
       ->getMock();
-    $page_variant->expects($this->exactly(2))
+    $display_variant->expects($this->exactly(2))
       ->method('drupalHtmlClass')
       ->will($this->returnArgument(0));
-    $page_variant->expects($this->once())
+    $display_variant->expects($this->once())
       ->method('getBlockBag')
       ->will($this->returnValue($block_bag));
 
@@ -116,7 +116,7 @@ class BlockPageVariantTest extends UnitTestCase {
         ),
       ),
     );
-    $this->assertSame($expected_render, $page_variant->render());
+    $this->assertSame($expected_render, $display_variant->render());
   }
 
   /**
@@ -127,17 +127,17 @@ class BlockPageVariantTest extends UnitTestCase {
    * @dataProvider providerTestSubmitConfigurationForm
    */
   public function testSubmitConfigurationForm($values, $update_block_count) {
-    $page_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\PageVariant\BlockPageVariant')
+    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->disableOriginalConstructor()
       ->setMethods(array('updateBlock'))
       ->getMock();
-    $page_variant->expects($update_block_count)
+    $display_variant->expects($update_block_count)
       ->method('updateBlock');
 
     $form = array();
     $form_state['values'] = $values;
-    $page_variant->submitConfigurationForm($form, $form_state);
-    $this->assertSame($values['label'], $page_variant->label());
+    $display_variant->submitConfigurationForm($form, $form_state);
+    $this->assertSame($values['label'], $display_variant->label());
   }
 
   /**

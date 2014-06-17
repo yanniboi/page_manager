@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Plugin\PageVariantBase.
+ * Contains \Drupal\page_manager\Plugin\VariantBase.
  */
 
 namespace Drupal\page_manager\Plugin;
@@ -15,9 +15,9 @@ use Drupal\Core\Plugin\PluginDependencyTrait;
 use Drupal\page_manager\PageExecutable;
 
 /**
- * Provides a base class for PageVariant plugins.
+ * Provides a base class for DisplayVariant plugins.
  */
-abstract class PageVariantBase extends PluginBase implements PageVariantInterface {
+abstract class VariantBase extends PluginBase implements VariantInterface {
 
   use PluginDependencyTrait;
 
@@ -168,7 +168,7 @@ abstract class PageVariantBase extends PluginBase implements PageVariantInterfac
     $form['label'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
-      '#description' => $this->t('The label for this page variant.'),
+      '#description' => $this->t('The label for this display variant.'),
       '#default_value' => $this->label(),
       '#maxlength' => '255',
     );

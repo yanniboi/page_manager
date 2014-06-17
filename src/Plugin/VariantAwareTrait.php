@@ -47,7 +47,7 @@ trait VariantAwareTrait {
    */
   public function getVariants() {
     if (!$this->variantBag) {
-      $this->variantBag = new VariantBag(\Drupal::service('plugin.manager.page_variant'), $this->getVariantConfig());
+      $this->variantBag = new VariantBag(\Drupal::service('plugin.manager.display_variant'), $this->getVariantConfig());
       $this->variantBag->sort();
     }
     return $this->variantBag;

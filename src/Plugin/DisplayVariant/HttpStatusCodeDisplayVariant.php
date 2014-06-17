@@ -2,24 +2,24 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Plugin\PageVariant\HttpStatusCodePageVariant.
+ * Contains \Drupal\page_manager\Plugin\DisplayVariant\HttpStatusCodeDisplayVariant.
  */
 
-namespace Drupal\page_manager\Plugin\PageVariant;
+namespace Drupal\page_manager\Plugin\DisplayVariant;
 
-use Drupal\page_manager\Plugin\PageVariantBase;
+use Drupal\page_manager\Plugin\VariantBase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
- * Provides a page variant that returns a response with an HTTP status code.
+ * Provides a display variant that returns a response with an HTTP status code.
  *
- * @PageVariant(
+ * @DisplayVariant(
  *   id = "http_status_code",
  *   admin_label = @Translation("HTTP status code")
  * )
  */
-class HttpStatusCodePageVariant extends PageVariantBase {
+class HttpStatusCodeDisplayVariant extends VariantBase {
 
   /**
    * {@inheritdoc}

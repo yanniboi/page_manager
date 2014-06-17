@@ -70,11 +70,11 @@ class Page extends ConfigEntityBase implements PageInterface {
   protected $path;
 
   /**
-   * The configuration of the page variants.
+   * The configuration of the display variants.
    *
    * @var array
    */
-  protected $page_variants = array();
+  protected $display_variants = array();
 
   /**
    * The configuration of access conditions.
@@ -141,7 +141,7 @@ class Page extends ConfigEntityBase implements PageInterface {
       'id',
       'label',
       'path',
-      'page_variants',
+      'display_variants',
       'access_conditions',
       'access_logic',
       'use_admin_theme',
@@ -171,7 +171,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function postCreate(EntityStorageInterface $storage) {
     parent::postCreate($storage);
-    // Ensure there is at least one page variant.
+    // Ensure there is at least one display variant.
     if (!$this->getVariants()->count()) {
       $this->addVariant(array(
         'id' => 'http_status_code',
@@ -203,7 +203,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   protected function getVariantConfig() {
-    return $this->get('page_variants');
+    return $this->get('display_variants');
   }
 
   /**
@@ -211,7 +211,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function getPluginBags() {
     return array(
-      'page_variants' => $this->getVariants(),
+      'display_variants' => $this->getVariants(),
       'access_conditions' => $this->getAccessConditions(),
     );
   }

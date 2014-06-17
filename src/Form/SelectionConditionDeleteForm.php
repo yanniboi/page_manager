@@ -24,11 +24,11 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
   protected $page;
 
   /**
-   * The page variant.
+   * The display variant.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\VariantInterface
    */
-  protected $pageVariant;
+  protected $displayVariant;
 
   /**
    * The selection condition used by this form.
@@ -55,9 +55,9 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return new Url('page_manager.page_variant_edit', array(
+    return new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
-      'page_variant_id' => $this->pageVariant->id(),
+      'display_variant_id' => $this->displayVariant->id(),
     ));
   }
 
@@ -71,10 +71,10 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $condition_id = NULL) {
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL, $condition_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $this->page->getVariant($page_variant_id);
-    $this->selectionCondition = $this->pageVariant->getSelectionCondition($condition_id);
+    $this->displayVariant = $this->page->getVariant($display_variant_id);
+    $this->selectionCondition = $this->displayVariant->getSelectionCondition($condition_id);
     return parent::buildForm($form, $form_state);
   }
 
@@ -82,7 +82,7 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->pageVariant->removeSelectionCondition($this->selectionCondition->getConfiguration()['uuid']);
+    $this->displayVariant->removeSelectionCondition($this->selectionCondition->getConfiguration()['uuid']);
     $this->page->save();
     drupal_set_message($this->t('The selection condition %name has been removed.', array('%name' => $this->selectionCondition->getPluginDefinition()['label'])));
     $form_state['redirect_route'] = $this->getCancelRoute();

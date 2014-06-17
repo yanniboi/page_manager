@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Plugin\PageVariantInterface.
+ * Contains \Drupal\page_manager\Plugin\VariantInterface.
  */
 
 namespace Drupal\page_manager\Plugin;
@@ -13,12 +13,12 @@ use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\page_manager\PageExecutable;
 
 /**
- * Provides an interface for PageVariant plugins.
+ * Provides an interface for DisplayVariant plugins.
  */
-interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
+interface VariantInterface extends PluginInspectionInterface, ConfigurablePluginInterface, PluginFormInterface {
 
   /**
-   * Initializes the page variant.
+   * Initializes the display variant.
    *
    * Only used during runtime.
    *
@@ -30,41 +30,41 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function init(PageExecutable $executable);
 
   /**
-   * Returns the user-facing page variant label.
+   * Returns the user-facing display variant label.
    *
    * @return string
-   *   The page variant label.
+   *   The display variant label.
    */
   public function label();
 
   /**
-   * Returns the admin-facing page variant label.
+   * Returns the admin-facing display variant label.
    *
-   * This is for the type of page variant, not the configured variant itself.
+   * This is for the type of display variant, not the configured variant itself.
    *
    * @return string
-   *   The page variant administrative label.
+   *   The display variant administrative label.
    */
   public function adminLabel();
 
   /**
-   * Returns the unique ID for the page variant.
+   * Returns the unique ID for the display variant.
    *
    * @return string
-   *   The page variant ID.
+   *   The display variant ID.
    */
   public function id();
 
   /**
-   * Returns the weight of the page variant.
+   * Returns the weight of the display variant.
    *
    * @return int
-   *   The page variant weight.
+   *   The display variant weight.
    */
   public function getWeight();
 
   /**
-   * Sets the weight of the page variant.
+   * Sets the weight of the display variant.
    *
    * @param int $weight
    *   The weight to set.
@@ -83,7 +83,7 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function getBlock($block_id);
 
   /**
-   * Adds a block to this page variant.
+   * Adds a block to this display variant.
    *
    * @param array $configuration
    *   An array of block configuration.
@@ -106,7 +106,7 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function updateBlock($block_id, array $configuration);
 
   /**
-   * Removes a specific block from this page variant.
+   * Removes a specific block from this display variant.
    *
    * @param string $block_id
    *   The block ID.
@@ -156,31 +156,31 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function getRegionName($region);
 
   /**
-   * Returns the number of blocks contained by the page variant.
+   * Returns the number of blocks contained by the display variant.
    *
    * @return int
-   *   The number of blocks contained by the page variant.
+   *   The number of blocks contained by the display variant.
    */
   public function getBlockCount();
 
   /**
-   * Determines if this page variant is accessible.
+   * Determines if this display variant is accessible.
    *
    * @return bool
-   *   TRUE if this page variant is accessible, FALSE otherwise.
+   *   TRUE if this display variant is accessible, FALSE otherwise.
    */
   public function access();
 
   /**
-   * Returns the render array for the page variant.
+   * Returns the render array for the display variant.
    *
    * @return array
-   *   A render array for the page variant.
+   *   A render array for the display variant.
    */
   public function render();
 
   /**
-   * Returns the conditions used for determining if this page variant is selected.
+   * Returns the conditions used for determining if this display variant is selected.
    *
    * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\Core\Condition\ConditionPluginBag
    *   An array of configured condition plugins.
@@ -236,7 +236,7 @@ interface PageVariantInterface extends PluginInspectionInterface, ConfigurablePl
   public function getContexts();
 
   /**
-   * Sets the context values for this page variant.
+   * Sets the context values for this display variant.
    *
    * @param \Drupal\Component\Plugin\Context\ContextInterface[] $contexts
    *   An array of contexts, keyed by context name.

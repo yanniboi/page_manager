@@ -2,28 +2,28 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Form\PageVariantEditBlockForm.
+ * Contains \Drupal\page_manager\Form\DisplayVariantEditBlockForm.
  */
 
 namespace Drupal\page_manager\Form;
 
 /**
- * Provides a form for editing a block plugin of a page variant.
+ * Provides a form for editing a block plugin of a display variant.
  */
-class PageVariantEditBlockForm extends PageVariantConfigureBlockFormBase {
+class DisplayVariantEditBlockForm extends DisplayVariantConfigureBlockFormBase {
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'page_manager_page_variant_edit_block_form';
+    return 'page_manager_display_variant_edit_block_form';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function prepareBlock($block_id) {
-    return $this->pageVariant->getBlock($block_id);
+    return $this->displayVariant->getBlock($block_id);
   }
 
   /**

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Form\PageVariantDeleteForm.
+ * Contains \Drupal\page_manager\Form\DisplayVariantDeleteForm.
  */
 
 namespace Drupal\page_manager\Form;
@@ -11,36 +11,36 @@ use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 
 /**
- * Provides a form for deleting a page variant.
+ * Provides a form for deleting a display variant.
  */
-class PageVariantDeleteForm extends ConfirmFormBase {
+class DisplayVariantDeleteForm extends ConfirmFormBase {
 
   /**
-   * The page entity this page variant belongs to.
+   * The page entity this display variant belongs to.
    *
    * @var \Drupal\page_manager\PageInterface
    */
   protected $page;
 
   /**
-   * The page variant.
+   * The display variant.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\VariantInterface
    */
-  protected $pageVariant;
+  protected $displayVariant;
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'page_manager_page_variant_delete_form';
+    return 'page_manager_display_variant_delete_form';
   }
 
   /**
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the page variant %name?', array('%name' => $this->pageVariant->label()));
+    return $this->t('Are you sure you want to delete the display variant %name?', array('%name' => $this->displayVariant->label()));
   }
 
   /**
@@ -60,9 +60,9 @@ class PageVariantDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL) {
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $page->getVariant($page_variant_id);
+    $this->displayVariant = $page->getVariant($display_variant_id);
     return parent::buildForm($form, $form_state);
   }
 
@@ -70,9 +70,9 @@ class PageVariantDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->page->removeVariant($this->pageVariant->id());
+    $this->page->removeVariant($this->displayVariant->id());
     $this->page->save();
-    drupal_set_message($this->t('The page variant %name has been removed.', array('%name' => $this->pageVariant->label())));
+    drupal_set_message($this->t('The display variant %name has been removed.', array('%name' => $this->displayVariant->label())));
     $form_state['redirect_route'] = $this->getCancelRoute();
   }
 

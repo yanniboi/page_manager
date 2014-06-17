@@ -58,15 +58,15 @@ class PageConfigSchemaTest extends KernelTestBase {
       ),
     ));
 
-    // Add a block page variant.
-    $page_variant_id = $page->addVariant(array(
+    // Add a block display variant.
+    $display_variant_id = $page->addVariant(array(
       'id' => 'block_page',
       'label' => 'Block page',
     ));
-    $page_variant = $page->getVariant($page_variant_id);
+    $display_variant = $page->getVariant($display_variant_id);
 
     // Add a selection condition.
-    $page_variant->addSelectionCondition(array(
+    $display_variant->addSelectionCondition(array(
       'id' => 'node_type',
       'bundles' => array(
         'page' => 'page',
@@ -77,7 +77,7 @@ class PageConfigSchemaTest extends KernelTestBase {
     ));
 
     // Add a block.
-    $page_variant->addBlock(array(
+    $display_variant->addBlock(array(
       'id' => 'entity_view:node',
       'label' => 'View the node',
       'provider' => 'page_manager',

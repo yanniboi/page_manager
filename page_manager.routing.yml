@@ -82,76 +82,76 @@ page_manager.access_condition_delete:
   requirements:
     _entity_access: page.update
 
-#### Page Variants
+#### Display variants
 
-page_manager.page_variant_select:
+page_manager.display_variant_select:
   path: '/admin/structure/page_manager/manage/{page}/add'
   defaults:
-    _content: '\Drupal\page_manager\Controller\PageManagerController::selectPageVariant'
-    _title: 'Select page variant'
+    _content: '\Drupal\page_manager\Controller\PageManagerController::selectDisplayVariant'
+    _title: 'Select display variant'
   requirements:
     _entity_access: page.update
 
-page_manager.page_variant_add:
-  path: '/admin/structure/page_manager/manage/{page}/add/{page_variant_id}'
+page_manager.display_variant_add:
+  path: '/admin/structure/page_manager/manage/{page}/add/{display_variant_id}'
   defaults:
-    _form: '\Drupal\page_manager\Form\PageVariantAddForm'
-    _title: 'Add new page variant'
+    _form: '\Drupal\page_manager\Form\DisplayVariantAddForm'
+    _title: 'Add new display variant'
   requirements:
     _entity_access: page.update
 
-page_manager.page_variant_edit:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}'
+page_manager.display_variant_edit:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}'
   defaults:
-    _form: '\Drupal\page_manager\Form\PageVariantEditForm'
-    _title_callback: '\Drupal\page_manager\Controller\PageManagerController::editPageVariantTitle'
+    _form: '\Drupal\page_manager\Form\DisplayVariantEditForm'
+    _title_callback: '\Drupal\page_manager\Controller\PageManagerController::editDisplayVariantTitle'
   requirements:
     _entity_access: page.update
 
-page_manager.page_variant_delete:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/delete'
+page_manager.display_variant_delete:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/delete'
   defaults:
-    _form: '\Drupal\page_manager\Form\PageVariantDeleteForm'
-    _title: 'Delete page variant'
+    _form: '\Drupal\page_manager\Form\DisplayVariantDeleteForm'
+    _title: 'Delete display variant'
   requirements:
     _entity_access: page.update
 
-page_manager.page_variant_select_block:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/block/select'
+page_manager.display_variant_select_block:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/block/select'
   defaults:
     _content: '\Drupal\page_manager\Controller\PageManagerController::selectBlock'
     _title: 'Select block'
   requirements:
     _entity_access: page.update
 
-page_manager.page_variant_add_block:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/block/add/{block_id}'
+page_manager.display_variant_add_block:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/block/add/{block_id}'
   defaults:
-    _form: 'Drupal\page_manager\Form\PageVariantAddBlockForm'
-    _title: 'Add block to page variant'
+    _form: 'Drupal\page_manager\Form\DisplayVariantAddBlockForm'
+    _title: 'Add block to display variant'
   requirements:
     _entity_access: page.update
 
-page_manager.page_variant_edit_block:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/block/edit/{block_id}'
+page_manager.display_variant_edit_block:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/block/edit/{block_id}'
   defaults:
-    _form: 'Drupal\page_manager\Form\PageVariantEditBlockForm'
-    _title: 'Edit block in page variant'
+    _form: 'Drupal\page_manager\Form\DisplayVariantEditBlockForm'
+    _title: 'Edit block in display variant'
   requirements:
     _entity_access: page.update
 
-page_manager.page_variant_delete_block:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/block/delete/{block_id}'
+page_manager.display_variant_delete_block:
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/block/delete/{block_id}'
   defaults:
-    _form: 'Drupal\page_manager\Form\PageVariantDeleteBlockForm'
-    _title: 'Delete block in page variant'
+    _form: 'Drupal\page_manager\Form\DisplayVariantDeleteBlockForm'
+    _title: 'Delete block in display variant'
   requirements:
     _entity_access: page.update
 
 #### Selection Conditions
 
 page_manager.selection_condition_select:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/selection/select'
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/selection/select'
   defaults:
     _content: '\Drupal\page_manager\Controller\PageManagerController::selectSelectionCondition'
     _title: 'Select selection condition'
@@ -159,7 +159,7 @@ page_manager.selection_condition_select:
     _entity_access: page.update
 
 page_manager.selection_condition_add:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/selection/add/{condition_id}'
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/selection/add/{condition_id}'
   defaults:
     _form: '\Drupal\page_manager\Form\SelectionConditionAddForm'
     _title: 'Add new selection condition'
@@ -167,7 +167,7 @@ page_manager.selection_condition_add:
     _entity_access: page.update
 
 page_manager.selection_condition_edit:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/selection/edit/{condition_id}'
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/selection/edit/{condition_id}'
   defaults:
     _form: '\Drupal\page_manager\Form\SelectionConditionEditForm'
     _title_callback: '\Drupal\page_manager\Controller\PageManagerController::editSelectionConditionTitle'
@@ -175,7 +175,7 @@ page_manager.selection_condition_edit:
     _entity_access: page.update
 
 page_manager.selection_condition_delete:
-  path: '/admin/structure/page_manager/manage/{page}/manage/{page_variant_id}/selection/delete/{condition_id}'
+  path: '/admin/structure/page_manager/manage/{page}/manage/{display_variant_id}/selection/delete/{condition_id}'
   defaults:
     _form: '\Drupal\page_manager\Form\SelectionConditionDeleteForm'
     _title: 'Delete selection condition'

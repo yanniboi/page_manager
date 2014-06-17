@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Form\PageVariantConfigureBlockFormBase.
+ * Contains \Drupal\page_manager\Form\DisplayVariantConfigureBlockFormBase.
  */
 
 namespace Drupal\page_manager\Form;
@@ -14,9 +14,9 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Url;
 
 /**
- * Provides a base form for configuring a block as part of a page variant.
+ * Provides a base form for configuring a block as part of a display variant.
  */
-abstract class PageVariantConfigureBlockFormBase extends FormBase {
+abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
 
   use ContextAwarePluginAssignmentTrait;
 
@@ -28,11 +28,11 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
   protected $page;
 
   /**
-   * The page variant.
+   * The display variant.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\VariantInterface
    */
-  protected $pageVariant;
+  protected $displayVariant;
 
   /**
    * The plugin being configured.
@@ -63,9 +63,9 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $block_id = NULL) {
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL, $block_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $page->getVariant($page_variant_id);
+    $this->displayVariant = $page->getVariant($display_variant_id);
     $this->block = $this->prepareBlock($block_id);
 
     $form['#tree'] = TRUE;
@@ -77,8 +77,8 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
     $form['region'] = array(
       '#title' => $this->t('Region'),
       '#type' => 'select',
-      '#options' => $this->pageVariant->getRegionNames(),
-      '#default_value' => $this->pageVariant->getRegionAssignment($this->block->getConfiguration()['uuid']),
+      '#options' => $this->displayVariant->getRegionNames(),
+      '#default_value' => $this->displayVariant->getRegionAssignment($this->block->getConfiguration()['uuid']),
       '#required' => TRUE,
     );
 
@@ -121,12 +121,12 @@ abstract class PageVariantConfigureBlockFormBase extends FormBase {
       $this->submitContextAssignment($this->block, $form_state['values']['context_mapping']);
     }
 
-    $this->pageVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state['values']['region']));
+    $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state['values']['region']));
     $this->page->save();
 
-    $form_state['redirect_route'] = new Url('page_manager.page_variant_edit', array(
+    $form_state['redirect_route'] = new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
-      'page_variant_id' => $this->pageVariant->id(),
+      'display_variant_id' => $this->displayVariant->id(),
     ));
   }
 

@@ -27,15 +27,15 @@ interface PageExecutableInterface {
   public function getPage();
 
   /**
-   * Selects the page variant to use for the page entity.
+   * Selects the display variant to use for the page entity.
    *
-   * This loops through the available page variants and checks each for access,
+   * This loops through the available display variants and checks each for access,
    * returning the first one that is accessible.
    *
-   * @return \Drupal\page_manager\Plugin\PageVariantInterface|null
-   *   Either the first accessible page variant, or NULL if none are accessible.
+   * @return \Drupal\page_manager\Plugin\VariantInterface|null
+   *   Either the first accessible display variant, or NULL if none are accessible.
    */
-  public function selectPageVariant();
+  public function selectDisplayVariant();
 
   /**
    * Gets the values for all defined contexts.

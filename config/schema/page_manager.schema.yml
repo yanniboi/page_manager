@@ -23,12 +23,12 @@ page_manager.page.*:
     path:
       type: string
       label: 'Page path'
-    page_variants:
+    display_variants:
       type: sequence
-      label: 'Page Variants'
+      label: 'Display variants'
       sequence:
-        - type: page_manager.page_variant.[id]
-          label: 'Page Variant'
+        - type: page_manager.display_variant.[id]
+          label: 'Display variant'
     access_logic:
       type: string
       label: 'Access logic'
@@ -42,9 +42,9 @@ page_manager.page.*:
       type: config_dependencies
       label: 'Dependencies'
 
-page_manager.page_variant:
+page_manager.display_variant:
   type: mapping
-  label: 'Page Variant'
+  label: 'Display variant'
   mapping:
     id:
       type: string
@@ -80,13 +80,13 @@ page_manager.block_plugin.*:
       type: string
       label: 'UUID'
 
-page_manager.page_variant.block_page:
-  type: page_manager.page_variant
-  label: 'Block page variant'
+page_manager.display_variant.block_page:
+  type: page_manager.display_variant
+  label: 'Block display variant'
 
-page_manager.page_variant.http_status_code:
-  type: page_manager.page_variant
-  label: 'HTTP status code page variant'
+page_manager.display_variant.http_status_code:
+  type: page_manager.display_variant
+  label: 'HTTP status code display variant'
   mapping:
     status_code:
       type: integer

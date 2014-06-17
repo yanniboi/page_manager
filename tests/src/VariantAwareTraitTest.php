@@ -46,7 +46,7 @@ class VariantAwareTraitTest extends UnitTestCase {
     parent::setUp();
     $container = new ContainerBuilder();
     $this->manager = $this->getMock('Drupal\Component\Plugin\PluginManagerInterface');
-    $container->set('plugin.manager.page_variant', $this->manager);
+    $container->set('plugin.manager.display_variant', $this->manager);
     \Drupal::setContainer($container);
   }
 
@@ -72,7 +72,7 @@ class VariantAwareTraitTest extends UnitTestCase {
       'foo' => array('id' => 'foo_plugin'),
       'bar' => array('id' => 'bar_plugin'),
     );
-    $plugin = $this->getMock('Drupal\page_manager\Plugin\PageVariantInterface');
+    $plugin = $this->getMock('Drupal\page_manager\Plugin\VariantInterface');
     $map = array();
     foreach ($config as $value) {
       $map[] = array($value['id'], $value, $plugin);
@@ -112,7 +112,7 @@ class VariantAwareTraitTest extends UnitTestCase {
     $trait_object = new TestVariantAwareTrait();
     $trait_object->setUuidGenerator($uuid_generator);
 
-    $plugin = $this->getMock('Drupal\page_manager\Plugin\PageVariantInterface');
+    $plugin = $this->getMock('Drupal\page_manager\Plugin\VariantInterface');
     $plugin->expects($this->once())
       ->method('getConfiguration')
       ->will($this->returnValue($expected_config));

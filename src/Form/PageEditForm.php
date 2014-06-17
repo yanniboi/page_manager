@@ -43,15 +43,15 @@ class PageEditForm extends PageFormBase {
       )
     ));
 
-    $form['page_variant_section'] = array(
+    $form['display_variant_section'] = array(
       '#type' => 'details',
-      '#title' => $this->t('Page Variants'),
+      '#title' => $this->t('Display variants'),
       '#open' => TRUE,
     );
-    $form['page_variant_section']['add_new_page'] = array(
+    $form['display_variant_section']['add_new_page'] = array(
       '#type' => 'link',
-      '#title' => $this->t('Add new page variant'),
-      '#route_name' => 'page_manager.page_variant_select',
+      '#title' => $this->t('Add new display variant'),
+      '#route_name' => 'page_manager.display_variant_select',
       '#route_parameters' => array(
         'page' => $this->entity->id(),
       ),
@@ -62,7 +62,7 @@ class PageEditForm extends PageFormBase {
         ),
       ),
     );
-    $form['page_variant_section']['page_variants'] = array(
+    $form['display_variant_section']['display_variants'] = array(
       '#type' => 'table',
       '#header' => array(
         $this->t('Label'),
@@ -72,57 +72,57 @@ class PageEditForm extends PageFormBase {
         $this->t('Weight'),
         $this->t('Operations'),
       ),
-      '#empty' => $this->t('There are no page variants.'),
+      '#empty' => $this->t('There are no display variants.'),
       '#tabledrag' => array(array(
         'action' => 'order',
         'relationship' => 'sibling',
-        'group' => 'page-variant-weight',
+        'group' => 'display-variant-weight',
       )),
     );
-    foreach ($this->entity->getVariants() as $page_variant_id => $page_variant) {
+    foreach ($this->entity->getVariants() as $display_variant_id => $display_variant) {
       $row = array(
         '#attributes' => array(
           'class' => array('draggable'),
         ),
       );
-      $row['label']['#markup'] = $page_variant->label();
-      $row['id']['#markup'] = $page_variant->adminLabel();
+      $row['label']['#markup'] = $display_variant->label();
+      $row['id']['#markup'] = $display_variant->adminLabel();
       $row['regions'] = array('data' => array(
         '#theme' => 'item_list',
-        '#items' => $page_variant->getRegionNames(),
+        '#items' => $display_variant->getRegionNames(),
       ));
-      $row['count']['#markup'] = $page_variant->getBlockCount();
+      $row['count']['#markup'] = $display_variant->getBlockCount();
       $row['weight'] = array(
         '#type' => 'weight',
-        '#default_value' => $page_variant->getWeight(),
-        '#title' => t('Weight for @page_variant page variant', array('@page_variant' => $page_variant->label())),
+        '#default_value' => $display_variant->getWeight(),
+        '#title' => t('Weight for @display_variant display variant', array('@display_variant' => $display_variant->label())),
         '#title_display' => 'invisible',
         '#attributes' => array(
-          'class' => array('page-variant-weight'),
+          'class' => array('display-variant-weight'),
         ),
       );
       $operations = array();
       $operations['edit'] = array(
         'title' => $this->t('Edit'),
-        'route_name' => 'page_manager.page_variant_edit',
+        'route_name' => 'page_manager.display_variant_edit',
         'route_parameters' => array(
           'page' => $this->entity->id(),
-          'page_variant_id' => $page_variant_id,
+          'display_variant_id' => $display_variant_id,
         ),
       );
       $operations['delete'] = array(
         'title' => $this->t('Delete'),
-        'route_name' => 'page_manager.page_variant_delete',
+        'route_name' => 'page_manager.display_variant_delete',
         'route_parameters' => array(
           'page' => $this->entity->id(),
-          'page_variant_id' => $page_variant_id,
+          'display_variant_id' => $display_variant_id,
         ),
       );
       $row['operations'] = array(
         '#type' => 'operations',
         '#links' => $operations,
       );
-      $form['page_variant_section']['page_variants'][$page_variant_id] = $row;
+      $form['display_variant_section']['display_variants'][$display_variant_id] = $row;
     }
 
     if ($access_conditions = $this->entity->getAccessConditions()) {
@@ -204,10 +204,10 @@ class PageEditForm extends PageFormBase {
    * {@inheritdoc}
    */
   public function save(array $form, array &$form_state) {
-    if (!empty($form_state['values']['page_variants'])) {
-      foreach ($form_state['values']['page_variants'] as $page_variant_id => $data) {
-        if ($page_variant = $this->entity->getVariant($page_variant_id)) {
-          $page_variant->setWeight($data['weight']);
+    if (!empty($form_state['values']['display_variants'])) {
+      foreach ($form_state['values']['display_variants'] as $display_variant_id => $data) {
+        if ($display_variant = $this->entity->getVariant($display_variant_id)) {
+          $display_variant->setWeight($data['weight']);
         }
       }
     }

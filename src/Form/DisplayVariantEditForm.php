@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Form\PageVariantEditForm.
+ * Contains \Drupal\page_manager\Form\DisplayVariantEditForm.
  */
 
 namespace Drupal\page_manager\Form;
@@ -12,29 +12,29 @@ use Drupal\page_manager\PageInterface;
 use Drupal\Component\Serialization\Json;
 
 /**
- * Provides a form for editing a page variant.
+ * Provides a form for editing a display variant.
  */
-class PageVariantEditForm extends PageVariantFormBase {
+class DisplayVariantEditForm extends DisplayVariantFormBase {
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'page_manager_page_variant_edit_form';
+    return 'page_manager_display_variant_edit_form';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function submitText() {
-    return $this->t('Update page variant');
+    return $this->t('Update display variant');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL) {
-    $form = parent::buildForm($form, $form_state, $page, $page_variant_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
+    $form = parent::buildForm($form, $form_state, $page, $display_variant_id);
 
     // Set up the attributes used by a modal to prevent duplication later.
     $attributes = array(
@@ -52,7 +52,7 @@ class PageVariantEditForm extends PageVariantFormBase {
       )
     ));
 
-    if ($selection_conditions = $this->pageVariant->getSelectionConditions()) {
+    if ($selection_conditions = $this->displayVariant->getSelectionConditions()) {
       // Selection conditions.
       $form['selection_section'] = array(
         '#type' => 'details',
@@ -65,7 +65,7 @@ class PageVariantEditForm extends PageVariantFormBase {
         '#route_name' => 'page_manager.selection_condition_select',
         '#route_parameters' => array(
           'page' => $this->page->id(),
-          'page_variant_id' => $this->pageVariant->id(),
+          'display_variant_id' => $this->displayVariant->id(),
         ),
         '#attributes' => $add_button_attributes,
         '#attached' => array(
@@ -90,7 +90,7 @@ class PageVariantEditForm extends PageVariantFormBase {
           'and' => $this->t('All conditions must pass'),
           'or' => $this->t('Only one condition must pass'),
         ),
-        '#default_value' => $this->pageVariant->getSelectionLogic(),
+        '#default_value' => $this->displayVariant->getSelectionLogic(),
       );
 
       $form['selection_section']['selection'] = array(
@@ -106,7 +106,7 @@ class PageVariantEditForm extends PageVariantFormBase {
           'route_name' => 'page_manager.selection_condition_edit',
           'route_parameters' => array(
             'page' => $this->page->id(),
-            'page_variant_id' => $this->pageVariant->id(),
+            'display_variant_id' => $this->displayVariant->id(),
             'condition_id' => $selection_id,
           ),
           'attributes' => $attributes,
@@ -116,7 +116,7 @@ class PageVariantEditForm extends PageVariantFormBase {
           'route_name' => 'page_manager.selection_condition_delete',
           'route_parameters' => array(
             'page' => $this->page->id(),
-            'page_variant_id' => $this->pageVariant->id(),
+            'display_variant_id' => $this->displayVariant->id(),
             'condition_id' => $selection_id,
           ),
           'attributes' => $attributes,
@@ -140,16 +140,16 @@ class PageVariantEditForm extends PageVariantFormBase {
 
     // Save the page entity.
     $this->page->save();
-    drupal_set_message($this->t('The %label page variant has been updated.', array('%label' => $this->pageVariant->label())));
+    drupal_set_message($this->t('The %label display variant has been updated.', array('%label' => $this->displayVariant->label())));
     $form_state['redirect_route'] = $this->page->urlInfo('edit-form');
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function preparePageVariant($page_variant_id) {
-    // Load the page variant directly from the page entity.
-    return $this->page->getVariant($page_variant_id)->init($this->page->getExecutable());
+  protected function prepareDisplayVariant($display_variant_id) {
+    // Load the display variant directly from the page entity.
+    return $this->page->getVariant($display_variant_id)->init($this->page->getExecutable());
   }
 
 }

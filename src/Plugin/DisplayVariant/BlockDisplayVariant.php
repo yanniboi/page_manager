@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Plugin\PageVariant\BlockPageVariant.
+ * Contains \Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant.
  */
 
-namespace Drupal\page_manager\Plugin\PageVariant;
+namespace Drupal\page_manager\Plugin\DisplayVariant;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Serialization\Json;
@@ -13,18 +13,18 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\page_manager\Plugin\PageVariantBase;
+use Drupal\page_manager\Plugin\VariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides a page variant that simply contains blocks.
+ * Provides a display variant that simply contains blocks.
  *
- * @PageVariant(
+ * @DisplayVariant(
  *   id = "block_page",
  *   admin_label = @Translation("Block page")
  * )
  */
-class BlockPageVariant extends PageVariantBase implements ContainerFactoryPluginInterface {
+class BlockDisplayVariant extends VariantBase implements ContainerFactoryPluginInterface {
 
   /**
    * The context handler.
@@ -41,7 +41,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
   protected $account;
 
   /**
-   * Constructs a new BlockPageVariant.
+   * Constructs a new BlockDisplayVariant.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -123,7 +123,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
   public function buildConfigurationForm(array $form, array &$form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
-    // Do not allow blocks to be added until the page variant has been saved.
+    // Do not allow blocks to be added until the display variant has been saved.
     if (!$this->id()) {
       return $form;
     }
@@ -148,7 +148,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
     ));
 
     if ($block_assignments = $this->getRegionAssignments()) {
-      // Build a table of all blocks used by this page variant.
+      // Build a table of all blocks used by this display variant.
       $form['block_section'] = array(
         '#type' => 'details',
         '#title' => $this->t('Blocks'),
@@ -157,10 +157,10 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
       $form['block_section']['add'] = array(
         '#type' => 'link',
         '#title' => $this->t('Add new block'),
-        '#route_name' => 'page_manager.page_variant_select_block',
+        '#route_name' => 'page_manager.display_variant_select_block',
         '#route_parameters' => array(
           'page' => $page_id,
-          'page_variant_id' => $this->id(),
+          'display_variant_id' => $this->id(),
         ),
         '#attributes' => $add_button_attributes,
         '#attached' => array(
@@ -180,7 +180,7 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
         ),
         '#empty' => $this->t('There are no regions for blocks.'),
         // @todo This should utilize https://drupal.org/node/2065485.
-        '#parents' => array('page_variant', 'blocks'),
+        '#parents' => array('display_variant', 'blocks'),
       );
       // Loop through the blocks per region.
       foreach ($block_assignments as $region => $blocks) {
@@ -262,20 +262,20 @@ class BlockPageVariant extends PageVariantBase implements ContainerFactoryPlugin
           $operations = array();
           $operations['edit'] = array(
             'title' => $this->t('Edit'),
-            'route_name' => 'page_manager.page_variant_edit_block',
+            'route_name' => 'page_manager.display_variant_edit_block',
             'route_parameters' => array(
               'page' => $page_id,
-              'page_variant_id' => $this->id(),
+              'display_variant_id' => $this->id(),
               'block_id' => $block_id,
             ),
             'attributes' => $attributes,
           );
           $operations['delete'] = array(
             'title' => $this->t('Delete'),
-            'route_name' => 'page_manager.page_variant_delete_block',
+            'route_name' => 'page_manager.display_variant_delete_block',
             'route_parameters' => array(
               'page' => $page_id,
-              'page_variant_id' => $this->id(),
+              'display_variant_id' => $this->id(),
               'block_id' => $block_id,
             ),
             'attributes' => $attributes,

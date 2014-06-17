@@ -21,8 +21,8 @@ class PageViewBuilder extends EntityViewBuilder {
   public function view(EntityInterface $entity, $view_mode = 'full', $langcode = NULL) {
     $build = array();
     /** @var $entity \Drupal\page_manager\PageInterface */
-    if ($page_variant = $entity->getExecutable()->selectPageVariant()) {
-      $build = $page_variant->render();
+    if ($display_variant = $entity->getExecutable()->selectDisplayVariant()) {
+      $build = $display_variant->render();
     }
     return $build;
   }

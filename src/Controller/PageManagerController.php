@@ -37,11 +37,11 @@ class PageManagerController extends ControllerBase {
   protected $conditionManager;
 
   /**
-   * The page variant manager.
+   * The variant manager.
    *
    * @var \Drupal\Component\Plugin\PluginManagerInterface
    */
-  protected $pageVariantManager;
+  protected $variantManager;
 
   /**
    * The context handler.
@@ -51,21 +51,21 @@ class PageManagerController extends ControllerBase {
   protected $contextHandler;
 
   /**
-   * Constructs a new PageVariantEditForm.
+   * Constructs a new DisplayVariantEditForm.
    *
    * @param \Drupal\block\BlockManagerInterface $block_manager
    *   The block manager.
    * @param \Drupal\Component\Plugin\PluginManagerInterface $condition_manager
    *   The condition manager.
-   * @param \Drupal\Component\Plugin\PluginManagerInterface $page_variant_manager
-   *   The page variant manager.
+   * @param \Drupal\Component\Plugin\PluginManagerInterface $variant_manager
+   *   The variant manager.
    * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
    *   The context handler.
    */
-  public function __construct(BlockManagerInterface $block_manager, PluginManagerInterface $condition_manager, PluginManagerInterface $page_variant_manager, ContextHandlerInterface $context_handler) {
+  public function __construct(BlockManagerInterface $block_manager, PluginManagerInterface $condition_manager, PluginManagerInterface $variant_manager, ContextHandlerInterface $context_handler) {
     $this->blockManager = $block_manager;
     $this->conditionManager = $condition_manager;
-    $this->pageVariantManager = $page_variant_manager;
+    $this->variantManager = $variant_manager;
     $this->contextHandler = $context_handler;
   }
 
@@ -76,7 +76,7 @@ class PageManagerController extends ControllerBase {
     return new static(
       $container->get('plugin.manager.block'),
       $container->get('plugin.manager.condition'),
-      $container->get('plugin.manager.page_variant'),
+      $container->get('plugin.manager.display_variant'),
       $container->get('context.handler')
     );
   }
@@ -99,15 +99,15 @@ class PageManagerController extends ControllerBase {
    *
    * @param \Drupal\page_manager\PageInterface $page
    *   The page entity.
-   * @param string $page_variant_id
-   *   The page variant ID.
+   * @param string $display_variant_id
+   *   The display variant ID.
    *
    * @return string
-   *   The title for the page variant edit form.
+   *   The title for the display variant edit form.
    */
-  public function editPageVariantTitle(PageInterface $page, $page_variant_id) {
-    $page_variant = $page->getVariant($page_variant_id);
-    return $this->t('Edit %label page variant', array('%label' => $page_variant->label()));
+  public function editDisplayVariantTitle(PageInterface $page, $display_variant_id) {
+    $display_variant = $page->getVariant($display_variant_id);
+    return $this->t('Edit %label display variant', array('%label' => $display_variant->label()));
   }
 
   /**
@@ -131,17 +131,17 @@ class PageManagerController extends ControllerBase {
    *
    * @param \Drupal\page_manager\PageInterface $page
    *   The page entity.
-   * @param string $page_variant_id
-   *   The page variant ID.
+   * @param string $display_variant_id
+   *   The display variant ID.
    * @param string $condition_id
    *   The selection condition ID.
    *
    * @return string
    *   The title for the selection condition edit form.
    */
-  public function editSelectionConditionTitle(PageInterface $page, $page_variant_id, $condition_id) {
-    $page_variant = $page->getVariant($page_variant_id);
-    $selection_condition = $page_variant->getSelectionCondition($condition_id);
+  public function editSelectionConditionTitle(PageInterface $page, $display_variant_id, $condition_id) {
+    $display_variant = $page->getVariant($display_variant_id);
+    $selection_condition = $display_variant->getSelectionCondition($condition_id);
     return $this->t('Edit %label selection condition', array('%label' => $selection_condition->getPluginDefinition()['label']));
   }
 
@@ -170,26 +170,26 @@ class PageManagerController extends ControllerBase {
   }
 
   /**
-   * Presents a list of page variants to add to the page entity.
+   * Presents a list of display variants to add to the page entity.
    *
    * @param \Drupal\page_manager\PageInterface $page
    *   The page entity.
    *
    * @return array
-   *   The page variant selection page.
+   *   The display variant selection page.
    */
-  public function selectPageVariant(PageInterface $page) {
+  public function selectDisplayVariant(PageInterface $page) {
     $build = array(
       '#theme' => 'links',
       '#links' => array(),
     );
-    foreach ($this->pageVariantManager->getDefinitions() as $page_variant_id => $page_variant) {
-      $build['#links'][$page_variant_id] = array(
-        'title' => $page_variant['admin_label'],
-        'route_name' => 'page_manager.page_variant_add',
+    foreach ($this->variantManager->getDefinitions() as $display_variant_id => $display_variant) {
+      $build['#links'][$display_variant_id] = array(
+        'title' => $display_variant['admin_label'],
+        'route_name' => 'page_manager.display_variant_add',
         'route_parameters' => array(
           'page' => $page->id(),
-          'page_variant_id' => $page_variant_id,
+          'display_variant_id' => $display_variant_id,
         ),
         'attributes' => array(
           'class' => array('use-ajax'),
@@ -243,13 +243,13 @@ class PageManagerController extends ControllerBase {
    *
    * @param \Drupal\page_manager\PageInterface $page
    *   The page entity.
-   * @param string $page_variant_id
-   *   The page variant ID.
+   * @param string $display_variant_id
+   *   The display variant ID.
    *
    * @return array
    *   The selection condition selection page.
    */
-  public function selectSelectionCondition(PageInterface $page, $page_variant_id) {
+  public function selectSelectionCondition(PageInterface $page, $display_variant_id) {
     $build = array(
       '#theme' => 'links',
       '#links' => array(),
@@ -261,7 +261,7 @@ class PageManagerController extends ControllerBase {
         'route_name' => 'page_manager.selection_condition_add',
         'route_parameters' => array(
           'page' => $page->id(),
-          'page_variant_id' => $page_variant_id,
+          'display_variant_id' => $display_variant_id,
           'condition_id' => $selection_id,
         ),
         'attributes' => array(
@@ -277,19 +277,19 @@ class PageManagerController extends ControllerBase {
   }
 
   /**
-   * Presents a list of blocks to add to the page variant.
+   * Presents a list of blocks to add to the display variant.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request.
    * @param \Drupal\page_manager\PageInterface $page
    *   The page entity.
-   * @param string $page_variant_id
-   *   The page variant ID.
+   * @param string $display_variant_id
+   *   The display variant ID.
    *
    * @return array
    *   The block selection page.
    */
-  public function selectBlock(Request $request, PageInterface $page, $page_variant_id) {
+  public function selectBlock(Request $request, PageInterface $page, $display_variant_id) {
     // Add a section containing the available blocks to be added to the variant.
     $build = array(
       '#type' => 'container',
@@ -316,10 +316,10 @@ class PageManagerController extends ControllerBase {
       // Add a link for each available block within each region.
       $build[$category_key]['content']['#links'][$plugin_id] = array(
         'title' => $plugin_definition['admin_label'],
-        'route_name' => 'page_manager.page_variant_add_block',
+        'route_name' => 'page_manager.display_variant_add_block',
         'route_parameters' => array(
           'page' => $page->id(),
-          'page_variant_id' => $page_variant_id,
+          'display_variant_id' => $display_variant_id,
           'block_id' => $plugin_id,
           'region' => $request->query->get('region'),
         ),

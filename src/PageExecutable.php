@@ -23,11 +23,11 @@ class PageExecutable implements PageExecutableInterface {
   protected $page;
 
   /**
-   * The selected page variant.
+   * The selected display variant.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface|null
+   * @var \Drupal\page_manager\Plugin\VariantInterface|null
    */
-  protected $selectedPageVariant;
+  protected $selectedDisplayVariant;
 
   /**
    * An array of collected contexts.
@@ -56,17 +56,17 @@ class PageExecutable implements PageExecutableInterface {
   /**
    * {@inheritdoc}
    */
-  public function selectPageVariant() {
-    if (!$this->selectedPageVariant) {
-      foreach ($this->page->getVariants() as $page_variant) {
-        $page_variant->setContexts($this->getContexts());
-        if ($page_variant->access()) {
-          $this->selectedPageVariant = $page_variant->init($this);
+  public function selectDisplayVariant() {
+    if (!$this->selectedDisplayVariant) {
+      foreach ($this->page->getVariants() as $display_variant) {
+        $display_variant->setContexts($this->getContexts());
+        if ($display_variant->access()) {
+          $this->selectedDisplayVariant = $display_variant->init($this);
           break;
         }
       }
     }
-    return $this->selectedPageVariant;
+    return $this->selectedDisplayVariant;
   }
 
   /**

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Form\PageVariantDeleteBlockForm.
+ * Contains \Drupal\page_manager\Form\DisplayVariantDeleteBlockForm.
  */
 
 namespace Drupal\page_manager\Form;
@@ -14,7 +14,7 @@ use Drupal\page_manager\PageInterface;
 /**
  * Provides a form for deleting an access condition.
  */
-class PageVariantDeleteBlockForm extends ConfirmFormBase {
+class DisplayVariantDeleteBlockForm extends ConfirmFormBase {
 
   /**
    * The page entity.
@@ -24,11 +24,11 @@ class PageVariantDeleteBlockForm extends ConfirmFormBase {
   protected $page;
 
   /**
-   * The page variant.
+   * The display variant.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\VariantInterface
    */
-  protected $pageVariant;
+  protected $displayVariant;
 
   /**
    * The plugin being configured.
@@ -41,7 +41,7 @@ class PageVariantDeleteBlockForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'page_manager_page_variant_delete_block_form';
+    return 'page_manager_display_variant_delete_block_form';
   }
 
   /**
@@ -55,9 +55,9 @@ class PageVariantDeleteBlockForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelRoute() {
-    return new Url('page_manager.page_variant_edit', array(
+    return new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
-      'page_variant_id' => $this->pageVariant->id()
+      'display_variant_id' => $this->displayVariant->id()
     ));
   }
 
@@ -71,10 +71,10 @@ class PageVariantDeleteBlockForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $block_id = NULL) {
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL, $block_id = NULL) {
     $this->page = $page;
-    $this->pageVariant = $this->page->getVariant($page_variant_id);
-    $this->block = $this->pageVariant->getBlock($block_id);
+    $this->displayVariant = $this->page->getVariant($display_variant_id);
+    $this->block = $this->displayVariant->getBlock($block_id);
     return parent::buildForm($form, $form_state);
   }
 
@@ -82,7 +82,7 @@ class PageVariantDeleteBlockForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, array &$form_state) {
-    $this->pageVariant->removeBlock($this->block->getConfiguration()['uuid']);
+    $this->displayVariant->removeBlock($this->block->getConfiguration()['uuid']);
     $this->page->save();
     drupal_set_message($this->t('The block %label has been removed.', array('%label' => $this->block->label())));
 

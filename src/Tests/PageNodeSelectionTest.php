@@ -10,7 +10,7 @@ namespace Drupal\page_manager\Tests;
 use Drupal\simpletest\WebTestBase;
 
 /**
- * Tests selecting page variants based on nodes.
+ * Tests selecting display variants based on nodes.
  */
 class PageNodeSelectionTest extends WebTestBase {
 
@@ -25,7 +25,7 @@ class PageNodeSelectionTest extends WebTestBase {
   public static function getInfo() {
     return array(
       'name' => 'Page Manager node selection test',
-      'description' => 'Tests selecting page variants based on nodes.',
+      'description' => 'Tests selecting display variants based on nodes.',
       'group' => 'Page Manager',
     );
   }
@@ -62,7 +62,7 @@ class PageNodeSelectionTest extends WebTestBase {
       'path' => 'node/%',
     );
     $this->drupalPostForm('admin/structure/page_manager/add', $edit, 'Save');
-    // Their pages should now use the default 404 page variant.
+    // Their pages should now use the default 404 display variant.
     $this->drupalGet('node/' . $node1->id());
     $this->assertResponse(404);
     $this->assertNoText($node1->label());
@@ -70,14 +70,14 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->assertResponse(404);
     $this->assertNoText($node2->label());
 
-    // Add a new page variant.
+    // Add a new display variant.
     $this->drupalGet('admin/structure/page_manager/manage/node_view');
-    $this->clickLink('Add new page variant');
+    $this->clickLink('Add new display variant');
     $this->clickLink('Block page');
     $edit = array(
-      'page_variant[label]' => 'First',
+      'display_variant[label]' => 'First',
     );
-    $this->drupalPostForm(NULL, $edit, 'Add page variant');
+    $this->drupalPostForm(NULL, $edit, 'Add display variant');
 
     // Add the entity view block.
     $this->clickLink('Add new block');
@@ -96,7 +96,7 @@ class PageNodeSelectionTest extends WebTestBase {
     );
     $this->drupalPostForm(NULL, $edit, 'Add selection condition');
 
-    // The page node will 404, but the article node will display the page variant.
+    // The page node will 404, but the article node will display the display variant.
     $this->drupalGet('node/' . $node1->id());
     $this->assertResponse(404);
     $this->assertNoText('Node View');

@@ -14,8 +14,8 @@ services:
     arguments: ['@entity.manager']
     tags:
       - { name: 'event_subscriber' }
-  plugin.manager.page_variant:
-    class: Drupal\page_manager\Plugin\PageVariantManager
+  plugin.manager.display_variant:
+    class: Drupal\page_manager\Plugin\VariantManager
     parent: default_plugin_manager
   page_manager.executable_factory:
     class: Drupal\page_manager\PageExecutableFactory

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Annotation\PageVariant.
+ * Contains \Drupal\page_manager\Annotation\DisplayVariant.
  */
 
 namespace Drupal\page_manager\Annotation;
@@ -10,11 +10,11 @@ namespace Drupal\page_manager\Annotation;
 use Drupal\Component\Annotation\Plugin;
 
 /**
- * Defines a page variant annotation object.
+ * Defines a display variant annotation object.
  *
  * @Annotation
  */
-class PageVariant extends Plugin {
+class DisplayVariant extends Plugin {
 
   /**
    * The plugin ID.

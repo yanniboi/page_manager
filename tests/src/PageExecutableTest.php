@@ -63,37 +63,37 @@ class PageExecutableTest extends UnitTestCase {
   }
 
   /**
-   * @covers ::selectPageVariant
+   * @covers ::selectDisplayVariant
    */
-  public function testSelectPageVariant() {
+  public function testSelectDisplayVariant() {
     $event_dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
     $container = new ContainerBuilder();
     $container->set('event_dispatcher', $event_dispatcher);
     \Drupal::setContainer($container);
 
-    $page_variant1 = $this->getMock('Drupal\page_manager\Plugin\PageVariantInterface');
-    $page_variant1->expects($this->once())
+    $display_variant1 = $this->getMock('Drupal\page_manager\Plugin\VariantInterface');
+    $display_variant1->expects($this->once())
       ->method('access')
       ->will($this->returnValue(FALSE));
-    $page_variant1->expects($this->never())
+    $display_variant1->expects($this->never())
       ->method('init');
 
-    $page_variant2 = $this->getMock('Drupal\page_manager\Plugin\PageVariantInterface');
-    $page_variant2->expects($this->once())
+    $display_variant2 = $this->getMock('Drupal\page_manager\Plugin\VariantInterface');
+    $display_variant2->expects($this->once())
       ->method('access')
       ->will($this->returnValue(TRUE));
-    $page_variant2->expects($this->once())
+    $display_variant2->expects($this->once())
       ->method('init')
       ->with($this->exectuable)
-      ->will($this->returnValue($page_variant2));
+      ->will($this->returnValue($display_variant2));
     $this->page->expects($this->once())
       ->method('getVariants')
       ->will($this->returnValue(array(
-        'variant1' => $page_variant1,
-        'variant2' => $page_variant2,
+        'variant1' => $display_variant1,
+        'variant2' => $display_variant2,
       )));
 
-    $this->assertSame($page_variant2, $this->exectuable->selectPageVariant());
+    $this->assertSame($display_variant2, $this->exectuable->selectDisplayVariant());
   }
 
   /**

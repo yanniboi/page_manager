@@ -16,17 +16,17 @@ use Drupal\Core\Url;
 abstract class SelectionConditionFormBase extends ConditionFormBase {
 
   /**
-   * The page variant.
+   * The display variant.
    *
-   * @var \Drupal\page_manager\Plugin\PageVariantInterface
+   * @var \Drupal\page_manager\Plugin\VariantInterface
    */
-  protected $pageVariant;
+  protected $displayVariant;
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $page_variant_id = NULL, $condition_id = NULL) {
-    $this->pageVariant = $page->getVariant($page_variant_id);
+  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL, $condition_id = NULL) {
+    $this->displayVariant = $page->getVariant($display_variant_id);
     return parent::buildForm($form, $form_state, $page, $condition_id);
   }
 
@@ -39,15 +39,15 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
     $configuration = $this->condition->getConfiguration();
     // If this selection condition is new, add it to the page.
     if (!isset($configuration['uuid'])) {
-      $this->pageVariant->addSelectionCondition($configuration);
+      $this->displayVariant->addSelectionCondition($configuration);
     }
 
     // Save the page entity.
     $this->page->save();
 
-    $form_state['redirect_route'] = new Url('page_manager.page_variant_edit', array(
+    $form_state['redirect_route'] = new Url('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
-      'page_variant_id' => $this->pageVariant->id(),
+      'display_variant_id' => $this->displayVariant->id(),
     ));
   }
 

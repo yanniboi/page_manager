@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Plugin\PageVariantManager.
+ * Contains \Drupal\page_manager\Plugin\VariantManager.
  */
 
 namespace Drupal\page_manager\Plugin;
@@ -12,12 +12,12 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
- * Manages discovery of page variant plugins.
+ * Manages discovery of display variant plugins.
  */
-class PageVariantManager extends DefaultPluginManager {
+class VariantManager extends DefaultPluginManager {
 
   /**
-   * Constructs a new PageVariantManager.
+   * Constructs a new VariantManager.
    *
    * @param \Traversable $namespaces
    *   An object that implements \Traversable which contains the root paths
@@ -28,9 +28,9 @@ class PageVariantManager extends DefaultPluginManager {
    *   The module handler to invoke the alter hook with.
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
-    parent::__construct('Plugin/PageVariant', $namespaces, $module_handler, 'Drupal\page_manager\Annotation\PageVariant');
+    parent::__construct('Plugin/DisplayVariant', $namespaces, $module_handler, 'Drupal\page_manager\Annotation\DisplayVariant');
 
-    $this->setCacheBackend($cache_backend, 'page_variant_plugins');
+    $this->setCacheBackend($cache_backend, 'display_variant_plugins');
     // @todo Set an alter hook.
   }
 

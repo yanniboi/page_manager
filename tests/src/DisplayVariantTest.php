@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\PageVariantTest.
+ * Contains \Drupal\page_manager\Tests\DisplayVariantTest.
  */
 
 namespace Drupal\page_manager\Tests;
@@ -10,39 +10,39 @@ namespace Drupal\page_manager\Tests;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Tests the page variant plugin.
+ * Tests the display variant plugin.
  *
- * @coversDefaultClass \Drupal\page_manager\Plugin\PageVariantBase
+ * @coversDefaultClass \Drupal\page_manager\Plugin\VariantBase
  *
  * @group Drupal
  * @group PageManager
  */
-class PageVariantTest extends UnitTestCase {
+class DisplayVariantTest extends UnitTestCase {
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
     return array(
-      'name' => 'Page Manager page variant',
+      'name' => 'Page Manager display variant',
       'description' => '',
       'group' => 'Page Manager',
     );
   }
 
   /**
-   * Sets up a page variant plugin for testing.
+   * Sets up a display variant plugin for testing.
    *
    * @param array $configuration
    *   An array of plugin configuration.
    * @param array $definition
    *   The plugin definition array.
    *
-   * @return \Drupal\page_manager\Plugin\PageVariantBase|\PHPUnit_Framework_MockObject_MockObject
-   *   A mocked page variant plugin.
+   * @return \Drupal\page_manager\Plugin\VariantBase|\PHPUnit_Framework_MockObject_MockObject
+   *   A mocked display variant plugin.
    */
-  public function setUpPageVariant($configuration = array(), $definition = array()) {
-    return $this->getMockBuilder('Drupal\page_manager\Plugin\PageVariantBase')
+  public function setUpDisplayVariant($configuration = array(), $definition = array()) {
+    return $this->getMockBuilder('Drupal\page_manager\Plugin\VariantBase')
       ->setConstructorArgs(array($configuration, 'test', $definition))
       ->setMethods(array('getRegionNames', 'access', 'render', 'getBlockBag', 'getSelectionConditions'))
       ->getMock();
@@ -54,8 +54,8 @@ class PageVariantTest extends UnitTestCase {
    * @covers ::label
    */
   public function testLabel() {
-    $page_variant = $this->setUpPageVariant(array('label' => 'foo'));
-    $this->assertSame('foo', $page_variant->label());
+    $display_variant = $this->setUpDisplayVariant(array('label' => 'foo'));
+    $this->assertSame('foo', $display_variant->label());
   }
 
   /**
@@ -64,8 +64,8 @@ class PageVariantTest extends UnitTestCase {
    * @covers ::label
    */
   public function testLabelDefault() {
-    $page_variant = $this->setUpPageVariant();
-    $this->assertSame('', $page_variant->label());
+    $display_variant = $this->setUpDisplayVariant();
+    $this->assertSame('', $display_variant->label());
   }
 
   /**
@@ -74,8 +74,8 @@ class PageVariantTest extends UnitTestCase {
    * @covers ::getWeight
    */
   public function testGetWeight() {
-    $page_variant = $this->setUpPageVariant(array('weight' => 5));
-    $this->assertSame(5, $page_variant->getWeight());
+    $display_variant = $this->setUpDisplayVariant(array('weight' => 5));
+    $this->assertSame(5, $display_variant->getWeight());
   }
 
   /**
@@ -84,8 +84,8 @@ class PageVariantTest extends UnitTestCase {
    * @covers ::getWeight
    */
   public function testGetWeightDefault() {
-    $page_variant = $this->setUpPageVariant();
-    $this->assertSame(0, $page_variant->getWeight());
+    $display_variant = $this->setUpDisplayVariant();
+    $this->assertSame(0, $display_variant->getWeight());
   }
 
   /**
@@ -96,14 +96,14 @@ class PageVariantTest extends UnitTestCase {
    * @dataProvider providerTestGetRegionName
    */
   public function testGetRegionName($region_name, $expected) {
-    $page_variant = $this->setUpPageVariant();
-    $page_variant->expects($this->once())
+    $display_variant = $this->setUpDisplayVariant();
+    $display_variant->expects($this->once())
       ->method('getRegionNames')
       ->will($this->returnValue(array(
         'test1' => 'Test 1',
         'test2' => 'Test 2',
       )));
-    $this->assertSame($expected, $page_variant->getRegionName($region_name));
+    $this->assertSame($expected, $display_variant->getRegionName($region_name));
   }
 
   public function providerTestGetRegionName() {
@@ -129,18 +129,18 @@ class PageVariantTest extends UnitTestCase {
       ->method('getAllByRegion')
       ->will($this->returnValue($blocks));
 
-    $page_variant = $this->setUpPageVariant();
-    $page_variant->expects($this->once())
+    $display_variant = $this->setUpDisplayVariant();
+    $display_variant->expects($this->once())
       ->method('getBlockBag')
       ->will($this->returnValue($block_bag));
-    $page_variant->expects($this->once())
+    $display_variant->expects($this->once())
       ->method('getRegionNames')
       ->will($this->returnValue(array(
         'test1' => 'Test 1',
         'test2' => 'Test 2',
       )));
 
-    $this->assertSame($expected, $page_variant->getRegionAssignments());
+    $this->assertSame($expected, $display_variant->getRegionAssignments());
   }
 
   public function providerTestGetRegionAssignments() {
@@ -200,11 +200,11 @@ class PageVariantTest extends UnitTestCase {
     $condition_bag->expects($this->once())
       ->method('getConfiguration')
       ->will($this->returnValue(array()));
-    $page_variant = $this->setUpPageVariant();
-    $page_variant->expects($this->once())
+    $display_variant = $this->setUpDisplayVariant();
+    $display_variant->expects($this->once())
       ->method('getBlockBag')
       ->will($this->returnValue($block_bag));
-    $page_variant->expects($this->once())
+    $display_variant->expects($this->once())
       ->method('getSelectionConditions')
       ->will($this->returnValue($condition_bag));
 
@@ -217,7 +217,7 @@ class PageVariantTest extends UnitTestCase {
       'weight' => 0,
       'selection_logic' => 'and',
     );
-    $this->assertSame($expected, $page_variant->getConfiguration());
+    $this->assertSame($expected, $display_variant->getConfiguration());
   }
 
 }
