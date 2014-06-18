@@ -200,6 +200,16 @@ class Page extends ConfigEntityBase implements PageInterface {
   }
 
   /**
+   * Wraps the config factory.
+   *
+   * @return \Drupal\Core\Config\ConfigFactoryInterface
+   *   The config factory.
+   */
+  protected function configFactory() {
+    return \Drupal::service('config.factory');
+  }
+
+  /**
    * {@inheritdoc}
    */
   protected function getVariantConfig() {
@@ -262,6 +272,14 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function getContexts() {
     return $this->getExecutable()->getContexts();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isFallbackPage() {
+    $fallback_page = $this->configFactory()->get('page_manager.settings')->get('fallback_page');
+    return $this->id() == $fallback_page;
   }
 
 }

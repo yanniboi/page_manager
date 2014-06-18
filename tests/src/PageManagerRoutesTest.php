@@ -71,6 +71,36 @@ class PageManagerRoutesTest extends UnitTestCase {
   }
 
   /**
+   * Tests adding a route for the fallback page.
+   *
+   * @covers ::alterRoutes
+   */
+  public function testAlterRoutesWithFallback() {
+    // Set up the fallback page.
+    $page = $this->getMock('Drupal\page_manager\PageInterface');
+    $page->expects($this->once())
+      ->method('status')
+      ->will($this->returnValue(TRUE));
+    $page->expects($this->never())
+      ->method('getPath');
+    $page->expects($this->once())
+      ->method('isFallbackPage')
+      ->will($this->returnValue(TRUE));
+    $pages['page1'] = $page;
+
+    $this->pageStorage->expects($this->once())
+      ->method('loadMultiple')
+      ->will($this->returnValue($pages));
+
+    $collection = new RouteCollection();
+    $route_event = new RouteBuildEvent($collection);
+    $this->routeSubscriber->onAlterRoutes($route_event);
+
+    // The collection should be empty.
+    $this->assertSame(0, $collection->count());
+  }
+
+  /**
    * Tests adding routes for enabled and disabled pages.
    *
    * @covers ::alterRoutes

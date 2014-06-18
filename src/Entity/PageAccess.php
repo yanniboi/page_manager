@@ -10,15 +10,49 @@ namespace Drupal\page_manager\Entity;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Condition\ConditionAccessResolverTrait;
 use Drupal\Core\Entity\EntityAccessController;
+use Drupal\Core\Entity\EntityControllerInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines the access controller for the page entity type.
  */
-class PageAccess extends EntityAccessController {
+class PageAccess extends EntityAccessController implements EntityControllerInterface {
 
   use ConditionAccessResolverTrait;
+
+  /**
+   * The context handler.
+   *
+   * @var \Drupal\Core\Plugin\Context\ContextHandlerInterface
+   */
+  protected $contextHandler;
+
+  /**
+   * Constructs an access controller instance.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type definition.
+   * @param \Drupal\Core\Plugin\Context\ContextHandlerInterface $context_handler
+   *   The context handler.
+   */
+  public function __construct(EntityTypeInterface $entity_type, ContextHandlerInterface $context_handler) {
+    parent::__construct($entity_type);
+    $this->contextHandler = $context_handler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
+    return new static(
+      $entity_type,
+      $container->get('context.handler')
+    );
+  }
 
   /**
    * Wraps the context handler.
@@ -26,7 +60,7 @@ class PageAccess extends EntityAccessController {
    * @return \Drupal\Core\Plugin\Context\ContextHandlerInterface
    */
   protected function contextHandler() {
-    return \Drupal::service('context.handler');
+    return $this->contextHandler;
   }
 
   /**
@@ -47,6 +81,9 @@ class PageAccess extends EntityAccessController {
         }
       }
       return $this->resolveConditions($conditions, $entity->getAccessLogic(), $contexts);
+    }
+    if ($operation == 'delete' && $entity->isFallbackPage()) {
+      return FALSE;
     }
     return parent::checkAccess($entity, $operation, $langcode, $account);
   }
