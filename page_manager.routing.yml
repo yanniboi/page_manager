@@ -1,10 +1,10 @@
-#### Page Managers
+#### Pages
 
 page_manager.page_list:
   path: '/admin/structure/page_manager'
   defaults:
     _entity_list: 'page'
-    _title: 'Page Managers'
+    _title: 'Pages'
   requirements:
     _permission: 'administer pages'
 
