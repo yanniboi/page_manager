@@ -94,8 +94,9 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->method('applyContextMapping')
       ->with($block2, array());
     $account = $this->getMock('Drupal\Core\Session\AccountInterface');
+    $uuid_generator = $this->getMock('Drupal\Component\Uuid\UuidInterface');
     $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
-      ->setConstructorArgs(array(array(), 'test', array(), $context_handler, $account))
+      ->setConstructorArgs(array(array(), 'test', array(), $context_handler, $account, $uuid_generator))
       ->setMethods(array('getBlockBag', 'drupalHtmlClass'))
       ->getMock();
     $display_variant->expects($this->exactly(2))

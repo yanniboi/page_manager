@@ -67,8 +67,6 @@ class PageEditForm extends PageFormBase {
       '#header' => array(
         $this->t('Label'),
         $this->t('Plugin'),
-        $this->t('Regions'),
-        $this->t('Number of blocks'),
         $this->t('Weight'),
         $this->t('Operations'),
       ),
@@ -87,11 +85,6 @@ class PageEditForm extends PageFormBase {
       );
       $row['label']['#markup'] = $display_variant->label();
       $row['id']['#markup'] = $display_variant->adminLabel();
-      $row['regions'] = array('data' => array(
-        '#theme' => 'item_list',
-        '#items' => $display_variant->getRegionNames(),
-      ));
-      $row['count']['#markup'] = $display_variant->getBlockCount();
       $row['weight'] = array(
         '#type' => 'weight',
         '#default_value' => $display_variant->getWeight(),

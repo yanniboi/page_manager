@@ -44,7 +44,7 @@ class DisplayVariantTest extends UnitTestCase {
   public function setUpDisplayVariant($configuration = array(), $definition = array()) {
     return $this->getMockBuilder('Drupal\page_manager\Plugin\VariantBase')
       ->setConstructorArgs(array($configuration, 'test', $definition))
-      ->setMethods(array('getRegionNames', 'access', 'render', 'getBlockBag', 'getSelectionConditions'))
+      ->setMethods(array('render'))
       ->getMock();
   }
 
@@ -89,135 +89,77 @@ class DisplayVariantTest extends UnitTestCase {
   }
 
   /**
-   * Tests the getRegionName() method.
-   *
-   * @covers ::getRegionName
-   *
-   * @dataProvider providerTestGetRegionName
-   */
-  public function testGetRegionName($region_name, $expected) {
-    $display_variant = $this->setUpDisplayVariant();
-    $display_variant->expects($this->once())
-      ->method('getRegionNames')
-      ->will($this->returnValue(array(
-        'test1' => 'Test 1',
-        'test2' => 'Test 2',
-      )));
-    $this->assertSame($expected, $display_variant->getRegionName($region_name));
-  }
-
-  public function providerTestGetRegionName() {
-    return array(
-      array('test1', 'Test 1'),
-      array('test2', 'Test 2'),
-      array('test3', ''),
-    );
-  }
-
-  /**
-   * Tests the getRegionAssignments() method.
-   *
-   * @covers ::getRegionAssignments
-   *
-   * @dataProvider providerTestGetRegionAssignments
-   */
-  public function testGetRegionAssignments($expected, $blocks = array()) {
-    $block_bag = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginBag')
-      ->disableOriginalConstructor()
-      ->getMock();
-    $block_bag->expects($this->once())
-      ->method('getAllByRegion')
-      ->will($this->returnValue($blocks));
-
-    $display_variant = $this->setUpDisplayVariant();
-    $display_variant->expects($this->once())
-      ->method('getBlockBag')
-      ->will($this->returnValue($block_bag));
-    $display_variant->expects($this->once())
-      ->method('getRegionNames')
-      ->will($this->returnValue(array(
-        'test1' => 'Test 1',
-        'test2' => 'Test 2',
-      )));
-
-    $this->assertSame($expected, $display_variant->getRegionAssignments());
-  }
-
-  public function providerTestGetRegionAssignments() {
-    return array(
-      array(
-        array(
-          'test1' => array(),
-          'test2' => array(),
-        ),
-      ),
-      array(
-        array(
-          'test1' => array('foo'),
-          'test2' => array(),
-        ),
-        array(
-          'test1' => array('foo'),
-        ),
-      ),
-      array(
-        array(
-          'test1' => array(),
-          'test2' => array(),
-        ),
-        array(
-          'test3' => array('foo'),
-        ),
-      ),
-      array(
-        array(
-          'test1' => array(),
-          'test2' => array('foo'),
-        ),
-        array(
-          'test2' => array('foo'),
-          'test3' => array('bar'),
-        ),
-      ),
-    );
-  }
-
-  /**
    * Tests the getConfiguration() method.
    *
    * @covers ::getConfiguration
+   *
+   * @dataProvider providerTestGetConfiguration
    */
-  public function testGetConfiguration() {
-    $block_bag = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginBag')
-      ->disableOriginalConstructor()
-      ->getMock();
-    $block_bag->expects($this->once())
-      ->method('getConfiguration')
-      ->will($this->returnValue(array()));
-    $condition_bag = $this->getMockBuilder('Drupal\Core\Condition\ConditionPluginBag')
-      ->disableOriginalConstructor()
-      ->getMock();
-    $condition_bag->expects($this->once())
-      ->method('getConfiguration')
-      ->will($this->returnValue(array()));
-    $display_variant = $this->setUpDisplayVariant();
-    $display_variant->expects($this->once())
-      ->method('getBlockBag')
-      ->will($this->returnValue($block_bag));
-    $display_variant->expects($this->once())
-      ->method('getSelectionConditions')
-      ->will($this->returnValue($condition_bag));
+  public function testGetConfiguration($configuration, $expected) {
+    $display_variant = $this->setUpDisplayVariant($configuration);
 
-    $expected = array(
-      'id' => 'test',
-      'blocks' => array(),
-      'selection_conditions' => array(),
-      'label' => '',
-      'uuid' => '',
-      'weight' => 0,
-      'selection_logic' => 'and',
-    );
     $this->assertSame($expected, $display_variant->getConfiguration());
+  }
+
+  /**
+   * Provides test data for testGetConfiguration().
+   */
+  public function providerTestGetConfiguration() {
+    $data = array();
+    $data[] = array(
+      array(),
+      array(
+        'id' => 'test',
+        'label' => '',
+        'uuid' => '',
+        'weight' => 0,
+      ),
+    );
+    $data[] = array(
+      array('label' => 'Test'),
+      array(
+        'id' => 'test',
+        'label' => 'Test',
+        'uuid' => '',
+        'weight' => 0,
+      ),
+    );
+    $data[] = array(
+      array('id' => 'foo'),
+      array(
+        'id' => 'test',
+        'label' => '',
+        'uuid' => '',
+        'weight' => 0,
+      ),
+    );
+    return $data;
+  }
+
+  /**
+   * Tests the access() method.
+   *
+   * @covers ::access
+   */
+  public function testAccess() {
+    $display_variant = $this->setUpDisplayVariant();
+    $this->assertTrue($display_variant->access());
+  }
+
+  /**
+   * Tests the submitConfigurationForm() method.
+   *
+   * @covers ::submitConfigurationForm
+   */
+  public function testSubmitConfigurationForm() {
+    $display_variant = $this->setUpDisplayVariant();
+    $this->assertSame('', $display_variant->label());
+
+    $form = array();
+    $label = $this->randomName();
+    $form_state['values']['label'] = $label;
+    $display_variant->submitConfigurationForm($form, $form_state);
+    $this->assertSame($label, $display_variant->label());
   }
 
 }

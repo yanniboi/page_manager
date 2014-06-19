@@ -76,14 +76,14 @@ class PageExecutableTest extends UnitTestCase {
       ->method('access')
       ->will($this->returnValue(FALSE));
     $display_variant1->expects($this->never())
-      ->method('init');
+      ->method('setExecutable');
 
-    $display_variant2 = $this->getMock('Drupal\page_manager\Plugin\VariantInterface');
+    $display_variant2 = $this->getMock('Drupal\page_manager\Plugin\PageAwareVariantInterface');
     $display_variant2->expects($this->once())
       ->method('access')
       ->will($this->returnValue(TRUE));
     $display_variant2->expects($this->once())
-      ->method('init')
+      ->method('setExecutable')
       ->with($this->exectuable)
       ->will($this->returnValue($display_variant2));
     $this->page->expects($this->once())

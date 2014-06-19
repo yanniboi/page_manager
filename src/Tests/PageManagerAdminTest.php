@@ -342,6 +342,7 @@ class PageManagerAdminTest extends WebTestBase {
    */
   protected function findBlockByLabel($page_id, $display_variant_label, $block_label) {
     if ($display_variant = $this->findDisplayVariantByLabel($page_id, $display_variant_label)) {
+      /** @var $display_variant \Drupal\page_manager\Plugin\BlockVariantInterface */
       foreach ($display_variant->getRegionAssignments() as $blocks) {
         /** @var $blocks \Drupal\block\BlockPluginInterface[] */
         foreach ($blocks as $block) {

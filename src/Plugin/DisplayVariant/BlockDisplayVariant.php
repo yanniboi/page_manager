@@ -10,9 +10,18 @@ namespace Drupal\page_manager\Plugin\DisplayVariant;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\page_manager\PageExecutable;
+use Drupal\page_manager\Plugin\BlockVariantInterface;
+use Drupal\page_manager\Plugin\BlockVariantTrait;
+use Drupal\page_manager\Plugin\ConditionVariantInterface;
+use Drupal\page_manager\Plugin\ConditionVariantTrait;
+use Drupal\page_manager\Plugin\ContextAwareVariantInterface;
+use Drupal\page_manager\Plugin\ContextAwareVariantTrait;
+use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 use Drupal\page_manager\Plugin\VariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -24,7 +33,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   admin_label = @Translation("Block page")
  * )
  */
-class BlockDisplayVariant extends VariantBase implements ContainerFactoryPluginInterface {
+class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInterface, ConditionVariantInterface, ContainerFactoryPluginInterface, PageAwareVariantInterface, BlockVariantInterface {
+
+  use BlockVariantTrait;
+  use ContextAwareVariantTrait;
+  use ConditionVariantTrait;
 
   /**
    * The context handler.
@@ -34,11 +47,25 @@ class BlockDisplayVariant extends VariantBase implements ContainerFactoryPluginI
   protected $contextHandler;
 
   /**
+   * The UUID generator.
+   *
+   * @var \Drupal\Component\Uuid\UuidInterface
+   */
+  protected $uuidGenerator;
+
+  /**
    * The current user.
    *
    * @var \Drupal\Core\Session\AccountInterface
    */
   protected $account;
+
+  /**
+   * The page executable.
+   *
+   * @var \Drupal\page_manager\PageExecutable
+   */
+  protected $executable;
 
   /**
    * Constructs a new BlockDisplayVariant.
@@ -53,12 +80,15 @@ class BlockDisplayVariant extends VariantBase implements ContainerFactoryPluginI
    *   The context handler.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.
+   * @param \Drupal\Component\Uuid\UuidInterface $uuid_generator
+   *   The UUID generator.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContextHandlerInterface $context_handler, AccountInterface $account, UuidInterface $uuid_generator) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->contextHandler = $context_handler;
     $this->account = $account;
+    $this->uuidGenerator = $uuid_generator;
   }
 
   /**
@@ -70,17 +100,8 @@ class BlockDisplayVariant extends VariantBase implements ContainerFactoryPluginI
       $plugin_id,
       $plugin_definition,
       $container->get('context.handler'),
-      $container->get('current_user')
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRegionNames() {
-    return array(
-      'top' => 'Top',
-      'bottom' => 'Bottom',
+      $container->get('current_user'),
+      $container->get('uuid')
     );
   }
 
@@ -102,7 +123,7 @@ class BlockDisplayVariant extends VariantBase implements ContainerFactoryPluginI
       /** @var $blocks \Drupal\block\BlockPluginInterface[] */
       foreach ($blocks as $block_id => $block) {
         if ($block instanceof ContextAwarePluginInterface) {
-          $this->contextHandler->applyContextMapping($block, $contexts);
+          $this->contextHandler()->applyContextMapping($block, $contexts);
         }
         if ($block->access($this->account)) {
           $row = $block->build();
@@ -311,11 +332,57 @@ class BlockDisplayVariant extends VariantBase implements ContainerFactoryPluginI
    */
   public function access() {
     // If no blocks are configured for this variant, deny access.
-    if (!$this->getBlockCount()) {
+    if (empty($this->configuration['blocks'])) {
+      return FALSE;
+    }
+
+    // Delegate to the conditions.
+    if ($this->determineSelectionAccess($this->getContexts()) === FALSE) {
       return FALSE;
     }
 
     return parent::access();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return parent::defaultConfiguration() + array(
+      'blocks' => array(),
+      'selection_conditions' => array(),
+      'selection_logic' => 'and',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    foreach ($this->getBlockBag() as $instance) {
+      $this->calculatePluginDependencies($instance);
+    }
+    foreach ($this->getSelectionConditions() as $instance) {
+      $this->calculatePluginDependencies($instance);
+    }
+    return $this->dependencies;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfiguration() {
+    return array(
+      'selection_conditions' => $this->getSelectionConditions()->getConfiguration(),
+      'blocks' => $this->getBlockBag()->getConfiguration(),
+    ) + parent::getConfiguration();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSelectionLogic() {
+    return $this->configuration['selection_logic'];
   }
 
   /**
@@ -325,6 +392,42 @@ class BlockDisplayVariant extends VariantBase implements ContainerFactoryPluginI
    */
   protected function drupalHtmlClass($class) {
     return drupal_html_class($class);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function contextHandler() {
+    return $this->contextHandler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getSelectionConfiguration() {
+    return $this->configuration['selection_conditions'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setExecutable(PageExecutable $executable) {
+    $this->executable = $executable;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getBlockConfig() {
+    return $this->configuration['blocks'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function uuidGenerator() {
+    return $this->uuidGenerator;
   }
 
 }

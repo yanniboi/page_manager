@@ -10,6 +10,8 @@ namespace Drupal\page_manager\Form;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\page_manager\PageInterface;
 use Drupal\Component\Serialization\Json;
+use Drupal\page_manager\Plugin\ConditionVariantInterface;
+use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 
 /**
  * Provides a form for editing a display variant.
@@ -52,80 +54,82 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
       )
     ));
 
-    if ($selection_conditions = $this->displayVariant->getSelectionConditions()) {
-      // Selection conditions.
-      $form['selection_section'] = array(
-        '#type' => 'details',
-        '#title' => $this->t('Selection Conditions'),
-        '#open' => TRUE,
-      );
-      $form['selection_section']['add'] = array(
-        '#type' => 'link',
-        '#title' => $this->t('Add new selection condition'),
-        '#route_name' => 'page_manager.selection_condition_select',
-        '#route_parameters' => array(
-          'page' => $this->page->id(),
-          'display_variant_id' => $this->displayVariant->id(),
-        ),
-        '#attributes' => $add_button_attributes,
-        '#attached' => array(
-          'library' => array(
-            'core/drupal.ajax',
-          ),
-        ),
-      );
-      $form['selection_section']['table'] = array(
-        '#type' => 'table',
-        '#header' => array(
-          $this->t('Label'),
-          $this->t('Description'),
-          $this->t('Operations'),
-        ),
-        '#empty' => $this->t('There are no selection conditions.'),
-      );
-
-      $form['selection_section']['selection_logic'] = array(
-        '#type' => 'radios',
-        '#options' => array(
-          'and' => $this->t('All conditions must pass'),
-          'or' => $this->t('Only one condition must pass'),
-        ),
-        '#default_value' => $this->displayVariant->getSelectionLogic(),
-      );
-
-      $form['selection_section']['selection'] = array(
-        '#tree' => TRUE,
-      );
-      foreach ($selection_conditions as $selection_id => $selection_condition) {
-        $row = array();
-        $row['label']['#markup'] = $selection_condition->getPluginDefinition()['label'];
-        $row['description']['#markup'] = $selection_condition->summary();
-        $operations = array();
-        $operations['edit'] = array(
-          'title' => $this->t('Edit'),
-          'route_name' => 'page_manager.selection_condition_edit',
-          'route_parameters' => array(
+    if ($this->displayVariant instanceof ConditionVariantInterface) {
+      if ($selection_conditions = $this->displayVariant->getSelectionConditions()) {
+        // Selection conditions.
+        $form['selection_section'] = array(
+          '#type' => 'details',
+          '#title' => $this->t('Selection Conditions'),
+          '#open' => TRUE,
+        );
+        $form['selection_section']['add'] = array(
+          '#type' => 'link',
+          '#title' => $this->t('Add new selection condition'),
+          '#route_name' => 'page_manager.selection_condition_select',
+          '#route_parameters' => array(
             'page' => $this->page->id(),
             'display_variant_id' => $this->displayVariant->id(),
-            'condition_id' => $selection_id,
           ),
-          'attributes' => $attributes,
-        );
-        $operations['delete'] = array(
-          'title' => $this->t('Delete'),
-          'route_name' => 'page_manager.selection_condition_delete',
-          'route_parameters' => array(
-            'page' => $this->page->id(),
-            'display_variant_id' => $this->displayVariant->id(),
-            'condition_id' => $selection_id,
+          '#attributes' => $add_button_attributes,
+          '#attached' => array(
+            'library' => array(
+              'core/drupal.ajax',
+            ),
           ),
-          'attributes' => $attributes,
         );
-        $row['operations'] = array(
-          '#type' => 'operations',
-          '#links' => $operations,
+        $form['selection_section']['table'] = array(
+          '#type' => 'table',
+          '#header' => array(
+            $this->t('Label'),
+            $this->t('Description'),
+            $this->t('Operations'),
+          ),
+          '#empty' => $this->t('There are no selection conditions.'),
         );
-        $form['selection_section']['table'][$selection_id] = $row;
+
+        $form['selection_section']['selection_logic'] = array(
+          '#type' => 'radios',
+          '#options' => array(
+            'and' => $this->t('All conditions must pass'),
+            'or' => $this->t('Only one condition must pass'),
+          ),
+          '#default_value' => $this->displayVariant->getSelectionLogic(),
+        );
+
+        $form['selection_section']['selection'] = array(
+          '#tree' => TRUE,
+        );
+        foreach ($selection_conditions as $selection_id => $selection_condition) {
+          $row = array();
+          $row['label']['#markup'] = $selection_condition->getPluginDefinition()['label'];
+          $row['description']['#markup'] = $selection_condition->summary();
+          $operations = array();
+          $operations['edit'] = array(
+            'title' => $this->t('Edit'),
+            'route_name' => 'page_manager.selection_condition_edit',
+            'route_parameters' => array(
+              'page' => $this->page->id(),
+              'display_variant_id' => $this->displayVariant->id(),
+              'condition_id' => $selection_id,
+            ),
+            'attributes' => $attributes,
+          );
+          $operations['delete'] = array(
+            'title' => $this->t('Delete'),
+            'route_name' => 'page_manager.selection_condition_delete',
+            'route_parameters' => array(
+              'page' => $this->page->id(),
+              'display_variant_id' => $this->displayVariant->id(),
+              'condition_id' => $selection_id,
+            ),
+            'attributes' => $attributes,
+          );
+          $row['operations'] = array(
+            '#type' => 'operations',
+            '#links' => $operations,
+          );
+          $form['selection_section']['table'][$selection_id] = $row;
+        }
       }
     }
 
@@ -149,7 +153,11 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
    */
   protected function prepareDisplayVariant($display_variant_id) {
     // Load the display variant directly from the page entity.
-    return $this->page->getVariant($display_variant_id)->init($this->page->getExecutable());
+    $variant = $this->page->getVariant($display_variant_id);
+    if ($variant instanceof PageAwareVariantInterface) {
+      $variant->setExecutable($this->page->getExecutable());
+    }
+    return $variant;
   }
 
 }
