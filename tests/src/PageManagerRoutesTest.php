@@ -141,17 +141,17 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->assertSame(1, $collection->count());
     $route = $collection->get('page_manager.page_view_page1');
     $expected_defaults = array(
-      '_entity_view' => 'page',
-      'page' => 'page1',
+      '_entity_view' => '_page',
+      '_page' => 'page1',
       '_title' => 'Page label',
     );
     $expected_requirements = array(
-      '_entity_access' => 'page.view',
+      '_entity_access' => '_page.view',
     );
     $expected_options = array(
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
       'parameters' => array(
-        'page' => array(
+        '_page' => array(
           'type' => 'entity:page',
         ),
       ),
@@ -190,17 +190,17 @@ class PageManagerRoutesTest extends UnitTestCase {
 
     $route = $collection->get('test_route');
     $expected_defaults = array(
-      '_entity_view' => 'page',
-      'page' => 'page1',
+      '_entity_view' => '_page',
+      '_page' => 'page1',
       '_title' => NULL,
     );
     $expected_requirements = array(
-      '_entity_access' => 'page.view',
+      '_entity_access' => '_page.view',
     );
     $expected_options = array(
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
       'parameters' => array(
-        'page' => array(
+        '_page' => array(
           'type' => 'entity:page',
         ),
         'foo' => 'bar',
