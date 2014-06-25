@@ -363,7 +363,7 @@ class PageManagerAdminTest extends WebTestBase {
    * @param string $display_variant_label
    *   The label of the display variant.
    *
-   * @return \Drupal\page_manager\Plugin\VariantInterface|null
+   * @return \Drupal\Core\Display\VariantInterface|null
    *   Either a display variant, or NULL.
    */
   protected function findDisplayVariantByLabel($page_id, $display_variant_label) {

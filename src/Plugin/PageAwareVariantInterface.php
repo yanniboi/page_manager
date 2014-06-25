@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Plugin;
 
+use Drupal\Core\Display\VariantInterface;
 use Drupal\page_manager\PageExecutable;
 
 /**

@@ -30,7 +30,7 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
   /**
    * The display variant.
    *
-   * @var \Drupal\page_manager\Plugin\VariantInterface
+   * @var \Drupal\page_manager\Plugin\BlockVariantInterface
    */
   protected $displayVariant;
 

@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
-use Drupal\page_manager\Plugin\VariantManager;
+use Drupal\Core\Display\VariantManager;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -19,14 +19,14 @@ class DisplayVariantAddForm extends DisplayVariantFormBase {
   /**
    * The variant manager.
    *
-   * @var \Drupal\page_manager\Plugin\VariantManager
+   * @var \Drupal\Core\Display\VariantManager
    */
   protected $variantManager;
 
   /**
    * Constructs a new DisplayVariantAddForm.
    *
-   * @param \Drupal\page_manager\Plugin\VariantManager $variant_manager
+   * @param \Drupal\Core\Display\VariantManager $variant_manager
    *   The variant manager.
    */
   public function __construct(VariantManager $variant_manager) {

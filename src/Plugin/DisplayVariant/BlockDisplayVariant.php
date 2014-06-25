@@ -11,6 +11,7 @@ use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Uuid\UuidInterface;
+use Drupal\Core\Display\VariantBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -22,7 +23,6 @@ use Drupal\page_manager\Plugin\ConditionVariantTrait;
 use Drupal\page_manager\Plugin\ContextAwareVariantInterface;
 use Drupal\page_manager\Plugin\ContextAwareVariantTrait;
 use Drupal\page_manager\Plugin\PageAwareVariantInterface;
-use Drupal\page_manager\Plugin\VariantBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -108,7 +108,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
   /**
    * {@inheritdoc}
    */
-  public function render() {
+  public function build() {
     $build = array();
     $contexts = $this->getContexts();
     foreach ($this->getRegionAssignments() as $region => $blocks) {
@@ -330,7 +330,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
   /**
    * {@inheritdoc}
    */
-  public function access() {
+  public function access(AccountInterface $account = NULL) {
     // If no blocks are configured for this variant, deny access.
     if (empty($this->configuration['blocks'])) {
       return FALSE;
@@ -341,7 +341,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
       return FALSE;
     }
 
-    return parent::access();
+    return parent::access($account);
   }
 
   /**

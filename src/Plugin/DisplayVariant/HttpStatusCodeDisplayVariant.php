@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Plugin\DisplayVariant;
 
-use Drupal\page_manager\Plugin\VariantBase;
+use Drupal\Core\Display\VariantBase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -70,7 +70,7 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
   /**
    * {@inheritdoc}
    */
-  public function render() {
+  public function build() {
     $status_code = $this->configuration['status_code'];
     if ($status_code == 200) {
       return array();

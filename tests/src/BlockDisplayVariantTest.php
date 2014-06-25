@@ -56,11 +56,11 @@ class BlockDisplayVariantTest extends UnitTestCase {
   }
 
   /**
-   * Tests the render() method.
+   * Tests the build() method.
    *
-   * @covers ::render
+   * @covers ::build
    */
-  public function testRender() {
+  public function testBuild() {
     $block1 = $this->getMock('Drupal\block\BlockPluginInterface');
     $block1->expects($this->once())
       ->method('access')
@@ -106,7 +106,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->method('getBlockBag')
       ->will($this->returnValue($block_bag));
 
-    $expected_render = array(
+    $expected_build = array(
       'top' => array(
         '#prefix' => '<div class="block-region-top">',
         '#suffix' => '</div>',
@@ -117,7 +117,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
         ),
       ),
     );
-    $this->assertSame($expected_render, $display_variant->render());
+    $this->assertSame($expected_build, $display_variant->build());
   }
 
   /**

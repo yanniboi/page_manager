@@ -7,6 +7,8 @@
 
 namespace Drupal\page_manager\Plugin;
 
+use Drupal\Core\Display\VariantInterface;
+
 /**
  * Provides an interface for variant plugins that use block plugins.
  */

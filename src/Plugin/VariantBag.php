@@ -17,7 +17,7 @@ class VariantBag extends DefaultPluginBag {
   /**
    * {@inheritdoc}
    *
-   * @return \Drupal\page_manager\Plugin\VariantInterface
+   * @return \Drupal\Core\Display\VariantInterface
    */
   public function &get($instance_id) {
     return parent::get($instance_id);

@@ -27,7 +27,7 @@ page_manager.page.*:
       type: sequence
       label: 'Display variants'
       sequence:
-        - type: page_manager.display_variant.[id]
+        - type: display_variant.plugin.[id]
           label: 'Display variant'
     access_logic:
       type: string
@@ -42,22 +42,17 @@ page_manager.page.*:
       type: config_dependencies
       label: 'Dependencies'
 
-page_manager.display_variant:
-  type: mapping
-  label: 'Display variant'
+page_manager.block_plugin.*:
+  type: block_settings
   mapping:
-    id:
-      type: string
-      label: 'ID'
-    label:
-      type: label
-      label: 'Label'
-    weight:
-      type: integer
-      label: 'Weight'
     uuid:
       type: string
       label: 'UUID'
+
+display_variant.plugin.block_page:
+  type: display_variant.plugin
+  label: 'Block display variant'
+  mapping:
     selection_logic:
       type: string
       label: 'Selection logic'
@@ -73,19 +68,8 @@ page_manager.display_variant:
       sequence:
         - type: page_manager.block_plugin.[id]
 
-page_manager.block_plugin.*:
-  type: block_settings
-  mapping:
-    uuid:
-      type: string
-      label: 'UUID'
-
-page_manager.display_variant.block_page:
-  type: page_manager.display_variant
-  label: 'Block display variant'
-
-page_manager.display_variant.http_status_code:
-  type: page_manager.display_variant
+display_variant.plugin.http_status_code:
+  type: display_variant.plugin
   label: 'HTTP status code display variant'
   mapping:
     status_code:

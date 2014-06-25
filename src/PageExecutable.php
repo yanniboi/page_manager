@@ -27,7 +27,7 @@ class PageExecutable implements PageExecutableInterface {
   /**
    * The selected display variant.
    *
-   * @var \Drupal\page_manager\Plugin\VariantInterface|null
+   * @var \Drupal\Core\Display\VariantInterface|null
    */
   protected $selectedDisplayVariant;
 

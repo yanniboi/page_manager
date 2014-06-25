@@ -32,7 +32,7 @@ interface PageExecutableInterface {
    * This loops through the available display variants and checks each for access,
    * returning the first one that is accessible.
    *
-   * @return \Drupal\page_manager\Plugin\VariantInterface|null
+   * @return \Drupal\Core\Display\VariantInterface|null
    *   Either the first accessible display variant, or NULL if none are accessible.
    */
   public function selectDisplayVariant();

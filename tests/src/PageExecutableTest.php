@@ -71,7 +71,7 @@ class PageExecutableTest extends UnitTestCase {
     $container->set('event_dispatcher', $event_dispatcher);
     \Drupal::setContainer($container);
 
-    $display_variant1 = $this->getMock('Drupal\page_manager\Plugin\VariantInterface');
+    $display_variant1 = $this->getMock('Drupal\Core\Display\VariantInterface');
     $display_variant1->expects($this->once())
       ->method('access')
       ->will($this->returnValue(FALSE));

@@ -22,7 +22,7 @@ class PageViewBuilder extends EntityViewBuilder {
     $build = array();
     /** @var $entity \Drupal\page_manager\PageInterface */
     if ($display_variant = $entity->getExecutable()->selectDisplayVariant()) {
-      $build = $display_variant->render();
+      $build = $display_variant->build();
     }
     return $build;
   }
