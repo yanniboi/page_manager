@@ -49,13 +49,12 @@ trait ContextAwarePluginAssignmentTrait {
     $element['#tree'] = TRUE;
     foreach ($plugin->getContextDefinitions() as $context_slot => $definition) {
       // Assume the requirement is required if unspecified.
-      $definition['required'] = isset($definition['required']) ? $definition['required'] : TRUE;
-      $definition = new DataDefinition($definition);
+      $definition = $definition->getDataDefinition();
 
       $valid_contexts = $this->contextHandler()->getMatchingContexts($contexts, $definition);
       $options = array();
       foreach ($valid_contexts as $context_id => $context) {
-        $context_definition = new DataDefinition($context->getContextDefinition());
+        $context_definition = $context->getContextDefinition();
         $options[$context_id] = $context_definition->getLabel();
       }
 

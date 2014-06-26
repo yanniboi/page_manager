@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Tests;
 
+use Drupal\Core\TypedData\DataDefinition;
 use Drupal\page_manager\EventSubscriber\RouteParamContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -44,9 +45,18 @@ class RouteParamContextTest extends PageContextTestBase {
     $request_stack = new RequestStack();
     $request_stack->push($request);
 
+    $this->typedDataManager->expects($this->any())
+      ->method('getDefaultConstraints')
+      ->will($this->returnValue(array()));
     $this->typedDataManager->expects($this->once())
       ->method('create')
-      ->with($this->isType('object'), 'banana');
+      ->with($this->isType('object'), 'banana')
+      ->will($this->returnValue($this->getMock('Drupal\Core\TypedData\TypedDataInterface')));
+    $this->typedDataManager->expects($this->any())
+      ->method('createDataDefinition')
+      ->will($this->returnCallback(function ($type) {
+        return new DataDefinition(array('type' => $type));
+      }));
 
     $page = $this->getMock('Drupal\page_manager\PageInterface');
     $this->executable->expects($this->once())

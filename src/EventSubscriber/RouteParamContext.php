@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\EventSubscriber;
 
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Routing\RouteProviderInterface;
@@ -65,7 +66,7 @@ class RouteParamContext implements EventSubscriberInterface {
           continue;
         }
 
-        $context = new Context($route_context);
+        $context = new Context(new ContextDefinition($route_context['type']));
         if ($request->attributes->has($route_context_name)) {
           $context->setContextValue($request->attributes->get($route_context_name));
         }

@@ -9,6 +9,7 @@ namespace Drupal\page_manager\Tests;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Plugin\Context\Context;
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\PageExecutable;
 use Drupal\Tests\UnitTestCase;
@@ -100,7 +101,7 @@ class PageExecutableTest extends UnitTestCase {
    * @covers ::addContext
    */
   public function testAddContext() {
-    $context = new Context(array('bar'));
+    $context = new Context(new ContextDefinition('bar'));
     $this->exectuable->addContext('foo', $context);
     $contexts = $this->exectuable->getContexts();
     $this->assertSame(array('foo' => $context), $contexts);
@@ -110,7 +111,7 @@ class PageExecutableTest extends UnitTestCase {
    * @covers ::getContexts
    */
   public function testGetContexts() {
-    $context = new Context(array('bar'));
+    $context = new Context(new ContextDefinition('bar'));
     $event_dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
     $event_dispatcher->expects($this->once())
       ->method('dispatch')

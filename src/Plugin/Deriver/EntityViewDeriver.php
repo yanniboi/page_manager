@@ -9,6 +9,7 @@ namespace Drupal\page_manager\Plugin\Deriver;
 
 use Drupal\Component\Plugin\Derivative\DerivativeBase;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Plugin\Discovery\ContainerDerivativeInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -55,9 +56,7 @@ class EntityViewDeriver extends DerivativeBase implements ContainerDerivativeInt
         $this->derivatives[$entity_type_id] = $base_plugin_definition;
         $this->derivatives[$entity_type_id]['admin_label'] = $this->t('Entity view (@label)', array('@label' => $entity_type->getLabel()));
         $this->derivatives[$entity_type_id]['context'] = array(
-          'entity' => array(
-            'type' => 'entity:' . $entity_type_id,
-          ),
+          'entity' => new ContextDefinition('entity:' . $entity_type_id),
         );
       }
     }

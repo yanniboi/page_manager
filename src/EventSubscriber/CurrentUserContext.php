@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\EventSubscriber;
 
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -59,10 +60,7 @@ class CurrentUserContext implements EventSubscriberInterface {
     $id = $this->account->id();
     $current_user = $this->userStorage->load($id);
 
-    $context = new Context(array(
-      'type' => 'entity:user',
-      'label' => $this->t('Current user'),
-    ));
+    $context = new Context(new ContextDefinition('entity:user', $this->t('Current user')));
     $context->setContextValue($current_user);
     $event->getPageExecutable()->addContext('current_user', $context);
   }
