@@ -7,17 +7,17 @@
 
 namespace Drupal\page_manager\Plugin\Deriver;
 
-use Drupal\Component\Plugin\Derivative\DerivativeBase;
+use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Plugin\Context\ContextDefinition;
-use Drupal\Core\Plugin\Discovery\ContainerDerivativeInterface;
+use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides entity view block definitions for each entity type.
  */
-class EntityViewDeriver extends DerivativeBase implements ContainerDerivativeInterface {
+class EntityViewDeriver extends DeriverBase implements ContainerDeriverInterface {
 
   use StringTranslationTrait;
 

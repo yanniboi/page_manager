@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @Block(
  *   id = "entity_view",
- *   derivative = "Drupal\page_manager\Plugin\Deriver\EntityViewDeriver",
+ *   deriver = "Drupal\page_manager\Plugin\Deriver\EntityViewDeriver",
  * )
  */
 class EntityView extends BlockBase implements ContextAwarePluginInterface, ContainerFactoryPluginInterface {
