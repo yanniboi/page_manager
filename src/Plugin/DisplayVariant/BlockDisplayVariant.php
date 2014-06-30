@@ -8,10 +8,12 @@
 namespace Drupal\page_manager\Plugin\DisplayVariant;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
+use Drupal\Component\Plugin\DerivativeInspectionInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Display\VariantBase;
+use Drupal\Component\Utility\String;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -121,17 +123,25 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
       $build[$region]['#suffix'] = '</div>';
 
       /** @var $blocks \Drupal\block\BlockPluginInterface[] */
+      $weight = 0;
       foreach ($blocks as $block_id => $block) {
         if ($block instanceof ContextAwarePluginInterface) {
           $this->contextHandler()->applyContextMapping($block, $contexts);
         }
         if ($block->access($this->account)) {
-          $row = $block->build();
-          $block_name = $this->drupalHtmlClass("block-$block_id");
-          $row['#prefix'] = '<div class="' . $block_name . '">';
-          $row['#suffix'] = '</div>';
+          $block_render_array = array(
+            '#theme' => 'block',
+            '#attributes' => array(),
+            '#weight' => $weight++,
+            '#configuration' => $block->getConfiguration(),
+            '#plugin_id' => $block->getPluginId(),
+            '#base_plugin_id' => $block->getBaseId(),
+            '#derivative_plugin_id' => $block->getDerivativeId(),
+          );
+          $block_render_array['#configuration']['label'] = String::checkPlain($block_render_array['#configuration']['label']);
+          $block_render_array['content'] = $block->build();
 
-          $build[$region][$block_id] = $row;
+          $build[$region][$block_id] = $block_render_array;
         }
       }
     }
