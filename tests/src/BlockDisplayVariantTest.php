@@ -9,6 +9,7 @@ namespace Drupal\page_manager\Tests;
 
 use Drupal\block\BlockPluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
+use Drupal\Core\Form\FormState;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -157,7 +158,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->method('updateBlock');
 
     $form = array();
-    $form_state['values'] = $values;
+    $form_state = new FormState(array('values' => $values));
     $display_variant->submitConfigurationForm($form, $form_state);
     $this->assertSame($values['label'], $display_variant->label());
   }

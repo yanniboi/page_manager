@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
@@ -92,10 +93,12 @@ abstract class ConditionFormBase extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // Allow the condition to validate the form.
-    $condition_values = array(
-      'values' => &$form_state['values']['condition'],
-    );
+    $condition_values = new FormState(array(
+      'values' => $form_state['values']['condition'],
+    ));
     $this->condition->validateConfigurationForm($form, $condition_values);
+    // Update the original form values.
+    $form_state['values']['condition'] = $condition_values['values'];
   }
 
   /**
@@ -103,10 +106,12 @@ abstract class ConditionFormBase extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Allow the condition to submit the form.
-    $condition_values = array(
-      'values' => &$form_state['values']['condition'],
-    );
+    $condition_values = new FormState(array(
+      'values' => $form_state['values']['condition'],
+    ));
     $this->condition->submitConfigurationForm($form, $condition_values);
+    // Update the original form values.
+    $form_state['values']['condition'] = $condition_values['values'];
 
     if (!empty($form_state['values']['context_mapping'])) {
       $this->submitContextAssignment($this->condition, $form_state['values']['context_mapping']);

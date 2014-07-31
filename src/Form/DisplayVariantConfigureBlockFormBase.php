@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
@@ -99,24 +100,27 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $settings = array(
-      'values' => &$form_state['values']['settings'],
-    );
+    $settings = new FormState(array(
+      'values' => $form_state['values']['settings']
+    ));
     // Call the plugin validate handler.
     $this->block->validateConfigurationForm($form, $settings);
+    // Update the original form values.
+    $form_state['values']['settings'] = $settings['values'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $settings = array(
-      'values' => &$form_state['values']['settings'],
-      'errors' => $form_state['errors'],
-    );
+    $settings = new FormState(array(
+      'values' => $form_state['values']['settings']
+    ));
 
     // Call the plugin submit handler.
     $this->block->submitConfigurationForm($form, $settings);
+    // Update the original form values.
+    $form_state['values']['settings'] = $settings['values'];
 
     if (!empty($form_state['values']['context_mapping'])) {
       $this->submitContextAssignment($this->block, $form_state['values']['context_mapping']);
