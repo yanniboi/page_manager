@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Display\VariantManager;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -59,7 +60,7 @@ class DisplayVariantAddForm extends DisplayVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
     // If this display variant is new, add it to the page.

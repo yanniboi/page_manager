@@ -10,6 +10,7 @@ namespace Drupal\page_manager\Plugin\Block;
 use Drupal\block\BlockBase;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -72,7 +73,7 @@ class EntityView extends BlockBase implements ContextAwarePluginInterface, Conta
   /**
    * {@inheritdoc}
    */
-  public function blockForm($form, &$form_state) {
+  public function blockForm($form, FormStateInterface $form_state) {
     $form['view_mode'] = array(
       '#type' => 'select',
       '#options' => $this->entityManager->getViewModeOptions($this->getDerivativeId()),
@@ -85,7 +86,7 @@ class EntityView extends BlockBase implements ContextAwarePluginInterface, Conta
   /**
    * {@inheritdoc}
    */
-  public function blockSubmit($form, &$form_state) {
+  public function blockSubmit($form, FormStateInterface $form_state) {
     $this->configuration['view_mode'] = $form_state['values']['view_mode'];
   }
 

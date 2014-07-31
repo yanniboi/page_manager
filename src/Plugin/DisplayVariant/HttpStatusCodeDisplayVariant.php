@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Plugin\DisplayVariant;
 
 use Drupal\Core\Display\VariantBase;
+use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -24,7 +25,7 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, array &$form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
     // Get all possible status codes defined by Symfony.
@@ -62,7 +63,7 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, array &$form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
     $this->configuration['status_code'] = $form_state['values']['status_code'];
   }

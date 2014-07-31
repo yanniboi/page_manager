@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 
@@ -60,7 +61,7 @@ class DisplayVariantDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
     $this->page = $page;
     $this->displayVariant = $page->getVariant($display_variant_id);
     return parent::buildForm($form, $form_state);
@@ -69,7 +70,7 @@ class DisplayVariantDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->page->removeVariant($this->displayVariant->id());
     $this->page->save();
     drupal_set_message($this->t('The display variant %name has been removed.', array('%name' => $this->displayVariant->label())));

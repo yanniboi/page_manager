@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
@@ -63,7 +64,7 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL, $block_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL, $block_id = NULL) {
     $this->page = $page;
     $this->displayVariant = $page->getVariant($display_variant_id);
     $this->block = $this->prepareBlock($block_id);
@@ -97,7 +98,7 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, array &$form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     $settings = array(
       'values' => &$form_state['values']['settings'],
     );
@@ -108,7 +109,7 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $settings = array(
       'values' => &$form_state['values']['settings'],
       'errors' => $form_state['errors'],

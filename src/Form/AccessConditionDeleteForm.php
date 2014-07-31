@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 
@@ -60,7 +61,7 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $condition_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $condition_id = NULL) {
     $this->page = $page;
     $this->accessCondition = $page->getAccessCondition($condition_id);
     return parent::buildForm($form, $form_state);
@@ -69,7 +70,7 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->page->removeAccessCondition($this->accessCondition->getConfiguration()['uuid']);
     $this->page->save();
     drupal_set_message($this->t('The access condition %name has been removed.', array('%name' => $this->accessCondition->getPluginDefinition()['label'])));

@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
@@ -71,7 +72,7 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL, $condition_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL, $condition_id = NULL) {
     $this->page = $page;
     $this->displayVariant = $this->page->getVariant($display_variant_id);
     $this->selectionCondition = $this->displayVariant->getSelectionCondition($condition_id);
@@ -81,7 +82,7 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->displayVariant->removeSelectionCondition($this->selectionCondition->getConfiguration()['uuid']);
     $this->page->save();
     drupal_set_message($this->t('The selection condition %name has been removed.', array('%name' => $this->selectionCondition->getPluginDefinition()['label'])));

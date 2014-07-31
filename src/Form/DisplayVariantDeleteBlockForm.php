@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Form\ConfirmFormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\page_manager\PageInterface;
 
@@ -71,7 +72,7 @@ class DisplayVariantDeleteBlockForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL, $block_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL, $block_id = NULL) {
     $this->page = $page;
     $this->displayVariant = $this->page->getVariant($display_variant_id);
     $this->block = $this->displayVariant->getBlock($block_id);
@@ -81,7 +82,7 @@ class DisplayVariantDeleteBlockForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->displayVariant->removeBlock($this->block->getConfiguration()['uuid']);
     $this->page->save();
     drupal_set_message($this->t('The block %label has been removed.', array('%label' => $this->block->label())));

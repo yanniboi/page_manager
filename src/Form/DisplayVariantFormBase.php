@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
 
@@ -51,7 +52,7 @@ abstract class DisplayVariantFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
     $this->page = $page;
     $this->displayVariant = $this->prepareDisplayVariant($display_variant_id);
 
@@ -72,7 +73,7 @@ abstract class DisplayVariantFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, array &$form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     // Allow the display variant to validate the form.
     $display_variant_values = array(
       'values' => &$form_state['values']['display_variant'],
@@ -83,7 +84,7 @@ abstract class DisplayVariantFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     // Allow the display variant to submit the form.
     $display_variant_values = array(
       'values' => &$form_state['values']['display_variant'],

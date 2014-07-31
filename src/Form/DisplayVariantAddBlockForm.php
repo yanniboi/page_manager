@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,7 +60,7 @@ class DisplayVariantAddBlockForm extends DisplayVariantConfigureBlockFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, Request $request = NULL, PageInterface $page = NULL, $display_variant_id = NULL, $block_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, Request $request = NULL, PageInterface $page = NULL, $display_variant_id = NULL, $block_id = NULL) {
     $form = parent::buildForm($form, $form_state, $page, $display_variant_id, $block_id);
     $form['region']['#default_value'] = $request->query->get('region');
     return $form;

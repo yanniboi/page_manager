@@ -14,6 +14,7 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Display\VariantBase;
 use Drupal\Component\Utility\String;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -151,7 +152,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, array &$form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
     // Do not allow blocks to be added until the display variant has been saved.
@@ -326,7 +327,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, array &$form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
 
     // If the blocks were rearranged, update their values.

@@ -7,6 +7,8 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Provides a base form for editing and adding an access condition.
  */
@@ -15,7 +17,7 @@ abstract class AccessConditionFormBase extends ConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
     $configuration = $this->condition->getConfiguration();

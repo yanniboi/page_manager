@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Url;
 
@@ -25,7 +26,7 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL, $condition_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL, $condition_id = NULL) {
     $this->displayVariant = $page->getVariant($display_variant_id);
     return parent::buildForm($form, $form_state, $page, $condition_id);
   }
@@ -33,7 +34,7 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
     $configuration = $this->condition->getConfiguration();

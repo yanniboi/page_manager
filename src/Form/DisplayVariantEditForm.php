@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\page_manager\Plugin\ConditionVariantInterface;
@@ -35,7 +36,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
     $form = parent::buildForm($form, $form_state, $page, $display_variant_id);
 
     // Set up the attributes used by a modal to prevent duplication later.
@@ -139,7 +140,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
     // Save the page entity.

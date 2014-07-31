@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Entity\EntityConfirmFormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
@@ -39,7 +40,7 @@ class PageDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submit(array $form, array &$form_state) {
+  public function submit(array $form, FormStateInterface $form_state) {
     $this->entity->delete();
     drupal_set_message($this->t('The page %name has been removed.', array('%name' => $this->entity->label())));
     $form_state['redirect_route'] = $this->getCancelUrl();

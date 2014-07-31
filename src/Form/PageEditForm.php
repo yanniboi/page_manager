@@ -10,6 +10,7 @@ namespace Drupal\page_manager\Form;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
@@ -20,7 +21,7 @@ class PageEditForm extends PageFormBase {
   /**
    * {@inheritdoc}
    */
-  public function form(array $form, array &$form_state) {
+  public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
     $form['use_admin_theme'] = array(
@@ -196,7 +197,7 @@ class PageEditForm extends PageFormBase {
   /**
    * {@inheritdoc}
    */
-  public function save(array $form, array &$form_state) {
+  public function save(array $form, FormStateInterface $form_state) {
     if (!empty($form_state['values']['display_variants'])) {
       foreach ($form_state['values']['display_variants'] as $display_variant_id => $data) {
         if ($display_variant = $this->entity->getVariant($display_variant_id)) {
@@ -212,7 +213,7 @@ class PageEditForm extends PageFormBase {
   /**
    * {@inheritdoc}
    */
-  protected function copyFormValuesToEntity(EntityInterface $entity, array $form, array &$form_state) {
+  protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
     $keys_to_skip = array_keys($this->entity->getPluginBags());
     foreach ($form_state['values'] as $key => $value) {
       if (!in_array($key, $keys_to_skip)) {

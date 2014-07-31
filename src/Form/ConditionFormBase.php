@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
@@ -64,7 +65,7 @@ abstract class ConditionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state, PageInterface $page = NULL, $condition_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $condition_id = NULL) {
     $this->page = $page;
     $this->condition = $this->prepareCondition($condition_id);
 
@@ -89,7 +90,7 @@ abstract class ConditionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, array &$form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     // Allow the condition to validate the form.
     $condition_values = array(
       'values' => &$form_state['values']['condition'],
@@ -100,7 +101,7 @@ abstract class ConditionFormBase extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     // Allow the condition to submit the form.
     $condition_values = array(
       'values' => &$form_state['values']['condition'],
