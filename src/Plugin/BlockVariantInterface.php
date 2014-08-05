@@ -71,7 +71,7 @@ interface BlockVariantInterface extends VariantInterface {
    * @param string $block_id
    *   The block ID.
    *
-   * @return \Drupal\block\BlockPluginInterface
+   * @return \Drupal\Core\Block\BlockPluginInterface
    *   The block plugin.
    */
   public function getBlock($block_id);

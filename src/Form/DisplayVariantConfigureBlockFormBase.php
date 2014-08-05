@@ -38,7 +38,7 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
   /**
    * The plugin being configured.
    *
-   * @var \Drupal\block\BlockPluginInterface
+   * @var \Drupal\Core\Block\BlockPluginInterface
    */
   protected $block;
 
@@ -48,7 +48,7 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
    * @param string $block_id
    *   Either a block ID, or the plugin ID used to create a new block.
    *
-   * @return \Drupal\block\BlockPluginInterface
+   * @return \Drupal\Core\Block\BlockPluginInterface
    *   The block plugin.
    */
   abstract protected function prepareBlock($block_id);

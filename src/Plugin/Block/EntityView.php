@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Plugin\Block;
 
-use Drupal\block\BlockBase;
+use Drupal\Core\Block\BlockBase;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;

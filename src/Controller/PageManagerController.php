@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Controller;
 
-use Drupal\block\BlockManagerInterface;
+use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
@@ -25,7 +25,7 @@ class PageManagerController extends ControllerBase {
   /**
    * The block manager.
    *
-   * @var \Drupal\block\BlockManagerInterface
+   * @var \Drupal\Core\Block\BlockManagerInterface
    */
   protected $blockManager;
 
@@ -53,7 +53,7 @@ class PageManagerController extends ControllerBase {
   /**
    * Constructs a new DisplayVariantEditForm.
    *
-   * @param \Drupal\block\BlockManagerInterface $block_manager
+   * @param \Drupal\Core\Block\BlockManagerInterface $block_manager
    *   The block manager.
    * @param \Drupal\Component\Plugin\PluginManagerInterface $condition_manager
    *   The condition manager.

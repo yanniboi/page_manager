@@ -122,7 +122,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
       $build[$region]['#prefix'] = '<div class="' . $region_name . '">';
       $build[$region]['#suffix'] = '</div>';
 
-      /** @var $blocks \Drupal\block\BlockPluginInterface[] */
+      /** @var $blocks \Drupal\Core\Block\BlockPluginInterface[] */
       $weight = 0;
       foreach ($blocks as $block_id => $block) {
         if ($block instanceof ContextAwarePluginInterface) {
@@ -258,7 +258,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
           ),
         );
 
-        /** @var $blocks \Drupal\block\BlockPluginInterface[] */
+        /** @var $blocks \Drupal\Core\Block\BlockPluginInterface[] */
         foreach ($blocks as $block_id => $block) {
           $row = array(
             '#attributes' => array(

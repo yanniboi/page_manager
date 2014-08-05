@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Tests;
 
-use Drupal\block\BlockPluginInterface;
+use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Tests\UnitTestCase;
@@ -62,7 +62,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
    * @covers ::build
    */
   public function testBuild() {
-    $block1 = $this->getMock('Drupal\block\BlockPluginInterface');
+    $block1 = $this->getMock('Drupal\Core\Block\BlockPluginInterface');
     $block1->expects($this->once())
       ->method('access')
       ->will($this->returnValue(TRUE));

@@ -67,7 +67,7 @@ class BlockPluginBagTest extends UnitTestCase {
     $plugins = array();
     $plugin_map = array();
     foreach ($blocks as $block_id => $block) {
-      $plugin = $this->getMock('Drupal\block\BlockPluginInterface');
+      $plugin = $this->getMock('Drupal\Core\Block\BlockPluginInterface');
       $plugin->expects($this->any())
         ->method('label')
         ->will($this->returnValue($block['label']));
@@ -77,7 +77,7 @@ class BlockPluginBagTest extends UnitTestCase {
       $plugins[$block_id] = $plugin;
       $plugin_map[] = array($block_id, $block, $plugin);
     }
-    $block_manager = $this->getMock('Drupal\block\BlockManagerInterface');
+    $block_manager = $this->getMock('Drupal\Core\Block\BlockManagerInterface');
     $block_manager->expects($this->exactly(4))
       ->method('createInstance')
       ->will($this->returnValueMap($plugin_map));

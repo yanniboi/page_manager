@@ -92,7 +92,7 @@ trait BlockVariantTrait {
   /**
    * Returns the block plugins used for this display variant.
    *
-   * @return \Drupal\block\BlockPluginInterface[]|\Drupal\page_manager\Plugin\BlockPluginBag
+   * @return \Drupal\Core\Block\BlockPluginInterface[]|\Drupal\page_manager\Plugin\BlockPluginBag
    *   An array or bag of configured block plugins.
    */
   protected function getBlockBag() {

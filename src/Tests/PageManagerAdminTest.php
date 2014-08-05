@@ -358,14 +358,14 @@ class PageManagerAdminTest extends WebTestBase {
    * @param string $block_label
    *   The label of the block.
    *
-   * @return \Drupal\block\BlockPluginInterface|null
+   * @return \Drupal\Core\Block\BlockPluginInterface|null
    *   Either a block plugin, or NULL.
    */
   protected function findBlockByLabel($page_id, $display_variant_label, $block_label) {
     if ($display_variant = $this->findDisplayVariantByLabel($page_id, $display_variant_label)) {
       /** @var $display_variant \Drupal\page_manager\Plugin\BlockVariantInterface */
       foreach ($display_variant->getRegionAssignments() as $blocks) {
-        /** @var $blocks \Drupal\block\BlockPluginInterface[] */
+        /** @var $blocks \Drupal\Core\Block\BlockPluginInterface[] */
         foreach ($blocks as $block) {
           if ($block->label() == $block_label) {
             return $block;

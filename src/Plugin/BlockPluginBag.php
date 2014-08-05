@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Plugin;
 
-use Drupal\block\BlockPluginInterface;
+use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Plugin\DefaultPluginBag;
 
 /**
@@ -18,7 +18,7 @@ class BlockPluginBag extends DefaultPluginBag {
   /**
    * {@inheritdoc}
    *
-   * @return \Drupal\block\BlockPluginInterface
+   * @return \Drupal\Core\Block\BlockPluginInterface
    */
   public function &get($instance_id) {
     return parent::get($instance_id);
