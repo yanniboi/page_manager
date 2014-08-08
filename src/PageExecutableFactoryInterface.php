@@ -7,8 +7,6 @@
 
 namespace Drupal\page_manager;
 
-use Drupal\page_manager\PageInterface;
-
 /**
  * Interface implemented by factories for page executables.
  */

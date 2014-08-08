@@ -9,7 +9,7 @@ namespace Drupal\page_manager\Entity;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Condition\ConditionAccessResolverTrait;
-use Drupal\Core\Entity\EntityAccessController;
+use Drupal\Core\Entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityControllerInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Defines the access controller for the page entity type.
  */
-class PageAccess extends EntityAccessController implements EntityControllerInterface {
+class PageAccess extends EntityAccessControlHandler implements EntityControllerInterface {
 
   use ConditionAccessResolverTrait;
 

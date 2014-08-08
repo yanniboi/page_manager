@@ -8,7 +8,6 @@
 namespace Drupal\page_manager\Plugin\DisplayVariant;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
-use Drupal\Component\Plugin\DerivativeInspectionInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Uuid\UuidInterface;

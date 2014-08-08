@@ -9,7 +9,6 @@ namespace Drupal\page_manager\Tests;
 
 use Drupal\page_manager\EventSubscriber\CurrentUserContext;
 use Drupal\user\UserInterface;
-use Symfony\Component\Routing\Route;
 
 /**
  * Tests the current user context.

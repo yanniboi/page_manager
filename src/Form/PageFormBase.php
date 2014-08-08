@@ -101,10 +101,10 @@ abstract class PageFormBase extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function validatePath(&$element, &$form_state) {
+  public function validatePath(&$element, FormStateInterface $form_state) {
     // Ensure the path has a leading slash.
     $value = '/' . trim($element['#value'], '/');
-    form_set_value($element, $value, $form_state);
+    $form_state->setValueForElement($element, $value);
 
     // Ensure each path is unique.
     $path = $this->entityQuery->get('page')
@@ -112,7 +112,7 @@ abstract class PageFormBase extends EntityForm {
       ->condition('id', $form_state['values']['id'], '<>')
       ->execute();
     if ($path) {
-      $this->setFormError('path', $form_state, $this->t('The page path must be unique.'));
+      $form_state->setErrorByName('path', $this->t('The page path must be unique.'));
     }
 
   }

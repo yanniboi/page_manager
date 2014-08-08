@@ -10,7 +10,6 @@ namespace Drupal\page_manager\Plugin;
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\TypedData\DataDefinition;
 
 /**
  * Handles context assignments for context-aware plugins.

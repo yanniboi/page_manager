@@ -9,7 +9,6 @@ namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
-use Drupal\Core\Url;
 
 /**
  * Provides a base form for editing and adding a selection condition.
@@ -46,7 +45,7 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
     // Save the page entity.
     $this->page->save();
 
-    $form_state['redirect_route'] = new Url('page_manager.display_variant_edit', array(
+    $form_state->setRedirect('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
       'display_variant_id' => $this->displayVariant->id(),
     ));

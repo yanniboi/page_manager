@@ -13,7 +13,6 @@ use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
-use Drupal\Core\Url;
 
 /**
  * Provides a base form for configuring a block as part of a display variant.
@@ -129,7 +128,7 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
     $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state['values']['region']));
     $this->page->save();
 
-    $form_state['redirect_route'] = new Url('page_manager.display_variant_edit', array(
+    $form_state->setRedirect('page_manager.display_variant_edit', array(
       'page' => $this->page->id(),
       'display_variant_id' => $this->displayVariant->id(),
     ));
