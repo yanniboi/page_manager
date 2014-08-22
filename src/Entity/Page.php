@@ -19,7 +19,7 @@ use Drupal\page_manager\Plugin\VariantAwareTrait;
  * @ConfigEntityType(
  *   id = "page",
  *   label = @Translation("Page"),
- *   controllers = {
+ *   handlers = {
  *     "access" = "Drupal\page_manager\Entity\PageAccess",
  *     "list_builder" = "Drupal\page_manager\Entity\PageListBuilder",
  *     "view_builder" = "Drupal\page_manager\Entity\PageViewBuilder",
