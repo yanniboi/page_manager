@@ -21,7 +21,7 @@ class PageConfigSchemaTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = array('page_manager', 'block', 'node');
+  public static $modules = array('page_manager', 'block', 'node', 'user');
 
   /**
    * {@inheritdoc}
