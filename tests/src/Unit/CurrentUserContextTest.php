@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\CurrentUserContextTest.
+ * Contains \Drupal\Tests\page_manager\Unit\CurrentUserContextTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\page_manager\EventSubscriber\CurrentUserContext;
 use Drupal\user\UserInterface;

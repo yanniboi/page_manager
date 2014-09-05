@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\PageContextTestBase.
+ * Contains \Drupal\Tests\page_manager\Unit\PageContextTestBase.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\page_manager\Event\PageManagerContextEvent;

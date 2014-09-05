@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\BlockPluginBagTest.
+ * Contains \Drupal\Tests\page_manager\Unit\BlockPluginBagTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\page_manager\Plugin\BlockPluginBag;
 use Drupal\Tests\UnitTestCase;

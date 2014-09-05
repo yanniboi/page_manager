@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\PageExecutable.
+ * Contains \Drupal\Tests\page_manager\Unit\PageExecutableTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Plugin\Context\Context;

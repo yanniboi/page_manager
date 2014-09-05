@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\RouteParamContextTest.
+ * Contains \Drupal\Tests\page_manager\Unit\RouteParamContextTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\page_manager\EventSubscriber\RouteParamContext;

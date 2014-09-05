@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\PageManagerRoutesTest.
+ * Contains \Drupal\Tests\page_manager\Unit\PageManagerRoutesTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\Routing\RouteBuildEvent;
 use Drupal\page_manager\Routing\PageManagerRoutes;

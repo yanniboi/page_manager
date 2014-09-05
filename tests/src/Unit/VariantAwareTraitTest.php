@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\VariantAwareTraitTest.
+ * Contains \Drupal\Tests\page_manager\Unit\VariantAwareTraitTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;

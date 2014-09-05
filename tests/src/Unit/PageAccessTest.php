@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\PageAccessTest.
+ * Contains \Drupal\Tests\page_manager\Unit\PageAccessTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\page_manager\Entity\PageAccess;
 use Drupal\Tests\UnitTestCase;

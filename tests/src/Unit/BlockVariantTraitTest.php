@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\BlockVariantTraitTest.
+ * Contains \Drupal\Tests\page_manager\Unit\BlockVariantTraitTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\page_manager\Plugin\BlockPluginBag;

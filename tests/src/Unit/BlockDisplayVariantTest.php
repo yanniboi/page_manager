@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\BlockDisplayVariantTest.
+ * Contains \Drupal\Tests\page_manager\Unit\BlockDisplayVariantTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;

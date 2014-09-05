@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\PageTest.
+ * Contains \Drupal\Tests\page_manager\Unit\PageTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Tests\UnitTestCase;
 
