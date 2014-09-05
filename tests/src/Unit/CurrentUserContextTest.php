@@ -44,7 +44,7 @@ class CurrentUserContextTest extends PageContextTestBase {
       ->method('addContext')
       ->with('current_user', $this->isInstanceOf('Drupal\Core\Plugin\Context\Context'));
 
-    $user = $this->getMock('Drupal\page_manager\Tests\TestUserInterface');
+    $user = $this->getMock('Drupal\Tests\page_manager\Unit\TestUserInterface');
     $entity_manager = $this->getMock('Drupal\Core\Entity\EntityManagerInterface');
     $user_storage = $this->getMock('Drupal\Core\Entity\EntityStorageInterface');
     $user_storage->expects($this->once())

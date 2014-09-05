@@ -83,7 +83,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
     $block1->expects($this->once())
       ->method('getDerivativeId')
       ->will($this->returnValue('block_derivative_plugin_id'));
-    $block2 = $this->getMock('Drupal\page_manager\Tests\TestContextAwareBlockPluginInterface');
+    $block2 = $this->getMock('Drupal\Tests\page_manager\Unit\TestContextAwareBlockPluginInterface');
     $block2->expects($this->once())
       ->method('access')
       ->will($this->returnValue(FALSE));
