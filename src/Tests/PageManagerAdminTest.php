@@ -66,7 +66,8 @@ class PageManagerAdminTest extends WebTestBase {
    * Tests adding a page.
    */
   protected function doTestAddPage() {
-    $this->drupalGet('admin/structure/page_manager');
+    $this->drupalGet('admin/structure');
+    $this->clickLink('Pages');
     $this->assertText('There is no Page yet.');
 
     // Add a new page.
