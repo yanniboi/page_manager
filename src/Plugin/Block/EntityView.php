@@ -87,7 +87,7 @@ class EntityView extends BlockBase implements ContextAwarePluginInterface, Conta
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
-    $this->configuration['view_mode'] = $form_state['values']['view_mode'];
+    $this->configuration['view_mode'] = $form_state->getValue('view_mode');
   }
 
   /**

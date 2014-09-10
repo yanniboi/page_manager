@@ -197,8 +197,8 @@ class PageEditForm extends PageFormBase {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    if (!empty($form_state['values']['display_variants'])) {
-      foreach ($form_state['values']['display_variants'] as $display_variant_id => $data) {
+    if (!$form_state->isValueEmpty('display_variants')) {
+      foreach ($form_state->getValue('display_variants') as $display_variant_id => $data) {
         if ($display_variant = $this->entity->getVariant($display_variant_id)) {
           $display_variant->setWeight($data['weight']);
         }
@@ -214,7 +214,7 @@ class PageEditForm extends PageFormBase {
    */
   protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
     $keys_to_skip = array_keys($this->entity->getPluginBags());
-    foreach ($form_state['values'] as $key => $value) {
+    foreach ($form_state->getValues() as $key => $value) {
       if (!in_array($key, $keys_to_skip)) {
         $entity->set($key, $value);
       }

@@ -76,12 +76,10 @@ abstract class DisplayVariantFormBase extends FormBase {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // Allow the display variant to validate the form.
-    $display_variant_values = new FormState(array(
-      'values' => $form_state['values']['display_variant'],
-    ));
+    $display_variant_values = (new FormState())->setValues($form_state->getValue('display_variant'));
     $this->displayVariant->validateConfigurationForm($form, $display_variant_values);
     // Update the original form values.
-    $form_state['values']['display_variant'] = $display_variant_values['values'];
+    $form_state->setValue('display_variant', $display_variant_values->getValues());
   }
 
   /**
@@ -89,12 +87,10 @@ abstract class DisplayVariantFormBase extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Allow the display variant to submit the form.
-    $display_variant_values = new FormState(array(
-      'values' => $form_state['values']['display_variant'],
-    ));
+    $display_variant_values = (new FormState())->setValues($form_state->getValue('display_variant'));
     $this->displayVariant->submitConfigurationForm($form, $display_variant_values);
     // Update the original form values.
-    $form_state['values']['display_variant'] = $display_variant_values['values'];
+    $form_state->setValue('display_variant', $display_variant_values->getValues());
   }
 
 }

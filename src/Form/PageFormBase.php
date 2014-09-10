@@ -109,7 +109,7 @@ abstract class PageFormBase extends EntityForm {
     // Ensure each path is unique.
     $path = $this->entityQuery->get('page')
       ->condition('path', $value)
-      ->condition('id', $form_state['values']['id'], '<>')
+      ->condition('id', $form_state->getValue('id'), '<>')
       ->execute();
     if ($path) {
       $form_state->setErrorByName('path', $this->t('The page path must be unique.'));

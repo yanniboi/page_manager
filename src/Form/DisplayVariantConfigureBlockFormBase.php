@@ -99,33 +99,29 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $settings = new FormState(array(
-      'values' => $form_state['values']['settings']
-    ));
+    $settings = (new FormState())->setValues($form_state->getValue('settings'));
     // Call the plugin validate handler.
     $this->block->validateConfigurationForm($form, $settings);
     // Update the original form values.
-    $form_state['values']['settings'] = $settings['values'];
+    $form_state->setValue('settings', $settings->getValues());
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $settings = new FormState(array(
-      'values' => $form_state['values']['settings']
-    ));
+    $settings = (new FormState())->setValues($form_state->getValue('settings'));
 
     // Call the plugin submit handler.
     $this->block->submitConfigurationForm($form, $settings);
     // Update the original form values.
-    $form_state['values']['settings'] = $settings['values'];
+    $form_state->setValue('settings', $settings->getValues());
 
-    if (!empty($form_state['values']['context_mapping'])) {
-      $this->submitContextAssignment($this->block, $form_state['values']['context_mapping']);
+    if (!$form_state->isValueEmpty('context_mapping')) {
+      $this->submitContextAssignment($this->block, $form_state->getValue('context_mapping'));
     }
 
-    $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state['values']['region']));
+    $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state->getValue('region')));
     $this->page->save();
 
     $form_state->setRedirect('page_manager.display_variant_edit', array(

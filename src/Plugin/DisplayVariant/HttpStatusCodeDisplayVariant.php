@@ -65,7 +65,7 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
-    $this->configuration['status_code'] = $form_state['values']['status_code'];
+    $this->configuration['status_code'] = $form_state->getValue('status_code');
   }
 
   /**
