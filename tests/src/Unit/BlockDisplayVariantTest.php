@@ -158,7 +158,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->method('updateBlock');
 
     $form = array();
-    $form_state = new FormState(array('values' => $values));
+    $form_state = (new FormState())->setValues($values);
     $display_variant->submitConfigurationForm($form, $form_state);
     $this->assertSame($values['label'], $display_variant->label());
   }
