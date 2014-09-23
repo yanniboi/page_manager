@@ -19,17 +19,17 @@ class PageManagerAdminTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = array('page_manager');
+  public static $modules = ['page_manager'];
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Page Manager admin test',
       'description' => 'Tests the admin UI for page entities.',
       'group' => 'Page Manager',
-    );
+    ];
   }
 
   /**
@@ -38,10 +38,10 @@ class PageManagerAdminTest extends WebTestBase {
   protected function setUp() {
     parent::setUp();
 
-    \Drupal::service('theme_handler')->enable(array('bartik'));
+    \Drupal::service('theme_handler')->install(['bartik']);
     \Drupal::config('system.theme')->set('admin', 'stark')->save();
 
-    $this->drupalLogin($this->drupalCreateUser(array('administer pages', 'access administration pages', 'view the administration theme')));
+    $this->drupalLogin($this->drupalCreateUser(['administer pages', 'access administration pages', 'view the administration theme']));
   }
 
   /**
@@ -72,26 +72,26 @@ class PageManagerAdminTest extends WebTestBase {
 
     // Add a new page.
     $this->clickLink('Add page');
-    $edit = array(
+    $edit = [
       'label' => 'Foo',
       'id' => 'foo',
       'path' => 'admin/foo',
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Save');
-    $this->assertRaw(String::format('The %label page has been added.', array('%label' => 'Foo')));
+    $this->assertRaw(String::format('The %label page has been added.', ['%label' => 'Foo']));
 
     // Test that it is available immediately.
     $this->drupalGet('admin/foo');
     $this->assertResponse(404);
     $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
-    $this->drupalPostForm(NULL, array('display_variant[status_code]' => 200), 'Update display variant');
+    $this->drupalPostForm(NULL, ['display_variant[status_code]' => 200], 'Update display variant');
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     $this->assertTitle('Foo | Drupal');
     $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
-    $this->drupalPostForm(NULL, array('display_variant[status_code]' => 403), 'Update display variant');
+    $this->drupalPostForm(NULL, ['display_variant[status_code]' => 403], 'Update display variant');
 
     // Assert that a display variant was added by default.
     $this->drupalGet('admin/structure/page_manager/manage/foo');
@@ -127,11 +127,11 @@ class PageManagerAdminTest extends WebTestBase {
     // Add a new display variant.
     $this->clickLink('Add new display variant');
     $this->clickLink('Block page');
-    $edit = array(
+    $edit = [
       'display_variant[label]' => 'First',
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Add display variant');
-    $this->assertRaw(String::format('The %label display variant has been added.', array('%label' => 'First')));
+    $this->assertRaw(String::format('The %label display variant has been added.', ['%label' => 'First']));
 
     // Test that the variant is not used because it has no blocks.
     $this->drupalGet('admin/foo');
@@ -147,17 +147,17 @@ class PageManagerAdminTest extends WebTestBase {
     // Add a block to the variant.
     $this->clickLink('Add new block');
     $this->clickLink('User account menu');
-    $edit = array(
+    $edit = [
       'region' => 'top',
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Add block');
 
     // Test that the block is displayed.
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-top"]/div/div/ul[@class="menu"]/li/a');
-    $expected = array('My account', 'Log out');
-    $links = array();
+    $expected = ['My account', 'Log out'];
+    $links = [];
     foreach ($elements as $element) {
       $links[] = (string) $element;
     }
@@ -173,9 +173,9 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
     $this->clickLink('Edit');
-    $edit = array(
+    $edit = [
       'settings[label]' => 'Updated block label',
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Update block');
     // Test that the block is displayed.
     $this->drupalGet('admin/foo');
@@ -202,12 +202,12 @@ class PageManagerAdminTest extends WebTestBase {
     $this->assertOptionSelected('edit-display-variant-blocks-' . $block_config['uuid'] . '-weight', 0);
 
     $form_name = 'display_variant[blocks][' . $block_config['uuid'] . ']';
-    $edit = array(
+    $edit = [
       $form_name . '[region]' => 'bottom',
       $form_name . '[weight]' => -10,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Update display variant');
-    $this->assertRaw(String::format('The %label display variant has been updated.', array('%label' => 'First')));
+    $this->assertRaw(String::format('The %label display variant has been updated.', ['%label' => 'First']));
     $this->clickLink('Edit');
     $this->assertOptionSelected('edit-display-variant-blocks-' . $block_config['uuid'] . '-region', 'bottom');
     $this->assertOptionSelected('edit-display-variant-blocks-' . $block_config['uuid'] . '-weight', -10);
@@ -220,17 +220,17 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-bottom"]/div/div/ul[@class="menu"]/li/a');
-    $expected = array('My account', 'Log out');
-    $links = array();
+    $expected = ['My account', 'Log out'];
+    $links = [];
     foreach ($elements as $element) {
       $links[] = (string) $element;
     }
     $this->assertEqual($expected, $links);
 
     $display_variant = $this->findDisplayVariantByLabel('foo', 'Default');
-    $edit = array(
+    $edit = [
       'display_variants[' . $display_variant->id() . '][weight]' => -10,
-    );
+    ];
     $this->drupalPostForm('admin/structure/page_manager/manage/foo', $edit, 'Save');
     $this->drupalGet('admin/foo');
     $this->assertResponse(403);
@@ -241,11 +241,11 @@ class PageManagerAdminTest extends WebTestBase {
    */
   protected function doTestAddPageWithDuplicatePath() {
     // Try to add a second page with the same path.
-    $edit = array(
+    $edit = [
       'label' => 'Bar',
       'id' => 'bar',
       'path' => 'admin/foo',
-    );
+    ];
     $this->drupalPostForm('admin/structure/page_manager/add', $edit, 'Save');
     $this->assertText('The page path must be unique.');
     $this->drupalGet('admin/structure/page_manager');
@@ -260,9 +260,9 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/foo');
     $this->assertTheme('stark');
 
-    $edit = array(
+    $edit = [
       'use_admin_theme' => FALSE,
-    );
+    ];
     $this->drupalPostForm('admin/structure/page_manager/manage/foo', $edit, 'Save');
     $this->drupalGet('admin/foo');
     $this->assertTheme('bartik');
@@ -277,9 +277,9 @@ class PageManagerAdminTest extends WebTestBase {
   protected function doTestRemoveDisplayVariant() {
     $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Delete');
-    $this->assertRaw(String::format('Are you sure you want to delete the display variant %label?', array('%label' => 'Default')));
-    $this->drupalPostForm(NULL, array(), 'Delete');
-    $this->assertRaw(String::format('The display variant %label has been removed.', array('%label' => 'Default')));
+    $this->assertRaw(String::format('Are you sure you want to delete the display variant %label?', ['%label' => 'Default']));
+    $this->drupalPostForm(NULL, [], 'Delete');
+    $this->assertRaw(String::format('The display variant %label has been removed.', ['%label' => 'Default']));
   }
 
   /**
@@ -290,8 +290,8 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-bottom"]/div/div/ul[@class="menu"]/li/a');
-    $expected = array('My account', 'Log out');
-    $links = array();
+    $expected = ['My account', 'Log out'];
+    $links = [];
     foreach ($elements as $element) {
       $links[] = (string) $element;
     }
@@ -300,9 +300,9 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
     $this->clickLink('Delete');
-    $this->assertRaw(String::format('Are you sure you want to delete the block %label?', array('%label' => 'Updated block label')));
-    $this->drupalPostForm(NULL, array(), 'Delete');
-    $this->assertRaw(String::format('The block %label has been removed.', array('%label' => 'Updated block label')));
+    $this->assertRaw(String::format('Are you sure you want to delete the block %label?', ['%label' => 'Updated block label']));
+    $this->drupalPostForm(NULL, [], 'Delete');
+    $this->assertRaw(String::format('The block %label has been removed.', ['%label' => 'Updated block label']));
 
     // Assert that the block is now gone.
     $this->drupalGet('admin/foo');
@@ -322,11 +322,11 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/structure/page_manager');
     // Add a new page with existing path 'admin'.
     $this->clickLink('Add page');
-    $edit = array(
+    $edit = [
       'label' => 'existing',
       'id' => 'existing',
       'path' => 'admin',
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Save');
 
     // Regular result is displayed.
@@ -344,9 +344,9 @@ class PageManagerAdminTest extends WebTestBase {
    *   The theme name.
    */
   protected function assertTheme($theme_name) {
-    $url = url('core/themes/' . $theme_name . '/logo.png', array('absolute' => TRUE));
-    $elements = $this->xpath('//img[@src=:url]', array(':url' => $url));
-    $this->assertEqual(count($elements), 1, String::format('Page is rendered in @theme', array('@theme' => $theme_name)));
+    $url = url('core/themes/' . $theme_name . '/logo.png', ['absolute' => TRUE]);
+    $elements = $this->xpath('//img[@src=:url]', [':url' => $url]);
+    $this->assertEqual(count($elements), 1, String::format('Page is rendered in @theme', ['@theme' => $theme_name]));
   }
 
   /**
