@@ -185,7 +185,10 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     // Check the block label.
-    $this->assertRaw('<h2>' . $edit['settings[label]'] . '</h2>');
+    // @todo Restore the <h2> check once the follow-up to
+    //   https://www.drupal.org/node/1869476 is in.
+    //$this->assertRaw('<h2>' . $edit['settings[label]'] . '</h2>');
+    $this->assertRaw($edit['settings[label]']);
   }
 
   /**
@@ -223,7 +226,7 @@ class PageManagerAdminTest extends WebTestBase {
   protected function doTestReorderDisplayVariants() {
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
-    $elements = $this->xpath('//div[@class="block-region-bottom"]/div/div/ul[@class="menu"]/li/a');
+    $elements = $this->xpath('//div[@class="block-region-bottom"]/nav/ul[@class="menu"]/li/a');
     $expected = ['My account', 'Log out'];
     $links = [];
     foreach ($elements as $element) {
@@ -293,7 +296,7 @@ class PageManagerAdminTest extends WebTestBase {
     // Assert that the block is displayed.
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
-    $elements = $this->xpath('//div[@class="block-region-bottom"]/div/div/ul[@class="menu"]/li/a');
+    $elements = $this->xpath('//div[@class="block-region-bottom"]/nav/ul[@class="menu"]/li/a');
     $expected = ['My account', 'Log out'];
     $links = [];
     foreach ($elements as $element) {
@@ -311,7 +314,7 @@ class PageManagerAdminTest extends WebTestBase {
     // Assert that the block is now gone.
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
-    $elements = $this->xpath('//div[@class="block-region-bottom"]/div/ul[@class="menu"]/li/a');
+    $elements = $this->xpath('//div[@class="block-region-bottom"]/nav/ul[@class="menu"]/li/a');
     $this->assertTrue(empty($elements));
   }
 
