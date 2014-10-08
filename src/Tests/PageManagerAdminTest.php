@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\Component\Utility\String;
+use Drupal\Core\Url;
 use Drupal\page_manager\Entity\Page;
 use Drupal\simpletest\WebTestBase;
 
@@ -344,7 +345,7 @@ class PageManagerAdminTest extends WebTestBase {
    *   The theme name.
    */
   protected function assertTheme($theme_name) {
-    $url = url('core/themes/' . $theme_name . '/logo.png', ['absolute' => TRUE]);
+    $url = Url::fromUri('base://core/themes/' . $theme_name . '/logo.png', ['absolute' => TRUE])->toString();
     $elements = $this->xpath('//img[@src=:url]', [':url' => $url]);
     $this->assertEqual(count($elements), 1, String::format('Page is rendered in @theme', ['@theme' => $theme_name]));
   }
