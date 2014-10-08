@@ -156,15 +156,18 @@ class PageManagerAdminTest extends WebTestBase {
     // Test that the block is displayed.
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
-    $elements = $this->xpath('//div[@class="block-region-top"]/div/div/ul[@class="menu"]/li/a');
+    $elements = $this->xpath('//div[@class="block-region-top"]/nav/ul[@class="menu"]/li/a');
     $expected = ['My account', 'Log out'];
     $links = [];
     foreach ($elements as $element) {
       $links[] = (string) $element;
     }
     $this->assertEqual($expected, $links);
+    // @todo Restore the <h2> check once the follow-up to
+    //   https://www.drupal.org/node/1869476 is in.
+    //$this->assertRaw('<h2>User account menu</h2>');
     // Check the block label.
-    $this->assertRaw('<h2>User account menu</h2>');
+    $this->assertRaw('User account menu');
   }
 
   /**
