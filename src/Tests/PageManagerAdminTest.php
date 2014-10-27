@@ -129,8 +129,10 @@ class PageManagerAdminTest extends WebTestBase {
     // Add a new display variant.
     $this->clickLink('Add new display variant');
     $this->clickLink('Block page');
+    $this->assertFieldByName("display_variant[page_title]", 'Foo', 'Default page title "Foo" was taken from page label.');
     $edit = [
       'display_variant[label]' => 'First',
+      'display_variant[page_title]' => 'Example title',
     ];
     $this->drupalPostForm(NULL, $edit, 'Add display variant');
     $this->assertRaw(String::format('The %label display variant has been added.', ['%label' => 'First']));
@@ -158,6 +160,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-top"]/nav/ul[@class="menu"]/li/a');
+    $this->assertTitle('Example title | Drupal');
     $expected = ['My account', 'Log out'];
     $links = [];
     foreach ($elements as $element) {
