@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\EventSubscriber;
 
 use Drupal\Core\Plugin\Context\ContextDefinition;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Routing\RouteProviderInterface;
@@ -19,6 +20,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Sets values from the route parameters as a context.
  */
 class RouteParamContext implements EventSubscriberInterface {
+
+  use StringTranslationTrait;
 
   /**
    * The route provider.
@@ -66,7 +69,8 @@ class RouteParamContext implements EventSubscriberInterface {
           continue;
         }
 
-        $context = new Context(new ContextDefinition($route_context['type']));
+        $context_name = $this->t('{@name} from route', ['@name' => $route_context_name]);
+        $context = new Context(new ContextDefinition($route_context['type'], $context_name));
         if ($request->attributes->has($route_context_name)) {
           $context->setContextValue($request->attributes->get($route_context_name));
         }
