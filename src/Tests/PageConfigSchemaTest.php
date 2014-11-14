@@ -60,7 +60,7 @@ class PageConfigSchemaTest extends KernelTestBase {
 
     // Add a block display variant.
     $display_variant_id = $page->addVariant(array(
-      'id' => 'block_page',
+      'id' => 'block_display',
       'label' => 'Block page',
     ));
     /** @var $display_variant \Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant */

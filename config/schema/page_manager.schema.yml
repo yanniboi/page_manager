@@ -49,7 +49,7 @@ page_manager.block_plugin.*:
       type: string
       label: 'UUID'
 
-display_variant.plugin.block_page:
+display_variant.plugin.block_display:
   type: display_variant.plugin
   label: 'Block display variant'
   mapping:

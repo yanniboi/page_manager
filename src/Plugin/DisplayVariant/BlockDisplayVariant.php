@@ -33,7 +33,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides a display variant that simply contains blocks.
  *
  * @DisplayVariant(
- *   id = "block_page",
+ *   id = "block_display",
  *   admin_label = @Translation("Block page")
  * )
  */
