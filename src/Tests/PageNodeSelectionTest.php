@@ -86,7 +86,6 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->clickLink('Entity view (Content)');
     $edit = array(
       'region' => 'top',
-      'context_mapping[entity]' => 'node',
       'settings[label_display]' => FALSE,
     );
     $this->drupalPostForm(NULL, $edit, 'Add block');

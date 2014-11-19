@@ -10,7 +10,7 @@ namespace Drupal\page_manager\Form;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
+use Drupal\Core\Plugin\ContextAwarePluginAssignmentTrait;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
 
@@ -117,8 +117,8 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
     // Update the original form values.
     $form_state->setValue('settings', $settings->getValues());
 
-    if (!$form_state->isValueEmpty('context_mapping')) {
-      $this->submitContextAssignment($this->block, $form_state->getValue('context_mapping'));
+    if ($this->block instanceof ContextAwarePluginInterface) {
+      $this->block->setContextMapping($form_state->getValue('context_mapping', []));
     }
 
     $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state->getValue('region')));

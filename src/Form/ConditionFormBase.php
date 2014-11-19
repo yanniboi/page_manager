@@ -12,7 +12,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
-use Drupal\page_manager\Plugin\ContextAwarePluginAssignmentTrait;
+use Drupal\Core\Plugin\ContextAwarePluginAssignmentTrait;
 
 /**
  * Provides a base form for editing and adding a condition.
@@ -69,14 +69,13 @@ abstract class ConditionFormBase extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $condition_id = NULL) {
     $this->page = $page;
     $this->condition = $this->prepareCondition($condition_id);
+    $temporary = $form_state->getTemporary();
+    $temporary['gathered_contexts'] = $this->page->getContexts();
+    $form_state->setTemporary($temporary);
 
     // Allow the condition to add to the form.
     $form['condition'] = $this->condition->buildConfigurationForm(array(), $form_state);
     $form['condition']['#tree'] = TRUE;
-
-    if ($this->condition instanceof ContextAwarePluginInterface) {
-      $form['context_mapping'] = $this->addContextAssignmentElement($this->condition, $this->page->getContexts());
-    }
 
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['submit'] = array(
@@ -109,8 +108,8 @@ abstract class ConditionFormBase extends FormBase {
     // Update the original form values.
     $form_state->setValue('condition', $condition_values->getValues());
 
-    if (!$form_state->isValueEmpty('context_mapping')) {
-      $this->submitContextAssignment($this->condition, $form_state->getValue('context_mapping'));
+    if ($this->condition instanceof ContextAwarePluginInterface) {
+      $this->condition->setContextMapping($condition_values->getValue('context_mapping', []));
     }
 
     // Set the submission message.
