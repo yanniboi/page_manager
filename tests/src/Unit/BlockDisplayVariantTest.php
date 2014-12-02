@@ -8,7 +8,7 @@
 namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\Block\BlockPluginInterface;
-use Drupal\Component\Plugin\ContextAwarePluginInterface;
+use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Tests\UnitTestCase;
 
