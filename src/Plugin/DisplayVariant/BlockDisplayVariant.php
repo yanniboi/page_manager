@@ -9,6 +9,7 @@ namespace Drupal\page_manager\Plugin\DisplayVariant;
 
 use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Display\VariantBase;
@@ -131,7 +132,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
         continue;
       }
 
-      $region_name = $this->drupalHtmlClass("block-region-$region");
+      $region_name = Html::getClass("block-region-$region");
       $build[$region]['#prefix'] = '<div class="' . $region_name . '">';
       $build[$region]['#suffix'] = '</div>';
 
@@ -456,15 +457,6 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
       }
     }
     return $data;
-  }
-
-  /**
-   * Wraps drupal_html_class().
-   *
-   * @return string
-   */
-  protected function drupalHtmlClass($class) {
-    return drupal_html_class($class);
   }
 
   /**

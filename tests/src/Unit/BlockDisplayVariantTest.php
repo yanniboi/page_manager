@@ -102,11 +102,8 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->getMock();
     $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->setConstructorArgs([['page_title' => $page_title], 'test', [], $context_handler, $account, $uuid_generator, $token])
-      ->setMethods(['getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'])
+      ->setMethods(['getBlockCollection', 'renderPageTitle'])
       ->getMock();
-    $display_variant->expects($this->exactly(1))
-      ->method('drupalHtmlClass')
-      ->will($this->returnArgument(0));
     $display_variant->expects($this->once())
       ->method('getBlockCollection')
       ->will($this->returnValue($block_collection));
