@@ -141,6 +141,7 @@ class PageManagerController extends ControllerBase {
    *   The title for the selection condition edit form.
    */
   public function editSelectionConditionTitle(PageInterface $page, $display_variant_id, $condition_id) {
+    /** @var \Drupal\page_manager\Plugin\ConditionVariantInterface $display_variant */
     $display_variant = $page->getVariant($display_variant_id);
     $selection_condition = $display_variant->getSelectionCondition($condition_id);
     return $this->t('Edit %label selection condition', ['%label' => $selection_condition->getPluginDefinition()['label']]);

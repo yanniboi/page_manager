@@ -27,7 +27,7 @@ class DisplayVariantDeleteBlockForm extends ConfirmFormBase {
   /**
    * The display variant.
    *
-   * @var \Drupal\Core\Display\VariantInterface
+   * @var \Drupal\page_manager\Plugin\BlockVariantInterface
    */
   protected $displayVariant;
 

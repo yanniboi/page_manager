@@ -8,10 +8,10 @@
 namespace Drupal\page_manager\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

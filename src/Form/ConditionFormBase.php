@@ -9,10 +9,10 @@ namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\page_manager\PageInterface;
-use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Plugin\ContextAwarePluginAssignmentTrait;
+use Drupal\page_manager\PageInterface;
 
 /**
  * Provides a base form for editing and adding a condition.

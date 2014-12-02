@@ -7,9 +7,9 @@
 
 namespace Drupal\page_manager\Plugin;
 
-use Drupal\Component\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Condition\ConditionAccessResolverTrait;
 use Drupal\Core\Condition\ConditionPluginCollection;
+use Drupal\Core\Plugin\ContextAwarePluginInterface;
 
 /**
  * Provides methods for \Drupal\page_manager\Plugin\ConditionVariantInterface.
