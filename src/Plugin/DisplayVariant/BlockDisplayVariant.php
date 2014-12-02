@@ -20,7 +20,7 @@ use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Utility\Token;
-use Drupal\page_manager\PageExecutable;
+use Drupal\page_manager\PageExecutableInterface;
 use Drupal\page_manager\Plugin\BlockVariantInterface;
 use Drupal\page_manager\Plugin\BlockVariantTrait;
 use Drupal\page_manager\Plugin\ConditionVariantInterface;
@@ -476,7 +476,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
   /**
    * {@inheritdoc}
    */
-  public function setExecutable(PageExecutable $executable) {
+  public function setExecutable(PageExecutableInterface $executable) {
     $this->executable = $executable;
     return $this;
   }

@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Event;
 
-use Drupal\page_manager\PageExecutable;
+use Drupal\page_manager\PageExecutableInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -27,10 +27,10 @@ class PageManagerContextEvent extends Event {
   /**
    * Creates a new PageManagerContextEvent.
    *
-   * @param \Drupal\page_manager\PageExecutable $page
+   * @param \Drupal\page_manager\PageExecutableInterface $page
    *   The page executable.
    */
-  public function __construct(PageExecutable $page) {
+  public function __construct(PageExecutableInterface $page) {
     $this->page = $page;
   }
 
