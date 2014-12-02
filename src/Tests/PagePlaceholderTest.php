@@ -11,6 +11,8 @@ use Drupal\simpletest\WebTestBase;
 
 /**
  * Tests selecting page variants based on nodes.
+ *
+ * @group page_manager
  */
 class PagePlaceholderTest extends WebTestBase {
 

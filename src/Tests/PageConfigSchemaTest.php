@@ -13,6 +13,8 @@ use Drupal\simpletest\KernelTestBase;
 
 /**
  * Ensures that page entities have valid config schema.
+ *
+ * @group page_manager
  */
 class PageConfigSchemaTest extends KernelTestBase {
 

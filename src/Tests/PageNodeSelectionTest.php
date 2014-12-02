@@ -11,6 +11,8 @@ use Drupal\simpletest\WebTestBase;
 
 /**
  * Tests selecting display variants based on nodes.
+ *
+ * @group page_manager
  */
 class PageNodeSelectionTest extends WebTestBase {
 

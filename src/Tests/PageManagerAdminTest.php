@@ -14,6 +14,8 @@ use Drupal\simpletest\WebTestBase;
 
 /**
  * Tests the admin UI for page entities.
+ *
+ * @group page_manager
  */
 class PageManagerAdminTest extends WebTestBase {
 
