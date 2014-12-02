@@ -67,7 +67,7 @@ class SelectionConditionAddForm extends SelectionConditionFormBase {
    * {@inheritdoc}
    */
   protected function submitMessageText() {
-    return $this->t('The %label selection condition has been added.', array('%label' => $this->condition->getPluginDefinition()['label']));
+    return $this->t('The %label selection condition has been added.', ['%label' => $this->condition->getPluginDefinition()['label']]);
   }
 
 }

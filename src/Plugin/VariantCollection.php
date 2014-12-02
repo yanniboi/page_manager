@@ -28,7 +28,7 @@ class VariantCollection extends DefaultLazyPluginCollection {
    */
   public function sort() {
     // @todo Determine the reason this needs error suppression.
-    @uasort($this->instanceIDs, array($this, 'sortHelper'));
+    @uasort($this->instanceIDs, [$this, 'sortHelper']);
     return $this;
   }
 

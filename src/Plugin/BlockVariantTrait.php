@@ -23,10 +23,10 @@ trait BlockVariantTrait {
    * @see \Drupal\page_manager\Plugin\BlockVariantInterface::getRegionNames()
    */
   public function getRegionNames() {
-    return array(
+    return [
       'top' => 'Top',
       'bottom' => 'Bottom',
-    );
+    ];
   }
 
   /**
@@ -75,7 +75,7 @@ trait BlockVariantTrait {
    */
   public function getRegionAssignments() {
     // Build an array of the region names in the right order.
-    $empty = array_fill_keys(array_keys($this->getRegionNames()), array());
+    $empty = array_fill_keys(array_keys($this->getRegionNames()), []);
     $full = $this->getBlockCollection()->getAllByRegion();
     // Merge it with the actual values to maintain the ordering.
     return array_intersect_key(array_merge($empty, $full), $empty);

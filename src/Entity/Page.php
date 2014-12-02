@@ -74,14 +74,14 @@ class Page extends ConfigEntityBase implements PageInterface {
    *
    * @var array
    */
-  protected $display_variants = array();
+  protected $display_variants = [];
 
   /**
    * The configuration of access conditions.
    *
    * @var array
    */
-  protected $access_conditions = array();
+  protected $access_conditions = [];
 
   /**
    * Tracks the logic used to compute access, either 'and' or 'or'.
@@ -137,7 +137,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function toArray() {
     $properties = parent::toArray();
-    $names = array(
+    $names = [
       'id',
       'label',
       'path',
@@ -145,7 +145,7 @@ class Page extends ConfigEntityBase implements PageInterface {
       'access_conditions',
       'access_logic',
       'use_admin_theme',
-    );
+    ];
     foreach ($names as $name) {
       $properties[$name] = $this->get($name);
     }
@@ -173,11 +173,11 @@ class Page extends ConfigEntityBase implements PageInterface {
     parent::postCreate($storage);
     // Ensure there is at least one display variant.
     if (!$this->getVariants()->count()) {
-      $this->addVariant(array(
+      $this->addVariant([
         'id' => 'http_status_code',
         'label' => 'Default',
         'weight' => 10,
-      ));
+      ]);
     }
   }
 
@@ -228,10 +228,10 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function getPluginCollections() {
-    return array(
+    return [
       'display_variants' => $this->getVariants(),
       'access_conditions' => $this->getAccessConditions(),
-    );
+    ];
   }
 
   /**

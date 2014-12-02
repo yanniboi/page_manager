@@ -41,7 +41,7 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the access condition %name?', array('%name' => $this->accessCondition->getPluginDefinition()['label']));
+    return $this->t('Are you sure you want to delete the access condition %name?', ['%name' => $this->accessCondition->getPluginDefinition()['label']]);
   }
 
   /**
@@ -73,7 +73,7 @@ class AccessConditionDeleteForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->page->removeAccessCondition($this->accessCondition->getConfiguration()['uuid']);
     $this->page->save();
-    drupal_set_message($this->t('The access condition %name has been removed.', array('%name' => $this->accessCondition->getPluginDefinition()['label'])));
+    drupal_set_message($this->t('The access condition %name has been removed.', ['%name' => $this->accessCondition->getPluginDefinition()['label']]));
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 

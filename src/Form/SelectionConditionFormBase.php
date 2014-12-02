@@ -45,10 +45,10 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
     // Save the page entity.
     $this->page->save();
 
-    $form_state->setRedirect('page_manager.display_variant_edit', array(
+    $form_state->setRedirect('page_manager.display_variant_edit', [
       'page' => $this->page->id(),
       'display_variant_id' => $this->displayVariant->id(),
-    ));
+    ]);
   }
 
 }

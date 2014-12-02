@@ -124,7 +124,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
    * {@inheritdoc}
    */
   public function build() {
-    $build = array();
+    $build = [];
     $contexts = $this->getContexts();
     foreach ($this->getRegionAssignments() as $region => $blocks) {
       if (!$blocks) {
@@ -142,15 +142,15 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
           $this->contextHandler()->applyContextMapping($block, $contexts);
         }
         if ($block->access($this->account)) {
-          $block_render_array = array(
+          $block_render_array = [
             '#theme' => 'block',
-            '#attributes' => array(),
+            '#attributes' => [],
             '#weight' => $weight++,
             '#configuration' => $block->getConfiguration(),
             '#plugin_id' => $block->getPluginId(),
             '#base_plugin_id' => $block->getBaseId(),
             '#derivative_plugin_id' => $block->getDerivativeId(),
-          );
+          ];
           if (!empty($block_render_array['#configuration']['label'])) {
             $block_render_array['#configuration']['label'] = String::checkPlain($block_render_array['#configuration']['label']);
           }
@@ -172,12 +172,12 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
 
     // Allow to configure the page title, even when adding a new display.
     // Default to the page label in that case.
-    $form['page_title'] = array(
+    $form['page_title'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Page title'),
       '#description' => $this->t('Configure the page title that will be used for this display.'),
       '#default_value' => !$this->id() ? $this->executable->getPage()->label() : $this->configuration['page_title'],
-    );
+    ];
 
     // Do not allow blocks to be added until the display variant has been saved.
     if (!$this->id()) {
@@ -188,29 +188,29 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
     $page_id = $this->executable->getPage()->id();
 
     // Set up the attributes used by a modal to prevent duplication later.
-    $attributes = array(
-      'class' => array('use-ajax'),
+    $attributes = [
+      'class' => ['use-ajax'],
       'data-accepts' => 'application/vnd.drupal-modal',
-      'data-dialog-options' => Json::encode(array(
+      'data-dialog-options' => Json::encode([
         'width' => 'auto',
-      )),
-    );
-    $add_button_attributes = NestedArray::mergeDeep($attributes, array(
-      'class' => array(
+      ]),
+    ];
+    $add_button_attributes = NestedArray::mergeDeep($attributes, [
+      'class' => [
         'button',
         'button--small',
         'button-action',
-      ),
-    ));
+      ],
+    ]);
 
     if ($block_assignments = $this->getRegionAssignments()) {
       // Build a table of all blocks used by this display variant.
-      $form['block_section'] = array(
+      $form['block_section'] = [
         '#type' => 'details',
         '#title' => $this->t('Blocks'),
         '#open' => TRUE,
-      );
-      $form['block_section']['add'] = array(
+      ];
+      $form['block_section']['add'] = [
         '#type' => 'link',
         '#title' => $this->t('Add new block'),
         '#url' => Url::fromRoute('page_manager.display_variant_select_block', [
@@ -218,104 +218,104 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
           'display_variant_id' => $this->id(),
         ]),
         '#attributes' => $add_button_attributes,
-        '#attached' => array(
-          'library' => array(
+        '#attached' => [
+          'library' => [
             'core/drupal.ajax',
-          ),
-        ),
-      );
-      $form['block_section']['blocks'] = array(
+          ],
+        ],
+      ];
+      $form['block_section']['blocks'] = [
         '#type' => 'table',
-        '#header' => array(
+        '#header' => [
           $this->t('Label'),
           $this->t('Plugin ID'),
           $this->t('Region'),
           $this->t('Weight'),
           $this->t('Operations'),
-        ),
+        ],
         '#empty' => $this->t('There are no regions for blocks.'),
         // @todo This should utilize https://drupal.org/node/2065485.
-        '#parents' => array('display_variant', 'blocks'),
-      );
+        '#parents' => ['display_variant', 'blocks'],
+      ];
       // Loop through the blocks per region.
       foreach ($block_assignments as $region => $blocks) {
         // Add a section for each region and allow blocks to be dragged between
         // them.
-        $form['block_section']['blocks']['#tabledrag'][] = array(
+        $form['block_section']['blocks']['#tabledrag'][] = [
           'action' => 'match',
           'relationship' => 'sibling',
           'group' => 'block-region-select',
           'subgroup' => 'block-region-' . $region,
           'hidden' => FALSE,
-        );
-        $form['block_section']['blocks']['#tabledrag'][] = array(
+        ];
+        $form['block_section']['blocks']['#tabledrag'][] = [
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => 'block-weight',
           'subgroup' => 'block-weight-' . $region,
-        );
-        $form['block_section']['blocks'][$region] = array(
-          '#attributes' => array(
-            'class' => array('region-title', 'region-title-' . $region),
+        ];
+        $form['block_section']['blocks'][$region] = [
+          '#attributes' => [
+            'class' => ['region-title', 'region-title-' . $region],
             'no_striping' => TRUE,
-          ),
-        );
-        $form['block_section']['blocks'][$region]['title'] = array(
+          ],
+        ];
+        $form['block_section']['blocks'][$region]['title'] = [
           '#markup' => $this->getRegionName($region),
-          '#wrapper_attributes' => array(
+          '#wrapper_attributes' => [
             'colspan' => 5,
-          ),
-        );
-        $form['block_section']['blocks'][$region . '-message'] = array(
-          '#attributes' => array(
-            'class' => array(
+          ],
+        ];
+        $form['block_section']['blocks'][$region . '-message'] = [
+          '#attributes' => [
+            'class' => [
               'region-message',
               'region-' . $region . '-message',
               empty($blocks) ? 'region-empty' : 'region-populated',
-            ),
-          ),
-        );
-        $form['block_section']['blocks'][$region . '-message']['message'] = array(
+            ],
+          ],
+        ];
+        $form['block_section']['blocks'][$region . '-message']['message'] = [
           '#markup' => '<em>' . t('No blocks in this region') . '</em>',
-          '#wrapper_attributes' => array(
+          '#wrapper_attributes' => [
             'colspan' => 5,
-          ),
-        );
+          ],
+        ];
 
         /** @var $blocks \Drupal\Core\Block\BlockPluginInterface[] */
         foreach ($blocks as $block_id => $block) {
-          $row = array(
-            '#attributes' => array(
-              'class' => array('draggable'),
-            ),
-          );
+          $row = [
+            '#attributes' => [
+              'class' => ['draggable'],
+            ],
+          ];
           $row['label']['#markup'] = $block->label();
           $row['id']['#markup'] = $block->getPluginId();
           // Allow the region to be changed for each block.
-          $row['region'] = array(
+          $row['region'] = [
             '#title' => $this->t('Region'),
             '#title_display' => 'invisible',
             '#type' => 'select',
             '#options' => $this->getRegionNames(),
             '#default_value' => $this->getRegionAssignment($block_id),
-            '#attributes' => array(
-              'class' => array('block-region-select', 'block-region-' . $region),
-            ),
-          );
+            '#attributes' => [
+              'class' => ['block-region-select', 'block-region-' . $region],
+            ],
+          ];
           // Allow the weight to be changed for each block.
           $configuration = $block->getConfiguration();
-          $row['weight'] = array(
+          $row['weight'] = [
             '#type' => 'weight',
             '#default_value' => isset($configuration['weight']) ? $configuration['weight'] : 0,
-            '#title' => t('Weight for @block block', array('@block' => $block->label())),
+            '#title' => t('Weight for @block block', ['@block' => $block->label()]),
             '#title_display' => 'invisible',
-            '#attributes' => array(
-              'class' => array('block-weight', 'block-weight-' . $region),
-            ),
-          );
+            '#attributes' => [
+              'class' => ['block-weight', 'block-weight-' . $region],
+            ],
+          ];
           // Add the operation links.
-          $operations = array();
-          $operations['edit'] = array(
+          $operations = [];
+          $operations['edit'] = [
             'title' => $this->t('Edit'),
             'url' => Url::fromRoute('page_manager.display_variant_edit_block', [
               'page' => $page_id,
@@ -323,8 +323,8 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
               'block_id' => $block_id,
             ]),
             'attributes' => $attributes,
-          );
-          $operations['delete'] = array(
+          ];
+          $operations['delete'] = [
             'title' => $this->t('Delete'),
             'url' => Url::fromRoute('page_manager.display_variant_delete_block', [
               'page' => $page_id,
@@ -332,12 +332,12 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
               'block_id' => $block_id,
             ]),
             'attributes' => $attributes,
-          );
+          ];
 
-          $row['operations'] = array(
+          $row['operations'] = [
             '#type' => 'operations',
             '#links' => $operations,
-          );
+          ];
           $form['block_section']['blocks'][$block_id] = $row;
         }
       }
@@ -384,12 +384,12 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return parent::defaultConfiguration() + array(
-      'blocks' => array(),
-      'selection_conditions' => array(),
+    return parent::defaultConfiguration() + [
+      'blocks' => [],
+      'selection_conditions' => [],
       'selection_logic' => 'and',
       'page_title' => '',
-    );
+    ];
   }
 
   /**
@@ -409,10 +409,10 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
    * {@inheritdoc}
    */
   public function getConfiguration() {
-    return array(
+    return [
       'selection_conditions' => $this->getSelectionConditions()->getConfiguration(),
       'blocks' => $this->getBlockCollection()->getConfiguration(),
-    ) + parent::getConfiguration();
+    ] + parent::getConfiguration();
   }
 
   /**
@@ -443,7 +443,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
    *   An array with token data values keyed by token type.
    */
   protected function getContextAsTokenData() {
-    $data = array();
+    $data = [];
     foreach ($this->executable->getContexts() as $context) {
       // @todo Simplify this when token and typed data types are unified in
       //   https://drupal.org/node/2163027.

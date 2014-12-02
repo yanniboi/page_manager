@@ -31,23 +31,23 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
     // Get all possible status codes defined by Symfony.
     $options = Response::$statusTexts;
     // Move 403/404/500 to the top.
-    $options = array(
+    $options = [
       '404' => $options['404'],
       '403' => $options['403'],
       '500' => $options['500'],
-    ) + $options;
+    ] + $options;
 
     // Add the HTTP status code, so it's easier for people to find it.
     array_walk($options, function($title, $code) use(&$options) {
-      $options[$code] = t('@code (!title)', array('@code' => $code, '!title' => $title));
+      $options[$code] = t('@code (!title)', ['@code' => $code, '!title' => $title]);
     });
 
-    $form['status_code'] = array(
+    $form['status_code'] = [
       '#title' => t('HTTP status code'),
       '#type' => 'select',
       '#default_value' => $this->configuration['status_code'],
       '#options' => $options,
-    );
+    ];
     return $form;
   }
 
@@ -74,7 +74,7 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
   public function build() {
     $status_code = $this->configuration['status_code'];
     if ($status_code == 200) {
-      return array();
+      return [];
     }
     else {
       throw new HttpException($status_code);

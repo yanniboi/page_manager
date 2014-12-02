@@ -17,14 +17,14 @@ class PagePlaceholderTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = array('page_manager', 'page_manager_test');
+  public static $modules = ['page_manager', 'page_manager_test'];
 
   /**
    * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
-    $this->drupalLogin($this->drupalCreateUser(array('administer pages')));
+    $this->drupalLogin($this->drupalCreateUser(['administer pages']));
   }
 
   /**
@@ -38,14 +38,14 @@ class PagePlaceholderTest extends WebTestBase {
     $this->assertText('Hello World! Page ' . $page_string);
 
     // Create a new page entity with the same path as in the test module.
-    $edit = array(
+    $edit = [
       'label' => 'Placeholder test',
       'id' => 'placeholder',
       'path' => '/page-manager-test/%',
-    );
+    ];
     $this->drupalPostForm('admin/structure/page_manager/add', $edit, 'Save');
     $this->clickLink('Edit');
-    $this->drupalPostForm(NULL, array('display_variant[status_code]' => 200), 'Update display variant');
+    $this->drupalPostForm(NULL, ['display_variant[status_code]' => 200], 'Update display variant');
 
     // Access the page callback again and check that now the text is not there.
     $this->drupalGet('page-manager-test/' . $page_string);

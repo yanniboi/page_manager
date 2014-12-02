@@ -38,7 +38,7 @@ class AccessConditionEditForm extends AccessConditionFormBase {
    * {@inheritdoc}
    */
   protected function submitMessageText() {
-    return $this->t('The %label access condition has been updated.', array('%label' => $this->condition->getPluginDefinition()['label']));
+    return $this->t('The %label access condition has been updated.', ['%label' => $this->condition->getPluginDefinition()['label']]);
   }
 
 }

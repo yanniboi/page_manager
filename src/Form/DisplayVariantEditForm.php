@@ -41,30 +41,30 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
     $form = parent::buildForm($form, $form_state, $page, $display_variant_id);
 
     // Set up the attributes used by a modal to prevent duplication later.
-    $attributes = array(
-      'class' => array('use-ajax'),
+    $attributes = [
+      'class' => ['use-ajax'],
       'data-accepts' => 'application/vnd.drupal-modal',
-      'data-dialog-options' => Json::encode(array(
+      'data-dialog-options' => Json::encode([
         'width' => 'auto',
-      )),
-    );
-    $add_button_attributes = NestedArray::mergeDeep($attributes, array(
-      'class' => array(
+      ]),
+    ];
+    $add_button_attributes = NestedArray::mergeDeep($attributes, [
+      'class' => [
         'button',
         'button--small',
         'button-action',
-      )
-    ));
+      ]
+    ]);
 
     if ($this->displayVariant instanceof ConditionVariantInterface) {
       if ($selection_conditions = $this->displayVariant->getSelectionConditions()) {
         // Selection conditions.
-        $form['selection_section'] = array(
+        $form['selection_section'] = [
           '#type' => 'details',
           '#title' => $this->t('Selection Conditions'),
           '#open' => TRUE,
-        );
-        $form['selection_section']['add'] = array(
+        ];
+        $form['selection_section']['add'] = [
           '#type' => 'link',
           '#title' => $this->t('Add new selection condition'),
           '#url' => Url::fromRoute('page_manager.selection_condition_select', [
@@ -72,40 +72,40 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
             'display_variant_id' => $this->displayVariant->id(),
           ]),
           '#attributes' => $add_button_attributes,
-          '#attached' => array(
-            'library' => array(
+          '#attached' => [
+            'library' => [
               'core/drupal.ajax',
-            ),
-          ),
-        );
-        $form['selection_section']['table'] = array(
+            ],
+          ],
+        ];
+        $form['selection_section']['table'] = [
           '#type' => 'table',
-          '#header' => array(
+          '#header' => [
             $this->t('Label'),
             $this->t('Description'),
             $this->t('Operations'),
-          ),
+          ],
           '#empty' => $this->t('There are no selection conditions.'),
-        );
+        ];
 
-        $form['selection_section']['selection_logic'] = array(
+        $form['selection_section']['selection_logic'] = [
           '#type' => 'radios',
-          '#options' => array(
+          '#options' => [
             'and' => $this->t('All conditions must pass'),
             'or' => $this->t('Only one condition must pass'),
-          ),
+          ],
           '#default_value' => $this->displayVariant->getSelectionLogic(),
-        );
+        ];
 
-        $form['selection_section']['selection'] = array(
+        $form['selection_section']['selection'] = [
           '#tree' => TRUE,
-        );
+        ];
         foreach ($selection_conditions as $selection_id => $selection_condition) {
-          $row = array();
+          $row = [];
           $row['label']['#markup'] = $selection_condition->getPluginDefinition()['label'];
           $row['description']['#markup'] = $selection_condition->summary();
-          $operations = array();
-          $operations['edit'] = array(
+          $operations = [];
+          $operations['edit'] = [
             'title' => $this->t('Edit'),
             'url' => Url::fromRoute('page_manager.selection_condition_edit', [
               'page' => $this->page->id(),
@@ -113,8 +113,8 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
               'condition_id' => $selection_id,
             ]),
             'attributes' => $attributes,
-          );
-          $operations['delete'] = array(
+          ];
+          $operations['delete'] = [
             'title' => $this->t('Delete'),
             'url' => Url::fromRoute('page_manager.selection_condition_delete', [
               'page' => $this->page->id(),
@@ -122,11 +122,11 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
               'condition_id' => $selection_id,
             ]),
             'attributes' => $attributes,
-          );
-          $row['operations'] = array(
+          ];
+          $row['operations'] = [
             '#type' => 'operations',
             '#links' => $operations,
-          );
+          ];
           $form['selection_section']['table'][$selection_id] = $row;
         }
       }
@@ -143,7 +143,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
 
     // Save the page entity.
     $this->page->save();
-    drupal_set_message($this->t('The %label display variant has been updated.', array('%label' => $this->displayVariant->label())));
+    drupal_set_message($this->t('The %label display variant has been updated.', ['%label' => $this->displayVariant->label()]));
     $form_state->setRedirectUrl($this->page->urlInfo('edit-form'));
   }
 

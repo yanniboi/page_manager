@@ -20,7 +20,7 @@ class PageDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the page %name?', array('%name' => $this->entity->label()));
+    return $this->t('Are you sure you want to delete the page %name?', ['%name' => $this->entity->label()]);
   }
 
   /**
@@ -42,7 +42,7 @@ class PageDeleteForm extends EntityConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
-    drupal_set_message($this->t('The page %name has been removed.', array('%name' => $this->entity->label())));
+    drupal_set_message($this->t('The page %name has been removed.', ['%name' => $this->entity->label()]));
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 

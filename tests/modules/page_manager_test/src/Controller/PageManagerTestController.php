@@ -18,7 +18,7 @@ class PageManagerTestController extends ControllerBase {
    * Returns a render array for this page.
    */
   public function helloWorld($page) {
-    return array('#markup' => "Hello World! Page $page");
+    return ['#markup' => "Hello World! Page $page"];
   }
 
 }

@@ -36,7 +36,7 @@ class PageExecutable implements PageExecutableInterface {
    *
    * @var \Drupal\Component\Plugin\Context\ContextInterface[]
    */
-  protected $contexts = array();
+  protected $contexts = [];
 
   /**
    * Constructs a new PageExecutable.

@@ -47,7 +47,7 @@ class PageAccessTest extends UnitTestCase {
     $module_handler = $this->getMock('Drupal\Core\Extension\ModuleHandlerInterface');
     $module_handler->expects($this->any())
       ->method('invokeAll')
-      ->will($this->returnValue(array()));
+      ->will($this->returnValue([]));
 
     $this->pageAccess = new PageAccess($this->entityType, $this->contextHandler);
     $this->pageAccess->setModuleHandler($module_handler);
@@ -60,7 +60,7 @@ class PageAccessTest extends UnitTestCase {
     $executable = $this->getMock('Drupal\page_manager\PageExecutableInterface');
     $executable->expects($this->once())
       ->method('getContexts')
-      ->will($this->returnValue(array()));
+      ->will($this->returnValue([]));
 
     $page = $this->getMock('Drupal\page_manager\PageInterface');
     $page->expects($this->once())
@@ -68,7 +68,7 @@ class PageAccessTest extends UnitTestCase {
       ->will($this->returnValue($executable));
     $page->expects($this->once())
       ->method('getAccessConditions')
-      ->will($this->returnValue(array()));
+      ->will($this->returnValue([]));
     $page->expects($this->once())
       ->method('getAccessLogic')
       ->will($this->returnValue('and'));
@@ -136,11 +136,11 @@ class PageAccessTest extends UnitTestCase {
    * Provides data for testAccessDelete().
    */
   public function providerTestAccessDelete() {
-    $data = array();
-    $data[] = array(TRUE, FALSE, FALSE);
-    $data[] = array(FALSE, TRUE, FALSE);
-    $data[] = array(TRUE, TRUE, FALSE);
-    $data[] = array(FALSE, FALSE, TRUE);
+    $data = [];
+    $data[] = [TRUE, FALSE, FALSE];
+    $data[] = [FALSE, TRUE, FALSE];
+    $data[] = [TRUE, TRUE, FALSE];
+    $data[] = [FALSE, FALSE, TRUE];
     return $data;
   }
 

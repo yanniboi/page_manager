@@ -28,7 +28,7 @@ class BlockVariantTraitTest extends UnitTestCase {
    *
    * @dataProvider providerTestGetRegionAssignments
    */
-  public function testGetRegionAssignments($expected, $blocks = array()) {
+  public function testGetRegionAssignments($expected, $blocks = []) {
     $block_collection = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginCollection')
       ->disableOriginalConstructor()
       ->getMock();
@@ -43,42 +43,42 @@ class BlockVariantTraitTest extends UnitTestCase {
   }
 
   public function providerTestGetRegionAssignments() {
-    return array(
-      array(
-        array(
-          'top' => array(),
-          'bottom' => array(),
-        ),
-      ),
-      array(
-        array(
-          'top' => array('foo'),
-          'bottom' => array(),
-        ),
-        array(
-          'top' => array('foo'),
-        ),
-      ),
-      array(
-        array(
-          'top' => array(),
-          'bottom' => array(),
-        ),
-        array(
-          'invalid' => array('foo'),
-        ),
-      ),
-      array(
-        array(
-          'top' => array(),
-          'bottom' => array('foo'),
-        ),
-        array(
-          'bottom' => array('foo'),
-          'invalid' => array('bar'),
-        ),
-      ),
-    );
+    return [
+      [
+        [
+          'top' => [],
+          'bottom' => [],
+        ],
+      ],
+      [
+        [
+          'top' => ['foo'],
+          'bottom' => [],
+        ],
+        [
+          'top' => ['foo'],
+        ],
+      ],
+      [
+        [
+          'top' => [],
+          'bottom' => [],
+        ],
+        [
+          'invalid' => ['foo'],
+        ],
+      ],
+      [
+        [
+          'top' => [],
+          'bottom' => ['foo'],
+        ],
+        [
+          'bottom' => ['foo'],
+          'invalid' => ['bar'],
+        ],
+      ],
+    ];
   }
 
 }
@@ -89,7 +89,7 @@ class TestBlockVariantTrait {
   /**
    * @var array
    */
-  protected $blockConfig = array();
+  protected $blockConfig = [];
 
   /**
    * @var \Drupal\Component\Uuid\UuidInterface

@@ -19,7 +19,7 @@ class PageViewBuilder extends EntityViewBuilder {
    * {@inheritdoc}
    */
   public function view(EntityInterface $entity, $view_mode = 'full', $langcode = NULL) {
-    $build = array();
+    $build = [];
     /** @var $entity \Drupal\page_manager\PageInterface */
     if ($display_variant = $entity->getExecutable()->selectDisplayVariant()) {
       $build = $display_variant->build();
@@ -30,8 +30,8 @@ class PageViewBuilder extends EntityViewBuilder {
   /**
    * {@inheritdoc}
    */
-  public function viewMultiple(array $entities = array(), $view_mode = 'full', $langcode = NULL) {
-    $build = array();
+  public function viewMultiple(array $entities = [], $view_mode = 'full', $langcode = NULL) {
+    $build = [];
     foreach ($entities as $key => $entity) {
       $build[$key] = $this->view($entity, $view_mode, $langcode);
     }

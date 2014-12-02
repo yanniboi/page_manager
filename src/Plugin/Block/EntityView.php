@@ -65,21 +65,21 @@ class EntityView extends BlockBase implements ContextAwarePluginInterface, Conta
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'view_mode' => 'default',
-    );
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
-    $form['view_mode'] = array(
+    $form['view_mode'] = [
       '#type' => 'select',
       '#options' => $this->entityManager->getViewModeOptions($this->getDerivativeId()),
       '#title' => $this->t('View mode'),
       '#default_value' => $this->configuration['view_mode'],
-    );
+    ];
     return $form;
   }
 

@@ -32,7 +32,7 @@ class BlockPluginCollection extends DefaultLazyPluginCollection {
    *   block plugins.
    */
   public function getAllByRegion() {
-    $region_assignments = array();
+    $region_assignments = [];
     foreach ($this as $block_id => $block) {
       $configuration = $block->getConfiguration();
       $region = isset($configuration['region']) ? $configuration['region'] : NULL;

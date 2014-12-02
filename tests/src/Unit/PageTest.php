@@ -25,14 +25,14 @@ class PageTest extends UnitTestCase {
    */
   public function testIsFallbackPage($id, $expected) {
     $page = $this->getMockBuilder('Drupal\page_manager\Entity\Page')
-      ->setConstructorArgs(array(array('id' => $id), 'page'))
-      ->setMethods(array('configFactory'))
+      ->setConstructorArgs([['id' => $id], 'page'])
+      ->setMethods(['configFactory'])
       ->getMock();
 
-    $config_factory = $this->getConfigFactoryStub(array(
-      'page_manager.settings' => array(
+    $config_factory = $this->getConfigFactoryStub([
+      'page_manager.settings' => [
         'fallback_page' => 'fallback',
-      )));
+      ]]);
     $page->expects($this->once())
       ->method('configFactory')
       ->will($this->returnValue($config_factory));
@@ -44,9 +44,9 @@ class PageTest extends UnitTestCase {
    * Provides test data for testIsFallbackPage().
    */
   public function providerTestIsFallbackPage() {
-    $data = array();
-    $data[] = array('foo', FALSE);
-    $data[] = array('fallback', TRUE);
+    $data = [];
+    $data[] = ['foo', FALSE];
+    $data[] = ['fallback', TRUE];
     return $data;
   }
 

@@ -54,31 +54,31 @@ abstract class PageFormBase extends EntityForm {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
-    $form['label'] = array(
+    $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#description' => $this->t('The label for this page.'),
       '#default_value' => $this->entity->label(),
       '#maxlength' => '255',
-    );
-    $form['id'] = array(
+    ];
+    $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $this->entity->id(),
       '#disabled' => !$this->entity->isNew(),
       '#maxlength' => 64,
       '#required' => TRUE,
-      '#machine_name' => array(
-        'exists' => array($this, 'exists'),
-      ),
-    );
-    $form['path'] = array(
+      '#machine_name' => [
+        'exists' => [$this, 'exists'],
+      ],
+    ];
+    $form['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Path'),
       '#maxlength' => 255,
       '#default_value' => $this->entity->getPath(),
       '#required' => TRUE,
-      '#element_validate' => array(array($this, 'validatePath')),
-    );
+      '#element_validate' => [[$this, 'validatePath']],
+    ];
 
     return parent::form($form, $form_state);
   }

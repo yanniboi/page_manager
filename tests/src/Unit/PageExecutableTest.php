@@ -77,10 +77,10 @@ class PageExecutableTest extends UnitTestCase {
       ->will($this->returnValue($display_variant2));
     $this->page->expects($this->once())
       ->method('getVariants')
-      ->will($this->returnValue(array(
+      ->will($this->returnValue([
         'variant1' => $display_variant1,
         'variant2' => $display_variant2,
-      )));
+      ]));
 
     $this->assertSame($display_variant2, $this->exectuable->selectDisplayVariant());
   }
@@ -92,7 +92,7 @@ class PageExecutableTest extends UnitTestCase {
     $context = new Context(new ContextDefinition('bar'));
     $this->exectuable->addContext('foo', $context);
     $contexts = $this->exectuable->getContexts();
-    $this->assertSame(array('foo' => $context), $contexts);
+    $this->assertSame(['foo' => $context], $contexts);
   }
 
   /**
@@ -112,7 +112,7 @@ class PageExecutableTest extends UnitTestCase {
     \Drupal::setContainer($container);
 
     $contexts = $this->exectuable->getContexts();
-    $this->assertSame(array('foo' => $context), $contexts);
+    $this->assertSame(['foo' => $context], $contexts);
   }
 
 }

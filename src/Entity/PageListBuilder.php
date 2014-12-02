@@ -53,14 +53,14 @@ class PageListBuilder extends ConfigEntityListBuilder {
     // otherwise as plain text.
     $path = $entity->getPath();
     if ($entity->status() && strpos($path, '%') === FALSE) {
-      return array(
-        'data' => array(
+      return [
+        'data' => [
           '#type' => 'link',
           // @todo Update once https://www.drupal.org/node/2351379 is in.
           '#url' => Url::fromUri('base://' . trim($path, '/')),
           '#title' => $path,
-        ),
-      );
+        ],
+      ];
     }
     else {
       return $path;

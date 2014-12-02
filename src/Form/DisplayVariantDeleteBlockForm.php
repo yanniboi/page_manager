@@ -49,17 +49,17 @@ class DisplayVariantDeleteBlockForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the block %label?', array('%label' => $this->block->label()));
+    return $this->t('Are you sure you want to delete the block %label?', ['%label' => $this->block->label()]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('page_manager.display_variant_edit', array(
+    return new Url('page_manager.display_variant_edit', [
       'page' => $this->page->id(),
       'display_variant_id' => $this->displayVariant->id()
-    ));
+    ]);
   }
 
   /**
@@ -85,7 +85,7 @@ class DisplayVariantDeleteBlockForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->displayVariant->removeBlock($this->block->getConfiguration()['uuid']);
     $this->page->save();
-    drupal_set_message($this->t('The block %label has been removed.', array('%label' => $this->block->label())));
+    drupal_set_message($this->t('The block %label has been removed.', ['%label' => $this->block->label()]));
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }

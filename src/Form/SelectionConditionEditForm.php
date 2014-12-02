@@ -38,7 +38,7 @@ class SelectionConditionEditForm extends SelectionConditionFormBase {
    * {@inheritdoc}
    */
   protected function submitMessageText() {
-    return $this->t('The %label selection condition has been updated.', array('%label' => $this->condition->getPluginDefinition()['label']));
+    return $this->t('The %label selection condition has been updated.', ['%label' => $this->condition->getPluginDefinition()['label']]);
   }
 
 }

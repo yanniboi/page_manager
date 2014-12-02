@@ -24,164 +24,164 @@ class PageEditForm extends PageFormBase {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
-    $form['use_admin_theme'] = array(
+    $form['use_admin_theme'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use admin theme'),
       '#default_value' => $this->entity->usesAdminTheme(),
-    );
-    $attributes = array(
-      'class' => array('use-ajax'),
+    ];
+    $attributes = [
+      'class' => ['use-ajax'],
       'data-accepts' => 'application/vnd.drupal-modal',
-      'data-dialog-options' => Json::encode(array(
+      'data-dialog-options' => Json::encode([
         'width' => 'auto',
-      )),
-    );
-    $add_button_attributes = NestedArray::mergeDeep($attributes, array(
-      'class' => array(
+      ]),
+    ];
+    $add_button_attributes = NestedArray::mergeDeep($attributes, [
+      'class' => [
         'button',
         'button--small',
         'button-action',
-      )
-    ));
+      ]
+    ]);
 
-    $form['display_variant_section'] = array(
+    $form['display_variant_section'] = [
       '#type' => 'details',
       '#title' => $this->t('Display variants'),
       '#open' => TRUE,
-    );
-    $form['display_variant_section']['add_new_page'] = array(
+    ];
+    $form['display_variant_section']['add_new_page'] = [
       '#type' => 'link',
       '#title' => $this->t('Add new display variant'),
       '#url' => Url::fromRoute('page_manager.display_variant_select', [
         'page' => $this->entity->id(),
       ]),
       '#attributes' => $add_button_attributes,
-      '#attached' => array(
-        'library' => array(
+      '#attached' => [
+        'library' => [
           'core/drupal.ajax',
-        ),
-      ),
-    );
-    $form['display_variant_section']['display_variants'] = array(
+        ],
+      ],
+    ];
+    $form['display_variant_section']['display_variants'] = [
       '#type' => 'table',
-      '#header' => array(
+      '#header' => [
         $this->t('Label'),
         $this->t('Plugin'),
         $this->t('Weight'),
         $this->t('Operations'),
-      ),
+      ],
       '#empty' => $this->t('There are no display variants.'),
-      '#tabledrag' => array(array(
+      '#tabledrag' => [[
         'action' => 'order',
         'relationship' => 'sibling',
         'group' => 'display-variant-weight',
-      )),
-    );
+      ]],
+    ];
     foreach ($this->entity->getVariants() as $display_variant_id => $display_variant) {
-      $row = array(
-        '#attributes' => array(
-          'class' => array('draggable'),
-        ),
-      );
+      $row = [
+        '#attributes' => [
+          'class' => ['draggable'],
+        ],
+      ];
       $row['label']['#markup'] = $display_variant->label();
       $row['id']['#markup'] = $display_variant->adminLabel();
-      $row['weight'] = array(
+      $row['weight'] = [
         '#type' => 'weight',
         '#default_value' => $display_variant->getWeight(),
-        '#title' => t('Weight for @display_variant display variant', array('@display_variant' => $display_variant->label())),
+        '#title' => t('Weight for @display_variant display variant', ['@display_variant' => $display_variant->label()]),
         '#title_display' => 'invisible',
-        '#attributes' => array(
-          'class' => array('display-variant-weight'),
-        ),
-      );
-      $operations = array();
-      $operations['edit'] = array(
+        '#attributes' => [
+          'class' => ['display-variant-weight'],
+        ],
+      ];
+      $operations = [];
+      $operations['edit'] = [
         'title' => $this->t('Edit'),
         'url' => Url::fromRoute('page_manager.display_variant_edit', [
           'page' => $this->entity->id(),
           'display_variant_id' => $display_variant_id,
         ]),
-      );
-      $operations['delete'] = array(
+      ];
+      $operations['delete'] = [
         'title' => $this->t('Delete'),
         'url' => Url::fromRoute('page_manager.display_variant_delete', [
           'page' => $this->entity->id(),
           'display_variant_id' => $display_variant_id,
         ]),
-      );
-      $row['operations'] = array(
+      ];
+      $row['operations'] = [
         '#type' => 'operations',
         '#links' => $operations,
-      );
+      ];
       $form['display_variant_section']['display_variants'][$display_variant_id] = $row;
     }
 
     if ($access_conditions = $this->entity->getAccessConditions()) {
-      $form['access_section_section'] = array(
+      $form['access_section_section'] = [
         '#type' => 'details',
         '#title' => $this->t('Access Conditions'),
         '#open' => TRUE,
-      );
-      $form['access_section_section']['add'] = array(
+      ];
+      $form['access_section_section']['add'] = [
         '#type' => 'link',
         '#title' => $this->t('Add new access condition'),
         '#url' => Url::fromRoute('page_manager.access_condition_select', [
           'page' => $this->entity->id(),
         ]),
         '#attributes' => $add_button_attributes,
-        '#attached' => array(
-          'library' => array(
+        '#attached' => [
+          'library' => [
             'core/drupal.ajax',
-          ),
-        ),
-      );
-      $form['access_section_section']['access_section'] = array(
+          ],
+        ],
+      ];
+      $form['access_section_section']['access_section'] = [
         '#type' => 'table',
-        '#header' => array(
+        '#header' => [
           $this->t('Label'),
           $this->t('Description'),
           $this->t('Operations'),
-        ),
+        ],
         '#empty' => $this->t('There are no access conditions.'),
-      );
+      ];
 
-      $form['access_section_section']['access_logic'] = array(
+      $form['access_section_section']['access_logic'] = [
         '#type' => 'radios',
-        '#options' => array(
+        '#options' => [
           'and' => $this->t('All conditions must pass'),
           'or' => $this->t('Only one condition must pass'),
-        ),
+        ],
         '#default_value' => $this->entity->getAccessLogic(),
-      );
+      ];
 
-      $form['access_section_section']['access'] = array(
+      $form['access_section_section']['access'] = [
         '#tree' => TRUE,
-      );
+      ];
       foreach ($access_conditions as $access_id => $access_condition) {
-        $row = array();
+        $row = [];
         $row['label']['#markup'] = $access_condition->getPluginDefinition()['label'];
         $row['description']['#markup'] = $access_condition->summary();
-        $operations = array();
-        $operations['edit'] = array(
+        $operations = [];
+        $operations['edit'] = [
           'title' => $this->t('Edit'),
           'url' => Url::fromRoute('page_manager.access_condition_edit', [
             'page' => $this->entity->id(),
             'condition_id' => $access_id,
           ]),
           'attributes' => $attributes,
-        );
-        $operations['delete'] = array(
+        ];
+        $operations['delete'] = [
           'title' => $this->t('Delete'),
           'url' => Url::fromRoute('page_manager.access_condition_delete', [
             'page' => $this->entity->id(),
             'condition_id' => $access_id,
           ]),
           'attributes' => $attributes,
-        );
-        $row['operations'] = array(
+        ];
+        $row['operations'] = [
           '#type' => 'operations',
           '#links' => $operations,
-        );
+        ];
         $form['access_section_section']['access_section'][$access_id] = $row;
       }
     }
@@ -200,7 +200,7 @@ class PageEditForm extends PageFormBase {
       }
     }
     parent::save($form, $form_state);
-    drupal_set_message($this->t('The %label page has been updated.', array('%label' => $this->entity->label())));
+    drupal_set_message($this->t('The %label page has been updated.', ['%label' => $this->entity->label()]));
     $form_state->setRedirect('page_manager.page_list');
   }
 

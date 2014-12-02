@@ -92,7 +92,7 @@ class PageManagerController extends ControllerBase {
    *   The title for the page edit form.
    */
   public function editPageTitle(PageInterface $page) {
-    return $this->t('Edit %label page', array('%label' => $page->label()));
+    return $this->t('Edit %label page', ['%label' => $page->label()]);
   }
 
   /**
@@ -108,7 +108,7 @@ class PageManagerController extends ControllerBase {
    */
   public function editDisplayVariantTitle(PageInterface $page, $display_variant_id) {
     $display_variant = $page->getVariant($display_variant_id);
-    return $this->t('Edit %label display variant', array('%label' => $display_variant->label()));
+    return $this->t('Edit %label display variant', ['%label' => $display_variant->label()]);
   }
 
   /**
@@ -124,7 +124,7 @@ class PageManagerController extends ControllerBase {
    */
   public function editAccessConditionTitle(PageInterface $page, $condition_id) {
     $access_condition = $page->getAccessCondition($condition_id);
-    return $this->t('Edit %label access condition', array('%label' => $access_condition->getPluginDefinition()['label']));
+    return $this->t('Edit %label access condition', ['%label' => $access_condition->getPluginDefinition()['label']]);
   }
 
   /**
@@ -143,7 +143,7 @@ class PageManagerController extends ControllerBase {
   public function editSelectionConditionTitle(PageInterface $page, $display_variant_id, $condition_id) {
     $display_variant = $page->getVariant($display_variant_id);
     $selection_condition = $display_variant->getSelectionCondition($condition_id);
-    return $this->t('Edit %label selection condition', array('%label' => $selection_condition->getPluginDefinition()['label']));
+    return $this->t('Edit %label selection condition', ['%label' => $selection_condition->getPluginDefinition()['label']]);
   }
 
   /**
@@ -161,10 +161,10 @@ class PageManagerController extends ControllerBase {
     $page->$op()->save();
 
     if ($op == 'enable') {
-      drupal_set_message($this->t('The %label page has been enabled.', array('%label' => $page->label())));
+      drupal_set_message($this->t('The %label page has been enabled.', ['%label' => $page->label()]));
     }
     elseif ($op == 'disable') {
-      drupal_set_message($this->t('The %label page has been disabled.', array('%label' => $page->label())));
+      drupal_set_message($this->t('The %label page has been disabled.', ['%label' => $page->label()]));
     }
 
     return $this->redirect('page_manager.page_list');
@@ -180,25 +180,25 @@ class PageManagerController extends ControllerBase {
    *   The display variant selection page.
    */
   public function selectDisplayVariant(PageInterface $page) {
-    $build = array(
+    $build = [
       '#theme' => 'links',
-      '#links' => array(),
-    );
+      '#links' => [],
+    ];
     foreach ($this->variantManager->getDefinitions() as $display_variant_id => $display_variant) {
-      $build['#links'][$display_variant_id] = array(
+      $build['#links'][$display_variant_id] = [
         'title' => $display_variant['admin_label'],
         'url' => Url::fromRoute('page_manager.display_variant_add', [
           'page' => $page->id(),
           'display_variant_id' => $display_variant_id,
         ]),
-        'attributes' => array(
-          'class' => array('use-ajax'),
+        'attributes' => [
+          'class' => ['use-ajax'],
           'data-accepts' => 'application/vnd.drupal-modal',
-          'data-dialog-options' => Json::encode(array(
+          'data-dialog-options' => Json::encode([
             'width' => 'auto',
-          )),
-        ),
-      );
+          ]),
+        ],
+      ];
     }
     return $build;
   }
@@ -213,26 +213,26 @@ class PageManagerController extends ControllerBase {
    *   The access condition selection page.
    */
   public function selectAccessCondition(PageInterface $page) {
-    $build = array(
+    $build = [
       '#theme' => 'links',
-      '#links' => array(),
-    );
+      '#links' => [],
+    ];
     $available_plugins = $this->conditionManager->getDefinitionsForContexts($page->getContexts());
     foreach ($available_plugins as $access_id => $access_condition) {
-      $build['#links'][$access_id] = array(
+      $build['#links'][$access_id] = [
         'title' => $access_condition['label'],
         'url' => Url::fromRoute('page_manager.access_condition_add', [
           'page' => $page->id(),
           'condition_id' => $access_id,
         ]),
-        'attributes' => array(
-          'class' => array('use-ajax'),
+        'attributes' => [
+          'class' => ['use-ajax'],
           'data-accepts' => 'application/vnd.drupal-modal',
-          'data-dialog-options' => Json::encode(array(
+          'data-dialog-options' => Json::encode([
             'width' => 'auto',
-          )),
-        ),
-      );
+          ]),
+        ],
+      ];
     }
     return $build;
   }
@@ -249,27 +249,27 @@ class PageManagerController extends ControllerBase {
    *   The selection condition selection page.
    */
   public function selectSelectionCondition(PageInterface $page, $display_variant_id) {
-    $build = array(
+    $build = [
       '#theme' => 'links',
-      '#links' => array(),
-    );
+      '#links' => [],
+    ];
     $available_plugins = $this->conditionManager->getDefinitionsForContexts($page->getContexts());
     foreach ($available_plugins as $selection_id => $selection_condition) {
-      $build['#links'][$selection_id] = array(
+      $build['#links'][$selection_id] = [
         'title' => $selection_condition['label'],
         'url' => Url::fromRoute('page_manager.selection_condition_add', [
           'page' => $page->id(),
           'display_variant_id' => $display_variant_id,
           'condition_id' => $selection_id,
         ]),
-        'attributes' => array(
-          'class' => array('use-ajax'),
+        'attributes' => [
+          'class' => ['use-ajax'],
           'data-accepts' => 'application/vnd.drupal-modal',
-          'data-dialog-options' => Json::encode(array(
+          'data-dialog-options' => Json::encode([
             'width' => 'auto',
-          )),
-        ),
-      );
+          ]),
+        ],
+      ];
     }
     return $build;
   }
@@ -289,30 +289,30 @@ class PageManagerController extends ControllerBase {
    */
   public function selectBlock(Request $request, PageInterface $page, $display_variant_id) {
     // Add a section containing the available blocks to be added to the variant.
-    $build = array(
+    $build = [
       '#type' => 'container',
-      '#attached' => array(
-        'library' => array(
+      '#attached' => [
+        'library' => [
           'core/drupal.ajax',
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
     $available_plugins = $this->blockManager->getDefinitionsForContexts($page->getContexts());
     foreach ($available_plugins as $plugin_id => $plugin_definition) {
       // Make a section for each region.
       $category = String::checkPlain($plugin_definition['category']);
       $category_key = 'category-' . $category;
       if (!isset($build[$category_key])) {
-        $build[$category_key] = array(
+        $build[$category_key] = [
           '#type' => 'fieldgroup',
           '#title' => $category,
-          'content' => array(
+          'content' => [
             '#theme' => 'links',
-          ),
-        );
+          ],
+        ];
       }
       // Add a link for each available block within each region.
-      $build[$category_key]['content']['#links'][$plugin_id] = array(
+      $build[$category_key]['content']['#links'][$plugin_id] = [
         'title' => $plugin_definition['admin_label'],
         'url' => Url::fromRoute('page_manager.display_variant_add_block', [
           'page' => $page->id(),
@@ -320,14 +320,14 @@ class PageManagerController extends ControllerBase {
           'block_id' => $plugin_id,
           'region' => $request->query->get('region'),
         ]),
-        'attributes' => array(
-          'class' => array('use-ajax'),
+        'attributes' => [
+          'class' => ['use-ajax'],
           'data-accepts' => 'application/vnd.drupal-modal',
-          'data-dialog-options' => Json::encode(array(
+          'data-dialog-options' => Json::encode([
             'width' => 'auto',
-          )),
-        ),
-      );
+          ]),
+        ],
+      ];
     }
     return $build;
   }

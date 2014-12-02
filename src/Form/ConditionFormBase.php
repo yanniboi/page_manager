@@ -74,15 +74,15 @@ abstract class ConditionFormBase extends FormBase {
     $form_state->setTemporary($temporary);
 
     // Allow the condition to add to the form.
-    $form['condition'] = $this->condition->buildConfigurationForm(array(), $form_state);
+    $form['condition'] = $this->condition->buildConfigurationForm([], $form_state);
     $form['condition']['#tree'] = TRUE;
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->submitButtonText(),
       '#button_type' => 'primary',
-    );
+    ];
 
     return $form;
   }

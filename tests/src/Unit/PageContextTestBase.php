@@ -54,7 +54,7 @@ abstract class PageContextTestBase extends UnitTestCase {
 
     $this->executable = $this->getMockBuilder('Drupal\page_manager\PageExecutable')
       ->disableOriginalConstructor()
-      ->setMethods(array('getPage', 'addContext'))
+      ->setMethods(['getPage', 'addContext'])
       ->getMock();
 
     $this->event = new PageManagerContextEvent($this->executable);

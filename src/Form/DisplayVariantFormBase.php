@@ -58,15 +58,15 @@ abstract class DisplayVariantFormBase extends FormBase {
     $this->displayVariant = $this->prepareDisplayVariant($display_variant_id);
 
     // Allow the display variant to add to the form.
-    $form['display_variant'] = $this->displayVariant->buildConfigurationForm(array(), $form_state);
+    $form['display_variant'] = $this->displayVariant->buildConfigurationForm([], $form_state);
     $form['display_variant']['#tree'] = TRUE;
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->submitText(),
       '#button_type' => 'primary',
-    );
+    ];
 
     return $form;
   }

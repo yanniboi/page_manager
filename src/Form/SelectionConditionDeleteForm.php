@@ -49,17 +49,17 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the selection condition %name?', array('%name' => $this->selectionCondition->getPluginDefinition()['label']));
+    return $this->t('Are you sure you want to delete the selection condition %name?', ['%name' => $this->selectionCondition->getPluginDefinition()['label']]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('page_manager.display_variant_edit', array(
+    return new Url('page_manager.display_variant_edit', [
       'page' => $this->page->id(),
       'display_variant_id' => $this->displayVariant->id(),
-    ));
+    ]);
   }
 
   /**
@@ -85,7 +85,7 @@ class SelectionConditionDeleteForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->displayVariant->removeSelectionCondition($this->selectionCondition->getConfiguration()['uuid']);
     $this->page->save();
-    drupal_set_message($this->t('The selection condition %name has been removed.', array('%name' => $this->selectionCondition->getPluginDefinition()['label'])));
+    drupal_set_message($this->t('The selection condition %name has been removed.', ['%name' => $this->selectionCondition->getPluginDefinition()['label']]));
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 

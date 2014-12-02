@@ -70,28 +70,28 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
     $this->block = $this->prepareBlock($block_id);
 
     $form['#tree'] = TRUE;
-    $form['settings'] = $this->block->buildConfigurationForm(array(), $form_state);
-    $form['settings']['id'] = array(
+    $form['settings'] = $this->block->buildConfigurationForm([], $form_state);
+    $form['settings']['id'] = [
       '#type' => 'value',
       '#value' => $this->block->getPluginId(),
-    );
-    $form['region'] = array(
+    ];
+    $form['region'] = [
       '#title' => $this->t('Region'),
       '#type' => 'select',
       '#options' => $this->displayVariant->getRegionNames(),
       '#default_value' => $this->displayVariant->getRegionAssignment($this->block->getConfiguration()['uuid']),
       '#required' => TRUE,
-    );
+    ];
 
     if ($this->block instanceof ContextAwarePluginInterface) {
       $form['context_mapping'] = $this->addContextAssignmentElement($this->block, $this->page->getContexts());
     }
 
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->submitText(),
       '#button_type' => 'primary',
-    );
+    ];
     return $form;
   }
 
@@ -121,13 +121,13 @@ abstract class DisplayVariantConfigureBlockFormBase extends FormBase {
       $this->block->setContextMapping($form_state->getValue('context_mapping', []));
     }
 
-    $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], array('region' => $form_state->getValue('region')));
+    $this->displayVariant->updateBlock($this->block->getConfiguration()['uuid'], ['region' => $form_state->getValue('region')]);
     $this->page->save();
 
-    $form_state->setRedirect('page_manager.display_variant_edit', array(
+    $form_state->setRedirect('page_manager.display_variant_edit', [
       'page' => $this->page->id(),
       'display_variant_id' => $this->displayVariant->id(),
-    ));
+    ]);
   }
 
 }

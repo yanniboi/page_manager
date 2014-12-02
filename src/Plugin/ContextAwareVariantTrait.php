@@ -19,7 +19,7 @@ trait ContextAwareVariantTrait {
    *
    * @var \Drupal\Component\Plugin\Context\ContextInterface[]
    */
-  protected $contexts = array();
+  protected $contexts = [];
 
   /**
    * {@inheritdoc}

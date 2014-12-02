@@ -56,14 +56,14 @@ class VariantAwareTraitTest extends UnitTestCase {
    */
   public function testGetVariants() {
     $trait_object = new TestVariantAwareTrait();
-    $config = array(
-      'foo' => array('id' => 'foo_plugin'),
-      'bar' => array('id' => 'bar_plugin'),
-    );
+    $config = [
+      'foo' => ['id' => 'foo_plugin'],
+      'bar' => ['id' => 'bar_plugin'],
+    ];
     $plugin = $this->getMock('Drupal\Core\Display\VariantInterface');
-    $map = array();
+    $map = [];
     foreach ($config as $value) {
-      $map[] = array($value['id'], $value, $plugin);
+      $map[] = [$value['id'], $value, $plugin];
     }
     $this->manager->expects($this->exactly(2))
       ->method('createInstance')
@@ -82,16 +82,16 @@ class VariantAwareTraitTest extends UnitTestCase {
    * @depends testGetVariants
    */
   public function testGetVariantsSort(VariantCollection $variants) {
-    $this->assertSame(array('bar' => 'bar', 'foo' => 'foo'), $variants->getInstanceIds());
+    $this->assertSame(['bar' => 'bar', 'foo' => 'foo'], $variants->getInstanceIds());
   }
 
   /**
    * @covers ::addVariant
    */
   public function testAddVariant() {
-    $config = array('id' => 'foo');
+    $config = ['id' => 'foo'];
     $uuid = 'test-uuid';
-    $expected_config = $config + array('uuid' => $uuid);
+    $expected_config = $config + ['uuid' => $uuid];
 
     $uuid_generator = $this->getMock('Drupal\Component\Uuid\UuidInterface');
     $uuid_generator->expects($this->once())
@@ -113,10 +113,10 @@ class VariantAwareTraitTest extends UnitTestCase {
     $this->assertSame($uuid, $resulting_uuid);
 
     $variants = $trait_object->getVariants();
-    $this->assertSame(array($uuid => $uuid), $variants->getInstanceIds());
-    $this->assertSame(array($uuid => $expected_config), $variants->getConfiguration());
+    $this->assertSame([$uuid => $uuid], $variants->getInstanceIds());
+    $this->assertSame([$uuid => $expected_config], $variants->getConfiguration());
     $this->assertSame($plugin, $variants->get($uuid));
-    return array($trait_object, $uuid, $plugin);
+    return [$trait_object, $uuid, $plugin];
   }
 
   /**
@@ -130,7 +130,7 @@ class VariantAwareTraitTest extends UnitTestCase {
       ->method('createInstance');
 
     $this->assertSame($plugin, $trait_object->getVariant($uuid));
-    return array($trait_object, $uuid);
+    return [$trait_object, $uuid];
   }
 
   /**
@@ -143,7 +143,7 @@ class VariantAwareTraitTest extends UnitTestCase {
 
     $this->assertSame($trait_object, $trait_object->removeVariant($uuid));
     $this->assertFalse($trait_object->getVariants()->has($uuid));
-    return array($trait_object, $uuid);
+    return [$trait_object, $uuid];
   }
 
   /**
@@ -168,7 +168,7 @@ class TestVariantAwareTrait {
   /**
    * @var array
    */
-  protected $variantConfig = array();
+  protected $variantConfig = [];
 
   /**
    * @var \Drupal\Component\Uuid\UuidInterface

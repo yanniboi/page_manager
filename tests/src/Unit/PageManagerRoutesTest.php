@@ -128,23 +128,23 @@ class PageManagerRoutesTest extends UnitTestCase {
     // Only the valid page should be in the collection.
     $this->assertSame(1, $collection->count());
     $route = $collection->get('page_manager.page_view_page1');
-    $expected_defaults = array(
+    $expected_defaults = [
       '_entity_view' => 'page_manager_page',
       'page_manager_page' => 'page1',
       '_title' => 'Page label',
-    );
-    $expected_requirements = array(
+    ];
+    $expected_requirements = [
       '_entity_access' => 'page_manager_page.view',
-    );
-    $expected_options = array(
+    ];
+    $expected_options = [
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
-      'parameters' => array(
-        'page_manager_page' => array(
+      'parameters' => [
+        'page_manager_page' => [
           'type' => 'entity:page',
-        ),
-      ),
+        ],
+      ],
       '_admin_route' => TRUE,
-    );
+    ];
     $this->assertMatchingRoute($route, '/page1', $expected_defaults, $expected_requirements, $expected_options);
   }
 
@@ -165,10 +165,10 @@ class PageManagerRoutesTest extends UnitTestCase {
 
     $this->pageStorage->expects($this->once())
       ->method('loadMultiple')
-      ->will($this->returnValue(array('page1' => $page)));
+      ->will($this->returnValue(['page1' => $page]));
 
     $collection = new RouteCollection();
-    $collection->add('test_route', new Route('test_route', array(), array(), array('parameters' => array('foo' => 'bar'))));
+    $collection->add('test_route', new Route('test_route', [], [], ['parameters' => ['foo' => 'bar']]));
     $route_event = new RouteBuildEvent($collection);
     $this->routeSubscriber->onAlterRoutes($route_event);
 
@@ -177,24 +177,24 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->assertNull($collection->get('page_manager.page_view_page1'));
 
     $route = $collection->get('test_route');
-    $expected_defaults = array(
+    $expected_defaults = [
       '_entity_view' => 'page_manager_page',
       'page_manager_page' => 'page1',
       '_title' => NULL,
-    );
-    $expected_requirements = array(
+    ];
+    $expected_requirements = [
       '_entity_access' => 'page_manager_page.view',
-    );
-    $expected_options = array(
+    ];
+    $expected_options = [
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
-      'parameters' => array(
-        'page_manager_page' => array(
+      'parameters' => [
+        'page_manager_page' => [
           'type' => 'entity:page',
-        ),
+        ],
         'foo' => 'bar',
-      ),
+      ],
       '_admin_route' => NULL,
-    );
+    ];
     $this->assertMatchingRoute($route, '/test_route', $expected_defaults, $expected_requirements, $expected_options);
   }
 

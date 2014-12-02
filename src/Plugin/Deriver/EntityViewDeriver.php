@@ -54,10 +54,10 @@ class EntityViewDeriver extends DeriverBase implements ContainerDeriverInterface
     foreach ($this->entityManager->getDefinitions() as $entity_type_id => $entity_type) {
       if ($entity_type->hasViewBuilderClass()) {
         $this->derivatives[$entity_type_id] = $base_plugin_definition;
-        $this->derivatives[$entity_type_id]['admin_label'] = $this->t('Entity view (@label)', array('@label' => $entity_type->getLabel()));
-        $this->derivatives[$entity_type_id]['context'] = array(
+        $this->derivatives[$entity_type_id]['admin_label'] = $this->t('Entity view (@label)', ['@label' => $entity_type->getLabel()]);
+        $this->derivatives[$entity_type_id]['context'] = [
           'entity' => new ContextDefinition('entity:' . $entity_type_id),
-        );
+        ];
       }
     }
     return $this->derivatives;

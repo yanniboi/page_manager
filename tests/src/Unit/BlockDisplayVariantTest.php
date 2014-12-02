@@ -35,12 +35,12 @@ class BlockDisplayVariantTest extends UnitTestCase {
 
     $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->disableOriginalConstructor()
-      ->setMethods(array('getBlockCollection', 'getSelectionConditions'))
+      ->setMethods(['getBlockCollection', 'getSelectionConditions'])
       ->getMock();
-    $display_variant->setConfiguration(array('blocks' => array('foo' => array())));
+    $display_variant->setConfiguration(['blocks' => ['foo' => []]]);
     $display_variant->expects($this->once())
       ->method('getSelectionConditions')
-      ->will($this->returnValue(array()));
+      ->will($this->returnValue([]));
     $this->assertSame(TRUE, $display_variant->access());
   }
 
@@ -56,12 +56,12 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->will($this->returnValue(TRUE));
     $block1->expects($this->once())
       ->method('build')
-      ->will($this->returnValue(array(
+      ->will($this->returnValue([
         '#markup' => 'block1_build_value',
-      )));
+      ]));
     $block1->expects($this->once())
       ->method('getConfiguration')
-      ->will($this->returnValue(array('label' => 'Block label')));
+      ->will($this->returnValue(['label' => 'Block label']));
     $block1->expects($this->once())
       ->method('getPluginId')
       ->will($this->returnValue('block_plugin_id'));
@@ -77,12 +77,12 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->will($this->returnValue(FALSE));
     $block2->expects($this->never())
       ->method('build');
-    $blocks = array(
-      'top' => array(
+    $blocks = [
+      'top' => [
         'block1' => $block1,
         'block2' => $block2,
-      ),
-    );
+      ],
+    ];
     $block_collection = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginCollection')
       ->disableOriginalConstructor()
       ->getMock();
@@ -93,7 +93,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
     $context_handler = $this->getMock('Drupal\Core\Plugin\Context\ContextHandlerInterface');
     $context_handler->expects($this->once())
       ->method('applyContextMapping')
-      ->with($block2, array());
+      ->with($block2, []);
     $account = $this->getMock('Drupal\Core\Session\AccountInterface');
     $uuid_generator = $this->getMock('Drupal\Component\Uuid\UuidInterface');
     $page_title = 'Page title';
@@ -101,8 +101,8 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
     $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
-      ->setConstructorArgs(array(array('page_title' => $page_title), 'test', array(), $context_handler, $account, $uuid_generator, $token))
-      ->setMethods(array('getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'))
+      ->setConstructorArgs([['page_title' => $page_title], 'test', [], $context_handler, $account, $uuid_generator, $token])
+      ->setMethods(['getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'])
       ->getMock();
     $display_variant->expects($this->exactly(1))
       ->method('drupalHtmlClass')
@@ -115,27 +115,27 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->with($page_title)
       ->will($this->returnValue($page_title));
 
-    $expected_build = array(
-      'top' => array(
+    $expected_build = [
+      'top' => [
         '#prefix' => '<div class="block-region-top">',
         '#suffix' => '</div>',
-        'block1' => array(
+        'block1' => [
           '#theme' => 'block',
-          '#attributes' => array(),
+          '#attributes' => [],
           '#weight' => 0,
-          '#configuration' => array(
+          '#configuration' => [
             'label' => 'Block label'
-          ),
+          ],
           '#plugin_id' => 'block_plugin_id',
           '#base_plugin_id' => 'block_base_plugin_id',
           '#derivative_plugin_id' => 'block_derivative_plugin_id',
-          'content' => array(
+          'content' => [
             '#markup' => 'block1_build_value',
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
       '#title' => 'Page title',
-    );
+    ];
     $this->assertSame($expected_build, $display_variant->build());
   }
 
@@ -149,12 +149,12 @@ class BlockDisplayVariantTest extends UnitTestCase {
   public function testSubmitConfigurationForm($values, $update_block_count) {
     $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->disableOriginalConstructor()
-      ->setMethods(array('updateBlock'))
+      ->setMethods(['updateBlock'])
       ->getMock();
     $display_variant->expects($update_block_count)
       ->method('updateBlock');
 
-    $form = array();
+    $form = [];
     $form_state = (new FormState())->setValues($values);
     $display_variant->submitConfigurationForm($form, $form_state);
     $this->assertSame($values['label'], $display_variant->label());
@@ -164,27 +164,27 @@ class BlockDisplayVariantTest extends UnitTestCase {
    * Provides data for testSubmitConfigurationForm().
    */
   public function providerTestSubmitConfigurationForm() {
-    $data = array();
-    $data[] = array(
-      array(
+    $data = [];
+    $data[] = [
+      [
         'label' => 'test_label1',
-      ),
+      ],
       $this->never(),
-    );
-    $data[] = array(
-      array(
+    ];
+    $data[] = [
+      [
         'label' => 'test_label2',
-        'blocks' => array('foo1' => array()),
-      ),
+        'blocks' => ['foo1' => []],
+      ],
       $this->once(),
-    );
-    $data[] = array(
-      array(
+    ];
+    $data[] = [
+      [
         'label' => 'test_label3',
-        'blocks' => array('foo1' => array(), 'foo2' => array()),
-      ),
+        'blocks' => ['foo1' => [], 'foo2' => []],
+      ],
       $this->exactly(2),
-    );
+    ];
     return $data;
   }
 

@@ -35,7 +35,7 @@ class RouteParamContextTest extends PageContextTestBase {
 
     $this->typedDataManager->expects($this->any())
       ->method('getDefaultConstraints')
-      ->will($this->returnValue(array()));
+      ->will($this->returnValue([]));
     $this->typedDataManager->expects($this->once())
       ->method('create')
       ->with($this->isType('object'), 'banana')
@@ -43,7 +43,7 @@ class RouteParamContextTest extends PageContextTestBase {
     $this->typedDataManager->expects($this->any())
       ->method('createDataDefinition')
       ->will($this->returnCallback(function ($type) {
-        return new DataDefinition(array('type' => $type));
+        return new DataDefinition(['type' => $type]);
       }));
 
     $page = $this->getMock('Drupal\page_manager\PageInterface');
@@ -61,16 +61,16 @@ class RouteParamContextTest extends PageContextTestBase {
       ->method('addContext')
       ->with('baz', $this->isInstanceOf('Drupal\Core\Plugin\Context\Context'));
 
-    $collection->add('test_route', new Route('/test_route', array(), array(), array(
-      'parameters' => array(
-        'foo' => array('type' => 'bar'),
-        'baz' => array('type' => 'bop'),
-        'page' => array('type' => 'entity:page')
-      ),
-    )));
+    $collection->add('test_route', new Route('/test_route', [], [], [
+      'parameters' => [
+        'foo' => ['type' => 'bar'],
+        'baz' => ['type' => 'bop'],
+        'page' => ['type' => 'entity:page']
+      ],
+    ]));
 
     // Set up a request with one of the expected parameters as an attribute.
-    $request->attributes->add(array('foo' => 'banana'));
+    $request->attributes->add(['foo' => 'banana']);
 
     $route_param_context = new RouteParamContext($route_provider, $request_stack);
     $route_param_context->onPageContext($this->event);

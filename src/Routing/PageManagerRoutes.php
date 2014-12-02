@@ -53,11 +53,11 @@ class PageManagerRoutes extends RouteSubscriberBase {
 
       // Prepare the values that need to be altered for an existing page.
       $path = $entity->getPath();
-      $parameters = array(
-        'page_manager_page' => array(
+      $parameters = [
+        'page_manager_page' => [
           'type' => 'entity:page',
-        ),
-      );
+        ],
+      ];
 
       // Loop through all existing routes to see if this is overriding a route.
       foreach ($collection->all() as $name => $collection_route) {
@@ -70,7 +70,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
           $path = $collection_route->getPath();
 
           // Merge in any route parameter definitions.
-          $parameters += $collection_route->getOption('parameters') ?: array();
+          $parameters += $collection_route->getOption('parameters') ?: [];
 
           // Update the route name this will be added to.
           $route_name = $name;
@@ -83,18 +83,18 @@ class PageManagerRoutes extends RouteSubscriberBase {
       // Construct an add a new route.
       $route = new Route(
         $path,
-        array(
+        [
           '_entity_view' => 'page_manager_page',
           'page_manager_page' => $entity_id,
           '_title' => $entity->label(),
-        ),
-        array(
+        ],
+        [
           '_entity_access' => 'page_manager_page.view',
-        ),
-        array(
+        ],
+        [
           'parameters' => $parameters,
           '_admin_route' => $entity->usesAdminTheme(),
-        )
+        ]
       );
       $collection->add($route_name, $route);
     }
@@ -105,7 +105,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
    */
   static function getSubscribedEvents() {
     // Run after EntityRouteAlterSubscriber.
-    $events[RoutingEvents::ALTER][] = array('onAlterRoutes', -160);
+    $events[RoutingEvents::ALTER][] = ['onAlterRoutes', -160];
     return $events;
   }
 

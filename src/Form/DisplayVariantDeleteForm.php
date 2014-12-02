@@ -41,7 +41,7 @@ class DisplayVariantDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the display variant %name?', array('%name' => $this->displayVariant->label()));
+    return $this->t('Are you sure you want to delete the display variant %name?', ['%name' => $this->displayVariant->label()]);
   }
 
   /**
@@ -73,7 +73,7 @@ class DisplayVariantDeleteForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->page->removeVariant($this->displayVariant->id());
     $this->page->save();
-    drupal_set_message($this->t('The display variant %name has been removed.', array('%name' => $this->displayVariant->label())));
+    drupal_set_message($this->t('The display variant %name has been removed.', ['%name' => $this->displayVariant->label()]));
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 
