@@ -39,7 +39,7 @@ class PageManagerAdminTest extends WebTestBase {
   protected function setUp() {
     parent::setUp();
 
-    \Drupal::service('theme_handler')->install(['bartik']);
+    \Drupal::service('theme_handler')->install(['bartik', 'stark']);
     \Drupal::config('system.theme')->set('admin', 'stark')->save();
 
     $this->drupalLogin($this->drupalCreateUser(['administer pages', 'access administration pages', 'view the administration theme']));
