@@ -204,16 +204,4 @@ class PageEditForm extends PageFormBase {
     $form_state->setRedirect('page_manager.page_list');
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
-    $keys_to_skip = array_keys($this->entity->getPluginCollections());
-    foreach ($form_state->getValues() as $key => $value) {
-      if (!in_array($key, $keys_to_skip)) {
-        $entity->set($key, $value);
-      }
-    }
-  }
-
 }
