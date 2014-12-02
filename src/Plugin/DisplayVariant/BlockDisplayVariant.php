@@ -276,7 +276,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
           ],
         ];
         $form['block_section']['blocks'][$region . '-message']['message'] = [
-          '#markup' => '<em>' . t('No blocks in this region') . '</em>',
+          '#markup' => '<em>' . $this->t('No blocks in this region') . '</em>',
           '#wrapper_attributes' => [
             'colspan' => 5,
           ],
@@ -307,7 +307,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
           $row['weight'] = [
             '#type' => 'weight',
             '#default_value' => isset($configuration['weight']) ? $configuration['weight'] : 0,
-            '#title' => t('Weight for @block block', ['@block' => $block->label()]),
+            '#title' => $this->t('Weight for @block block', ['@block' => $block->label()]),
             '#title_display' => 'invisible',
             '#attributes' => [
               'class' => ['block-weight', 'block-weight-' . $region],

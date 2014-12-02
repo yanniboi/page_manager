@@ -88,7 +88,7 @@ class PageEditForm extends PageFormBase {
       $row['weight'] = [
         '#type' => 'weight',
         '#default_value' => $display_variant->getWeight(),
-        '#title' => t('Weight for @display_variant display variant', ['@display_variant' => $display_variant->label()]),
+        '#title' => $this->t('Weight for @display_variant display variant', ['@display_variant' => $display_variant->label()]),
         '#title_display' => 'invisible',
         '#attributes' => [
           'class' => ['display-variant-weight'],
