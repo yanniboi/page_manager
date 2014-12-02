@@ -24,17 +24,6 @@ class PageConfigSchemaTest extends KernelTestBase {
   public static $modules = array('page_manager', 'block', 'node', 'user');
 
   /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Page config schema',
-      'description' => 'Ensures that page entities have valid config schema.',
-      'group' => 'Page Manager',
-    );
-  }
-
-  /**
    * Tests whether the page entity config schema is valid.
    */
   function testValidPageConfigSchema() {

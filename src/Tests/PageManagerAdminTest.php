@@ -25,17 +25,6 @@ class PageManagerAdminTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  public static function getInfo() {
-    return [
-      'name' => 'Page Manager admin test',
-      'description' => 'Tests the admin UI for page entities.',
-      'group' => 'Page Manager',
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 

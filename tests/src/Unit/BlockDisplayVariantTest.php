@@ -17,21 +17,9 @@ use Drupal\Tests\UnitTestCase;
  *
  * @coversDefaultClass \Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant
  *
- * @group Drupal
  * @group PageManager
  */
 class BlockDisplayVariantTest extends UnitTestCase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Page Manager block display variant',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   /**
    * Tests the access() method.

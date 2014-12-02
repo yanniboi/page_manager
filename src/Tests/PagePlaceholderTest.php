@@ -22,17 +22,6 @@ class PagePlaceholderTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  public static function getInfo() {
-    return array(
-      'name' => 'Page Manager URL placeholder test',
-      'description' => 'Tests whether the _page placeholder is working.',
-      'group' => 'Page Manager',
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
     $this->drupalLogin($this->drupalCreateUser(array('administer pages')));

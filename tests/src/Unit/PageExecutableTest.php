@@ -19,7 +19,6 @@ use Drupal\Tests\UnitTestCase;
  *
  * @coversDefaultClass \Drupal\page_manager\PageExecutable
  *
- * @group Drupal
  * @group PageManager
  */
 class PageExecutableTest extends UnitTestCase {
@@ -33,17 +32,6 @@ class PageExecutableTest extends UnitTestCase {
    * @var \Drupal\page_manager\PageExecutable
    */
   protected $exectuable;
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'PageExecutable test',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   /**
    * {@inheritdoc}

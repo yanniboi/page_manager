@@ -19,21 +19,9 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * @coversDefaultClass \Drupal\page_manager\EventSubscriber\RouteParamContext
  *
- * @group Drupal
  * @group PageManager
  */
 class RouteParamContextTest extends PageContextTestBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'RouteParamContext test',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   public function testOnPageContext() {
     $collection = new RouteCollection();

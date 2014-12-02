@@ -17,21 +17,9 @@ use Drupal\user\UserInterface;
  *
  * @coversDefaultClass \Drupal\page_manager\EventSubscriber\CurrentUserContext
  *
- * @group Drupal
  * @group PageManager
  */
 class CurrentUserContextTest extends PageContextTestBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'CurrentUserContext test',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   public function testOnPageContext() {
     $account = $this->getMock('Drupal\Core\Session\AccountInterface');

@@ -17,21 +17,9 @@ use Drupal\Tests\UnitTestCase;
  *
  * @coversDefaultClass \Drupal\page_manager\Plugin\BlockVariantTrait
  *
- * @group Drupal
  * @group PageManager
  */
 class BlockVariantTraitTest extends UnitTestCase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Tests the methods of a block-based variant',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   /**
    * Tests the getRegionAssignments() method.

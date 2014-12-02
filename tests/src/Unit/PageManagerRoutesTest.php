@@ -18,7 +18,6 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * @coversDefaultClass \Drupal\page_manager\Routing\PageManagerRoutes
  *
- * @group Drupal
  * @group PageManager
  */
 class PageManagerRoutesTest extends UnitTestCase {
@@ -43,17 +42,6 @@ class PageManagerRoutesTest extends UnitTestCase {
    * @var \Drupal\page_manager\Routing\PageManagerRoutes
    */
   protected $routeSubscriber;
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Page Manager route subscriber',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   /**
    * {@inheritdoc}

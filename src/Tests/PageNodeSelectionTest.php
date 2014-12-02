@@ -22,17 +22,6 @@ class PageNodeSelectionTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  public static function getInfo() {
-    return array(
-      'name' => 'Page Manager node selection test',
-      'description' => 'Tests selecting display variants based on nodes.',
-      'group' => 'Page Manager',
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
 

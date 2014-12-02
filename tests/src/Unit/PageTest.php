@@ -14,21 +14,9 @@ use Drupal\Tests\UnitTestCase;
  *
  * @coversDefaultClass \Drupal\page_manager\Entity\Page
  *
- * @group Drupal
  * @group PageManager
  */
 class PageTest extends UnitTestCase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Tests the Page entity',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   /**
    * @covers ::isFallbackPage

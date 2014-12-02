@@ -15,7 +15,6 @@ use Drupal\Tests\UnitTestCase;
  *
  * @coversDefaultClass \Drupal\page_manager\Entity\PageAccess
  *
- * @group Drupal
  * @group PageManager
  */
 class PageAccessTest extends UnitTestCase {
@@ -36,17 +35,6 @@ class PageAccessTest extends UnitTestCase {
    * @var \Drupal\Core\Entity\EntityAccessControlHandlerInterface
    */
   protected $pageAccess;
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Tests access for Page entities',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   /**
    * @covers ::__construct

@@ -15,21 +15,9 @@ use Drupal\Tests\UnitTestCase;
  *
  * @coversDefaultClass \Drupal\page_manager\Plugin\BlockPluginCollection
  *
- * @group Drupal
  * @group PageManager
  */
 class BlockPluginCollectionTest extends UnitTestCase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Block plugin collection',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   /**
    * Tests the getAllByRegion() method.

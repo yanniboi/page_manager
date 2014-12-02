@@ -18,7 +18,6 @@ use Drupal\Tests\UnitTestCase;
  *
  * @coversDefaultClass \Drupal\page_manager\Plugin\VariantAwareTrait
  *
- * @group Drupal
  * @group PageManager
  */
 class VariantAwareTraitTest extends UnitTestCase {
@@ -27,17 +26,6 @@ class VariantAwareTraitTest extends UnitTestCase {
    * @var \Drupal\Component\Plugin\PluginManagerInterface|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $manager;
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Tests the methods of a variant-aware class',
-      'description' => '',
-      'group' => 'Page Manager',
-    );
-  }
 
   /**
    * {@inheritdoc}
