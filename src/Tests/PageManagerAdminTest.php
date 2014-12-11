@@ -22,6 +22,11 @@ class PageManagerAdminTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $strictConfigSchema = FALSE;
+
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = ['page_manager'];
 
   /**
