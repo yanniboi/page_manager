@@ -43,11 +43,22 @@ page_manager.page.*:
       label: 'Dependencies'
 
 page_manager.block_plugin.*:
-  type: block_settings
+  type: block.settings.[id]
   mapping:
+    region:
+      type: string
+      label: 'Region'
+    weight:
+      type: integer
+      label: 'Weight'
     uuid:
       type: string
       label: 'UUID'
+    context_mapping:
+      type: sequence
+      label: 'Context assignments'
+      sequence:
+        - type: string
 
 display_variant.plugin.block_display:
   type: display_variant.plugin
@@ -78,32 +89,3 @@ display_variant.plugin.http_status_code:
     status_code:
       type: integer
       label: 'Status code'
-
-# @todo Move to core.data_types.schema.yml.
-condition.plugin:
-  type: mapping
-  label: 'Condition'
-  mapping:
-    id:
-      type: string
-      label: 'ID'
-    negate:
-      type: boolean
-      label: 'Negate'
-    uuid:
-      type: string
-      label: 'UUID'
-    context_mapping:
-      type: sequence
-      label: 'Context assignments'
-      sequence:
-        - type: string
-
-# @todo Move to node.schema.yml.
-condition.plugin.node_type:
-  type: condition.plugin
-  mapping:
-    bundles:
-      type: sequence
-      sequence:
-        - type: string
