@@ -56,7 +56,7 @@ class PageListBuilder extends ConfigEntityListBuilder {
       return [
         'data' => [
           '#type' => 'link',
-          '#url' => Url::fromUri('user-path:' . trim($path, '/')),
+          '#url' => Url::fromUri('user-path:' . rtrim($path, '/')),
           '#title' => $path,
         ],
       ];
