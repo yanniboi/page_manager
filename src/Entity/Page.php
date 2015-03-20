@@ -290,4 +290,29 @@ class Page extends ConfigEntityBase implements PageInterface {
     return $this->id() == $fallback_page;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function __sleep() {
+    $vars = parent::__sleep();
+
+    // Avoid serializing plugin collections and the page executable as they
+    // might contain references to a lot of objects including the container.
+    $unset_vars = [
+      'variantCollection' => 'display_variants',
+      'accessConditionCollection' => 'access_variants',
+      'executable' => NULL,
+    ];
+    foreach ($unset_vars as $unset_var => $configuration_key) {
+      if (!empty($this->$unset_var)) {
+        if ($configuration_key) {
+          $this->set($configuration_key, $this->$unset_var->getConfiguration());
+        }
+        unset($vars[array_search($unset_var, $vars)]);
+      }
+    }
+
+    return $vars;
+  }
+
 }

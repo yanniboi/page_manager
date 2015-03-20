@@ -27,7 +27,7 @@ class PageManagerAdminTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['page_manager'];
+  public static $modules = ['page_manager', 'page_manager_test'];
 
   /**
    * {@inheritdoc}
@@ -56,6 +56,8 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestAdminPath();
     $this->doTestRemoveDisplayVariant();
     $this->doTestRemoveBlock();
+    $this->doTestAddBlockWithAjax();
+    $this->doTestEditBlock();
     $this->doTestExistingPathWithoutParameters();
     $this->doTestDeletePage();
   }
@@ -316,6 +318,31 @@ class PageManagerAdminTest extends WebTestBase {
     $this->assertResponse(200);
     $elements = $this->xpath('//div[@class="block-region-bottom"]/nav/ul[@class="menu"]/li/a');
     $this->assertTrue(empty($elements));
+  }
+
+  /**
+   * Tests adding a block with #ajax to a variant.
+   */
+  protected function doTestAddBlockWithAjax() {
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
+    $this->clickLink('Edit');
+    // Add a block to the variant.
+    $this->clickLink('Add new block');
+    $this->clickLink('Page Manager Test Block');
+    $edit = [
+      'region' => 'top',
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Add block');
+
+    // Test that the block is displayed.
+    $this->drupalGet('admin/foo');
+    $this->assertResponse(200);
+    $this->assertText(t('Example output'));
+    // @todo Restore the <h2> check once the follow-up to
+    //   https://www.drupal.org/node/1869476 is in.
+    //$this->assertRaw('<h2>Page Manager Test Block</h2>');
+    // Check the block label.
+    $this->assertRaw('Page Manager Test Block');
   }
 
   /**
