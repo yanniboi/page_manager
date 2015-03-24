@@ -7,14 +7,14 @@
 
 namespace Drupal\page_manager;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\page_manager\Plugin\VariantAwareInterface;
 
 /**
  * Provides an interface for page entities.
  */
-interface PageInterface extends EntityInterface, EntityWithPluginCollectionInterface, VariantAwareInterface {
+interface PageInterface extends ConfigEntityInterface, EntityWithPluginCollectionInterface, VariantAwareInterface {
 
   /**
    * Returns whether the page entity is enabled.

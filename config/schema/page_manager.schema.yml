@@ -1,5 +1,5 @@
 page_manager.page.*:
-  type: mapping
+  type: config_entity
   label: 'Page'
   mapping:
     id:
@@ -8,18 +8,9 @@ page_manager.page.*:
     label:
       type: label
       label: 'Label'
-    uuid:
-      type: string
-      label: 'UUID'
-    status:
-      type: boolean
-      label: 'Enabled status of the configuration entity'
     use_admin_theme:
       type: boolean
       label: 'Whether the page is displayed using the admin theme or not'
-    langcode:
-      type: string
-      label: 'Default language'
     path:
       type: string
       label: 'Page path'
@@ -38,9 +29,6 @@ page_manager.page.*:
       sequence:
         - type: condition.plugin.[id]
           label: 'Access Condition'
-    dependencies:
-      type: config_dependencies
-      label: 'Dependencies'
 
 page_manager.block_plugin.*:
   type: block.settings.[id]
