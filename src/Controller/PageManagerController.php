@@ -7,14 +7,14 @@
 
 namespace Drupal\page_manager\Controller;
 
-use Drupal\Core\Block\BlockManagerInterface;
-use Drupal\Core\Url;
-use Drupal\page_manager\PageInterface;
-use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Plugin\Context\ContextHandlerInterface;
+use Drupal\Core\Url;
+use Drupal\page_manager\PageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -301,7 +301,7 @@ class PageManagerController extends ControllerBase {
     $available_plugins = $this->blockManager->getDefinitionsForContexts($page->getContexts());
     foreach ($available_plugins as $plugin_id => $plugin_definition) {
       // Make a section for each region.
-      $category = String::checkPlain($plugin_definition['category']);
+      $category = SafeMarkup::checkPlain($plugin_definition['category']);
       $category_key = 'category-' . $category;
       if (!isset($build[$category_key])) {
         $build[$category_key] = [
