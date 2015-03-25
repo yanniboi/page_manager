@@ -135,9 +135,12 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalPostForm(NULL, $edit, 'Add display variant');
     $this->assertRaw(SafeMarkup::format('The %label display variant has been added.', ['%label' => 'First']));
 
-    // Test that the variant is not used because it has no blocks.
+    // Test that the variant is still used but empty.
     $this->drupalGet('admin/foo');
-    $this->assertResponse(403);
+    $this->assertResponse(200);
+    // Tests that the content region has no content at all.
+    $elements = $this->xpath('//div[@class=:region]', [':region' => 'region region-content']);
+    $this->assertIdentical(0, $elements[0]->count());
   }
 
   /**

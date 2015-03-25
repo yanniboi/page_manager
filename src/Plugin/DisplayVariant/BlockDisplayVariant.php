@@ -368,17 +368,8 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
    * {@inheritdoc}
    */
   public function access(AccountInterface $account = NULL) {
-    // If no blocks are configured for this variant, deny access.
-    if (empty($this->configuration['blocks'])) {
-      return FALSE;
-    }
-
     // Delegate to the conditions.
-    if ($this->determineSelectionAccess($this->getContexts()) === FALSE) {
-      return FALSE;
-    }
-
-    return parent::access($account);
+    return $this->determineSelectionAccess($this->getContexts());
   }
 
   /**

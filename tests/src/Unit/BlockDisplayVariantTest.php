@@ -29,18 +29,20 @@ class BlockDisplayVariantTest extends UnitTestCase {
   public function testAccess() {
     $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->disableOriginalConstructor()
-      ->setMethods(NULL)
+      ->setMethods(['determineSelectionAccess'])
       ->getMock();
+    $display_variant->expects($this->once())
+      ->method('determineSelectionAccess')
+      ->willReturn(FALSE);
     $this->assertSame(FALSE, $display_variant->access());
 
     $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
       ->disableOriginalConstructor()
-      ->setMethods(['getBlockCollection', 'getSelectionConditions'])
+      ->setMethods(['determineSelectionAccess'])
       ->getMock();
-    $display_variant->setConfiguration(['blocks' => ['foo' => []]]);
     $display_variant->expects($this->once())
-      ->method('getSelectionConditions')
-      ->will($this->returnValue([]));
+      ->method('determineSelectionAccess')
+      ->willReturn(TRUE);
     $this->assertSame(TRUE, $display_variant->access());
   }
 
