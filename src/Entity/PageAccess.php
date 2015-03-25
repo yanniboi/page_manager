@@ -81,7 +81,7 @@ class PageAccess extends EntityAccessControlHandler implements EntityHandlerInte
           $this->contextHandler()->applyContextMapping($condition, $contexts);
         }
       }
-      return AccessResult::allowedIf($this->resolveConditions($conditions, $entity->getAccessLogic(), $contexts));
+      return AccessResult::allowedIf($this->resolveConditions($conditions, $entity->getAccessLogic()));
     }
     if ($operation == 'delete' && $entity->isFallbackPage()) {
       return AccessResult::forbidden()->cacheUntilEntityChanges($entity);

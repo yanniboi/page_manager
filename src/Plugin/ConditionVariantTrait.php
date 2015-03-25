@@ -75,7 +75,7 @@ trait ConditionVariantTrait {
         $this->contextHandler()->applyContextMapping($condition, $contexts);
       }
     }
-    return $this->resolveConditions($conditions, $this->getSelectionLogic(), $contexts);
+    return $this->resolveConditions($conditions, $this->getSelectionLogic());
   }
 
   /**
