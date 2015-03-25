@@ -13,7 +13,6 @@ use Drupal\Core\Url;
 use Drupal\page_manager\PageInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\page_manager\Plugin\ConditionVariantInterface;
-use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 
 /**
  * Provides a form for editing a display variant.
@@ -152,11 +151,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
    */
   protected function prepareDisplayVariant($display_variant_id) {
     // Load the display variant directly from the page entity.
-    $variant = $this->page->getVariant($display_variant_id);
-    if ($variant instanceof PageAwareVariantInterface) {
-      $variant->setExecutable($this->page->getExecutable());
-    }
-    return $variant;
+    return $this->page->getVariant($display_variant_id);
   }
 
 }

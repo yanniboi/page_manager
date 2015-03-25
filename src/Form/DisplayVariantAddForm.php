@@ -9,7 +9,6 @@ namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Display\VariantManager;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -80,11 +79,7 @@ class DisplayVariantAddForm extends DisplayVariantFormBase {
    */
   protected function prepareDisplayVariant($display_variant_id) {
     // Create a new display variant instance.
-    $variant = $this->variantManager->createInstance($display_variant_id);
-    if ($variant instanceof PageAwareVariantInterface) {
-      $variant->setExecutable($this->page->getExecutable());
-    }
-    return $variant;
+    return $this->variantManager->createInstance($display_variant_id);
   }
 
 }

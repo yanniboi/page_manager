@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 
 /**
  * Provides a base form for editing and adding a display variant.
@@ -77,6 +78,9 @@ abstract class DisplayVariantFormBase extends FormBase implements DisplayVariant
   public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
     $this->page = $page;
     $this->displayVariant = $this->prepareDisplayVariant($display_variant_id);
+    if ($this->displayVariant instanceof PageAwareVariantInterface) {
+      $this->displayVariant->setExecutable($this->page->getExecutable());
+    }
 
     // Allow the display variant to add to the form.
     $form['display_variant'] = $this->displayVariant->buildConfigurationForm([], $form_state);
