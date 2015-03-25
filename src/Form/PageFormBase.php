@@ -114,14 +114,6 @@ abstract class PageFormBase extends EntityForm {
     if ($path) {
       $form_state->setErrorByName('path', $this->t('The page path must be unique.'));
     }
-
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function save(array $form, FormStateInterface $form_state) {
-    $this->entity->save();
   }
 
 }
