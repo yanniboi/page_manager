@@ -15,7 +15,7 @@ use Drupal\Core\Form\FormBase;
 /**
  * Provides a base form for editing and adding a display variant.
  */
-abstract class DisplayVariantFormBase extends FormBase {
+abstract class DisplayVariantFormBase extends FormBase implements DisplayVariantFormInterface {
 
   /**
    * The page entity this display variant belongs to.
@@ -43,12 +43,33 @@ abstract class DisplayVariantFormBase extends FormBase {
   abstract protected function prepareDisplayVariant($display_variant_id);
 
   /**
+   * {@inheritdoc}
+   */
+  public function getPage() {
+    return $this->page;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDisplayVariant() {
+    return $this->displayVariant;
+  }
+
+  /**
    * Returns the text to use for the submit button.
    *
    * @return string
    *   The submit button text.
    */
   abstract protected function submitText();
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBaseFormId() {
+    return 'page_manager_display_variant_form';
+  }
 
   /**
    * {@inheritdoc}
