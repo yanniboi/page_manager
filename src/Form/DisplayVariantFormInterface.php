@@ -10,7 +10,7 @@ namespace Drupal\page_manager\Form;
 use Drupal\Core\Form\BaseFormIdInterface;
 
 /**
- * Provides an interface for forms used for editing and adding a display variant.
+ * Provides an interface for forms used for editing or adding a display variant.
  */
 interface DisplayVariantFormInterface extends BaseFormIdInterface {
 

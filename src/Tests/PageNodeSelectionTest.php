@@ -95,7 +95,7 @@ class PageNodeSelectionTest extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Update display variant');
 
-    // The page node will 404, but the article node will display the display variant.
+    // The page node will 404, but the article node will display the variant.
     $this->drupalGet('node/' . $node1->id());
     $this->assertResponse(404);
     $this->assertNoText($node1->label());

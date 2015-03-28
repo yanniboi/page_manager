@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager;
 
+use Drupal\Component\Plugin\Context\ContextInterface;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
 use Drupal\page_manager\Plugin\ContextAwareVariantInterface;
@@ -89,7 +90,7 @@ class PageExecutable implements PageExecutableInterface {
   /**
    * {@inheritdoc}
    */
-  public function addContext($name, $value) {
+  public function addContext($name, ContextInterface $value) {
     $this->contexts[$name] = $value;
   }
 

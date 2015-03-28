@@ -23,7 +23,7 @@ interface ConditionVariantInterface extends VariantInterface {
   public function getContexts();
 
   /**
-   * Returns the conditions used for determining if this display variant is selected.
+   * Returns the conditions used for determining if this variant is selected.
    *
    * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\Core\Condition\ConditionPluginCollection
    *   An array of configured condition plugins.

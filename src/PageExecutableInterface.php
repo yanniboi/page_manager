@@ -7,6 +7,8 @@
 
 namespace Drupal\page_manager;
 
+use Drupal\Component\Plugin\Context\ContextInterface;
+
 /**
  * Interface implemented by page executables.
  *
@@ -27,11 +29,12 @@ interface PageExecutableInterface {
   /**
    * Selects the display variant to use for the page entity.
    *
-   * This loops through the available display variants and checks each for access,
-   * returning the first one that is accessible.
+   * This loops through the available display variants and checks each for
+   * access, returning the first one that is accessible.
    *
    * @return \Drupal\Core\Display\VariantInterface|null
-   *   Either the first accessible display variant, or NULL if none are accessible.
+   *   Either the first accessible display variant, or NULL if none are
+   *   accessible.
    */
   public function selectDisplayVariant();
 
@@ -53,6 +56,6 @@ interface PageExecutableInterface {
    *
    * @return $this
    */
-  public function addContext($name, $value);
+  public function addContext($name, ContextInterface $value);
 
 }

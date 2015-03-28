@@ -21,7 +21,7 @@ interface PageAwareVariantInterface extends VariantInterface {
    * Only used during runtime.
    *
    * @param \Drupal\page_manager\PageExecutableInterface $executable
-   *  The page executable.
+   *   The page executable.
    *
    * @return $this
    */

@@ -36,7 +36,8 @@ abstract class DisplayVariantFormBase extends FormBase implements DisplayVariant
    * Prepares the display variant used by this form.
    *
    * @param string $display_variant_id
-   *   Either a display variant ID, or the plugin ID used to create a new variant.
+   *   Either a display variant ID, or the plugin ID used to create a new
+   *   variant.
    *
    * @return \Drupal\Core\Display\VariantInterface
    *   The display variant object.

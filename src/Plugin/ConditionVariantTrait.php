@@ -68,7 +68,7 @@ trait ConditionVariantTrait {
    * @return bool
    *   TRUE if access is granted, FALSE otherwise.
    */
-  protected function determineSelectionAccess($contexts) {
+  protected function determineSelectionAccess(array $contexts) {
     $conditions = $this->getSelectionConditions();
     foreach ($conditions as $condition) {
       if ($condition instanceof ContextAwarePluginInterface) {

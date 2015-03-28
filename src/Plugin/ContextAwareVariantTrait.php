@@ -23,7 +23,8 @@ trait ContextAwareVariantTrait {
 
   /**
    * {@inheritdoc}
-   * @see ContextAwareVariantInterface
+   *
+   * @see \Drupal\page_manager\Plugin\ContextAwareVariantInterface
    */
   public function getContexts() {
     return $this->contexts;

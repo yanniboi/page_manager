@@ -34,7 +34,7 @@ abstract class PageFormBase extends EntityForm {
   /**
    * Construct a new PageFormBase.
    *
-   * @param \Drupal\Core\Entity\Query\QueryFactory
+   * @param \Drupal\Core\Entity\Query\QueryFactory $entity_query
    *   The entity query factory.
    */
   public function __construct(QueryFactory $entity_query) {
