@@ -12,6 +12,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Uuid\UuidInterface;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Display\VariantBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -126,6 +127,23 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
    */
   public function build() {
     $build = [];
+
+    // Default the max page age to permanent.
+    $max_page_age = Cache::PERMANENT;
+
+    $page = $this->executable->getPage();
+
+    // Set default page cache keys that include the page and display.
+    $page_cache_keys = [
+      'page_manager_page',
+      // The page ID.
+      $page->id(),
+      // The UUID of this display.
+      // @todo should have an API for this?
+      $this->configuration['uuid'],
+    ];
+    $page_cache_contexts = [];
+
     $contexts = $this->getContexts();
     foreach ($this->getRegionAssignments() as $region => $blocks) {
       if (!$blocks) {
@@ -133,8 +151,8 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
       }
 
       $region_name = Html::getClass("block-region-$region");
-      $build[$region]['#prefix'] = '<div class="' . $region_name . '">';
-      $build[$region]['#suffix'] = '</div>';
+      $build['regions'][$region]['#prefix'] = '<div class="' . $region_name . '">';
+      $build['regions'][$region]['#suffix'] = '</div>';
 
       /** @var $blocks \Drupal\Core\Block\BlockPluginInterface[] */
       $weight = 0;
@@ -142,26 +160,89 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
         if ($block instanceof ContextAwarePluginInterface) {
           $this->contextHandler()->applyContextMapping($block, $contexts);
         }
-        if ($block->access($this->account)) {
-          $block_render_array = [
-            '#theme' => 'block',
-            '#attributes' => [],
-            '#weight' => $weight++,
-            '#configuration' => $block->getConfiguration(),
-            '#plugin_id' => $block->getPluginId(),
-            '#base_plugin_id' => $block->getBaseId(),
-            '#derivative_plugin_id' => $block->getDerivativeId(),
-          ];
-          if (!empty($block_render_array['#configuration']['label'])) {
-            $block_render_array['#configuration']['label'] = SafeMarkup::checkPlain($block_render_array['#configuration']['label']);
-          }
-          $block_render_array['content'] = $block->build();
-
-          $build[$region][$block_id] = $block_render_array;
+        if (!$block->access($this->account)) {
+          continue;
         }
+
+        $max_age = $block->getCacheMaxAge();
+
+        $block_build = [
+          '#theme' => 'block',
+          '#attributes' => [],
+          '#weight' => $weight++,
+          '#configuration' => $block->getConfiguration(),
+          '#plugin_id' => $block->getPluginId(),
+          '#base_plugin_id' => $block->getBaseId(),
+          '#derivative_plugin_id' => $block->getDerivativeId(),
+          '#block_plugin' => $block,
+          '#pre_render' => [[$this, 'buildBlock']],
+          '#cache' => [
+            'keys' => ['page_manager_page', $page->id(), 'block', $block_id],
+            // Each block needs cache tags of the page and the block plugin, as
+            // only the page is a config entity that will trigger cache tag
+            // invalidations in case of block configuration changes.
+            'tags' => Cache::mergeTags($page->getCacheTags(), $block->getCacheTags()),
+            'contexts' => $block->getCacheContexts(),
+            'max-age' => $max_age,
+          ],
+        ];
+        // Build the cache key and a list of all contexts for the whole page.
+        $page_cache_keys[] = $block_id;
+        $page_cache_contexts = Cache::mergeContexts($page_cache_contexts, $block_build['#cache']['contexts']);
+
+        if (!empty($block_build['#configuration']['label'])) {
+          $block_build['#configuration']['label'] = SafeMarkup::checkPlain($block_build['#configuration']['label']);
+        }
+
+        // Update the page max age, set it to the lowest max age of all blocks.
+        $max_page_age = Cache::mergeMaxAges($max_age, $max_page_age);
+        $build['regions'][$region][$block_id] = $block_build;
       }
     }
+
     $build['#title'] = $this->renderPageTitle($this->configuration['page_title']);
+
+    if ($max_page_age !== 0) {
+      // If all blocks of this page can be cached, then the max page age is not
+      // 0. In this case, we additionally cache the whole page, so we need
+      // to fetch fewer caches. Also explicitly provide the cache contexts,
+      // additional contexts might still bubble up from the block content, but
+      // if not, then we save a cache redirection.
+      // We don't have to set those values in case we can't cache all blocks,
+      // as they will bubble up from the blocks.
+      $build['regions']['#cache'] = [
+        'keys' => $page_cache_keys,
+        'contexts' => $page_cache_contexts,
+        'max-age' => $max_page_age,
+      ];
+    }
+
+    return $build;
+  }
+
+  /**
+   * #pre_render callback for building a block.
+   *
+   * Renders the content using the provided block plugin, if there is no
+   * content, aborts rendering, and makes sure the block won't be rendered.
+   */
+  public function buildBlock($build) {
+    $content = $build['#block_plugin']->build();
+    // Remove the block plugin from the render array.
+    unset($build['#block_plugin']);
+    if (!empty($content)) {
+      $build['content'] = $content;
+    }
+    else {
+      // Abort rendering: render as the empty string and ensure this block is
+      // render cached, so we can avoid the work of having to repeatedly
+      // determine whether the block is empty. E.g. modifying or adding entities
+      // could cause the block to no longer be empty.
+      $build = [
+        '#markup' => '',
+        '#cache' => $build['#cache'],
+      ];
+    }
     return $build;
   }
 
