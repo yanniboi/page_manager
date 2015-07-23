@@ -17,6 +17,7 @@ use Drupal\Core\Form\FormState;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\page_manager\PageExecutable;
+use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\BlockPluginCollection;
 use Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant;
 use Drupal\Tests\UnitTestCase;
@@ -139,7 +140,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->setMethods(array('getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'))
       ->getMock();
 
-    $page = $this->getMock('\Drupal\page_manager\PageInterface');
+    $page = $this->getMock(PageInterface::class);
     $page->expects($this->atLeastOnce())
       ->method('id')
       ->willReturn('page_id');
@@ -287,7 +288,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->setMethods(array('getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'))
       ->getMock();
 
-    $page = $this->getMock('\Drupal\page_manager\PageInterface');
+    $page = $this->getMock(PageInterface::class);
     $page->expects($this->atLeastOnce())
       ->method('id')
       ->willReturn('page_id');
