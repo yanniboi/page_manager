@@ -29,7 +29,7 @@ class BlockVariantTraitTest extends UnitTestCase {
    * @dataProvider providerTestGetRegionAssignments
    */
   public function testGetRegionAssignments($expected, $blocks = []) {
-    $block_collection = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginCollection')
+    $block_collection = $this->getMockBuilder(BlockPluginCollection::class)
       ->disableOriginalConstructor()
       ->getMock();
     $block_collection->expects($this->once())
@@ -97,7 +97,7 @@ class TestBlockVariantTrait {
   protected $uuidGenerator;
 
   /**
-   * @param \Drupal\page_manager\Plugin\BlockPluginCollection $block_plugin_collection
+   * @param BlockPluginCollection $block_plugin_collection
    *
    * @return $this
    */

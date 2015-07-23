@@ -8,11 +8,15 @@
 namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\Display\VariantInterface;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\PageExecutable;
+use Drupal\page_manager\PageInterface;
+use Drupal\page_manager\Plugin\PageAwareVariantInterface;
 use Drupal\Tests\UnitTestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Tests the PageExecutable.
@@ -40,7 +44,7 @@ class PageExecutableTest extends UnitTestCase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->page = $this->getMock('Drupal\page_manager\PageInterface');
+    $this->page = $this->getMock(PageInterface::class);
     $this->exectuable = new PageExecutable($this->page);
   }
 
@@ -55,19 +59,19 @@ class PageExecutableTest extends UnitTestCase {
    * @covers ::selectDisplayVariant
    */
   public function testSelectDisplayVariant() {
-    $event_dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+    $event_dispatcher = $this->getMock(EventDispatcherInterface::class);
     $container = new ContainerBuilder();
     $container->set('event_dispatcher', $event_dispatcher);
     \Drupal::setContainer($container);
 
-    $display_variant1 = $this->getMock('Drupal\Core\Display\VariantInterface');
+    $display_variant1 = $this->getMock(VariantInterface::class);
     $display_variant1->expects($this->once())
       ->method('access')
       ->will($this->returnValue(FALSE));
     $display_variant1->expects($this->never())
       ->method('setExecutable');
 
-    $display_variant2 = $this->getMock('Drupal\page_manager\Plugin\PageAwareVariantInterface');
+    $display_variant2 = $this->getMock(PageAwareVariantInterface::class);
     $display_variant2->expects($this->once())
       ->method('access')
       ->will($this->returnValue(TRUE));
@@ -100,7 +104,7 @@ class PageExecutableTest extends UnitTestCase {
    */
   public function testGetContexts() {
     $context = new Context(new ContextDefinition('bar'));
-    $event_dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+    $event_dispatcher = $this->getMock(EventDispatcherInterface::class);
     $event_dispatcher->expects($this->once())
       ->method('dispatch')
       ->will($this->returnCallback(function ($event_name, PageManagerContextEvent $event) use ($context) {

@@ -7,7 +7,10 @@
 
 namespace Drupal\Tests\page_manager\Unit;
 
+use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
+use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Routing\RouteBuildEvent;
+use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Routing\PageManagerRoutes;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\Routing\Route;
@@ -49,8 +52,8 @@ class PageManagerRoutesTest extends UnitTestCase {
    * @covers ::__construct
    */
   protected function setUp() {
-    $this->entityManager = $this->getMock('Drupal\Core\Entity\EntityManagerInterface');
-    $this->pageStorage = $this->getMock('Drupal\Core\Config\Entity\ConfigEntityStorageInterface');
+    $this->entityManager = $this->getMock(EntityManagerInterface::class);
+    $this->pageStorage = $this->getMock(ConfigEntityStorageInterface::class);
     $this->entityManager->expects($this->any())
       ->method('getStorage')
       ->with('page')
@@ -65,7 +68,7 @@ class PageManagerRoutesTest extends UnitTestCase {
    */
   public function testAlterRoutesWithFallback() {
     // Set up the fallback page.
-    $page = $this->getMock('Drupal\page_manager\PageInterface');
+    $page = $this->getMock(PageInterface::class);
     $page->expects($this->once())
       ->method('status')
       ->will($this->returnValue(TRUE));
@@ -95,7 +98,7 @@ class PageManagerRoutesTest extends UnitTestCase {
    */
   public function testAlterRoutesWithStatus() {
     // Set up a valid page.
-    $page1 = $this->getMock('Drupal\page_manager\PageInterface');
+    $page1 = $this->getMock(PageInterface::class);
     $page1->expects($this->once())
       ->method('status')
       ->will($this->returnValue(TRUE));
@@ -111,7 +114,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $pages['page1'] = $page1;
 
     // Set up a disabled page.
-    $page2 = $this->getMock('Drupal\page_manager\PageInterface');
+    $page2 = $this->getMock(PageInterface::class);
     $page2->expects($this->once())
       ->method('status')
       ->will($this->returnValue(FALSE));
@@ -155,7 +158,7 @@ class PageManagerRoutesTest extends UnitTestCase {
    */
   public function testAlterRoutesOverrideExisting() {
     // Set up a page with the same path as an existing route.
-    $page = $this->getMock('Drupal\page_manager\PageInterface');
+    $page = $this->getMock(PageInterface::class);
     $page->expects($this->once())
       ->method('status')
       ->will($this->returnValue(TRUE));

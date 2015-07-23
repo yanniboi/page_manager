@@ -7,8 +7,10 @@
 
 namespace Drupal\Tests\page_manager\Unit;
 
+use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\Display\VariantInterface;
 use Drupal\page_manager\Plugin\VariantAwareTrait;
 use Drupal\page_manager\Plugin\VariantCollection;
 use Drupal\Tests\UnitTestCase;
@@ -33,7 +35,7 @@ class VariantAwareTraitTest extends UnitTestCase {
   protected function setUp() {
     parent::setUp();
     $container = new ContainerBuilder();
-    $this->manager = $this->getMock('Drupal\Component\Plugin\PluginManagerInterface');
+    $this->manager = $this->getMock(PluginManagerInterface::class);
     $container->set('plugin.manager.display_variant', $this->manager);
     \Drupal::setContainer($container);
   }
@@ -47,7 +49,7 @@ class VariantAwareTraitTest extends UnitTestCase {
       ->method('createInstance');
 
     $variants = $trait_object->getVariants();
-    $this->assertInstanceOf('Drupal\page_manager\Plugin\VariantCollection', $variants);
+    $this->assertInstanceOf(VariantCollection::class, $variants);
     $this->assertSame(0, count($variants));
   }
 
@@ -60,7 +62,7 @@ class VariantAwareTraitTest extends UnitTestCase {
       'foo' => ['id' => 'foo_plugin'],
       'bar' => ['id' => 'bar_plugin'],
     ];
-    $plugin = $this->getMock('Drupal\Core\Display\VariantInterface');
+    $plugin = $this->getMock(VariantInterface::class);
     $map = [];
     foreach ($config as $value) {
       $map[] = [$value['id'], $value, $plugin];
@@ -71,7 +73,7 @@ class VariantAwareTraitTest extends UnitTestCase {
     $trait_object->setVariantConfig($config);
 
     $variants = $trait_object->getVariants();
-    $this->assertInstanceOf('Drupal\page_manager\Plugin\VariantCollection', $variants);
+    $this->assertInstanceOf(VariantCollection::class, $variants);
     $this->assertSame(2, count($variants));
     return $variants;
   }
@@ -93,14 +95,14 @@ class VariantAwareTraitTest extends UnitTestCase {
     $uuid = 'test-uuid';
     $expected_config = $config + ['uuid' => $uuid];
 
-    $uuid_generator = $this->getMock('Drupal\Component\Uuid\UuidInterface');
+    $uuid_generator = $this->getMock(UuidInterface::class);
     $uuid_generator->expects($this->once())
       ->method('generate')
       ->will($this->returnValue($uuid));
     $trait_object = new TestVariantAwareTrait();
     $trait_object->setUuidGenerator($uuid_generator);
 
-    $plugin = $this->getMock('Drupal\Core\Display\VariantInterface');
+    $plugin = $this->getMock(VariantInterface::class);
     $plugin->expects($this->once())
       ->method('getConfiguration')
       ->will($this->returnValue($expected_config));

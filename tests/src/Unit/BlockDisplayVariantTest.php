@@ -7,12 +7,18 @@
 
 namespace Drupal\Tests\page_manager\Unit;
 
-use Drupal\Core\Access\AccessResult;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\Context\CacheContextsManager;
+use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormState;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Utility\Token;
 use Drupal\page_manager\PageExecutable;
+use Drupal\page_manager\Plugin\BlockPluginCollection;
+use Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -31,7 +37,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
    * @covers ::access
    */
   public function testAccess() {
-    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
+    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
       ->disableOriginalConstructor()
       ->setMethods(['determineSelectionAccess'])
       ->getMock();
@@ -40,7 +46,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->willReturn(FALSE);
     $this->assertSame(FALSE, $display_variant->access());
 
-    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
+    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
       ->disableOriginalConstructor()
       ->setMethods(['determineSelectionAccess'])
       ->getMock();
@@ -58,13 +64,13 @@ class BlockDisplayVariantTest extends UnitTestCase {
   public function testBuildNoCache() {
     $container = new ContainerBuilder();
     $cache_contexts = $this
-      ->getMockBuilder('Drupal\Core\Cache\Context\CacheContextsManager')
+      ->getMockBuilder(CacheContextsManager::class)
       ->disableOriginalConstructor()
       ->getMock();
     $container->set('cache_contexts_manager', $cache_contexts);
     \Drupal::setContainer($container);
 
-    $block1 = $this->getMock('Drupal\Core\Block\BlockPluginInterface');
+    $block1 = $this->getMock(BlockPluginInterface::class);
     $block1->expects($this->once())
       ->method('access')
       ->will($this->returnValue(TRUE));
@@ -85,7 +91,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
     $block1->expects($this->once())
       ->method('getDerivativeId')
       ->will($this->returnValue('block_derivative_plugin_id'));
-    $block2 = $this->getMock('Drupal\Tests\page_manager\Unit\TestContextAwareBlockPluginInterface');
+    $block2 = $this->getMock(TestContextAwareBlockPluginInterface::class);
     $block2->expects($this->once())
       ->method('access')
       ->will($this->returnValue(FALSE));
@@ -111,24 +117,24 @@ class BlockDisplayVariantTest extends UnitTestCase {
         'block2' => $block2,
       ],
     ];
-    $block_collection = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginCollection')
+    $block_collection = $this->getMockBuilder(BlockPluginCollection::class)
       ->disableOriginalConstructor()
       ->getMock();
     $block_collection->expects($this->once())
       ->method('getAllByRegion')
       ->will($this->returnValue($blocks));
 
-    $context_handler = $this->getMock('Drupal\Core\Plugin\Context\ContextHandlerInterface');
+    $context_handler = $this->getMock(ContextHandlerInterface::class);
     $context_handler->expects($this->once())
       ->method('applyContextMapping')
       ->with($block2, []);
-    $account = $this->getMock('Drupal\Core\Session\AccountInterface');
-    $uuid_generator = $this->getMock('Drupal\Component\Uuid\UuidInterface');
+    $account = $this->getMock(AccountInterface::class);
+    $uuid_generator = $this->getMock(UuidInterface::class);
     $page_title = 'Page title';
-    $token = $this->getMockBuilder('Drupal\Core\Utility\Token')
+    $token = $this->getMockBuilder(Token::class)
       ->disableOriginalConstructor()
       ->getMock();
-    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
+    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
       ->setConstructorArgs([['page_title' => $page_title], 'test', array(), $context_handler, $account, $uuid_generator, $token])
       ->setMethods(array('getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'))
       ->getMock();
@@ -209,13 +215,13 @@ class BlockDisplayVariantTest extends UnitTestCase {
   public function testBuildCache() {
     $container = new ContainerBuilder();
     $cache_contexts = $this
-      ->getMockBuilder('Drupal\Core\Cache\Context\CacheContextsManager')
+      ->getMockBuilder(CacheContextsManager::class)
       ->disableOriginalConstructor()
       ->getMock();
     $container->set('cache_contexts_manager', $cache_contexts);
     \Drupal::setContainer($container);
 
-    $block1 = $this->getMock('Drupal\Core\Block\BlockPluginInterface');
+    $block1 = $this->getMock(BlockPluginInterface::class);
     $block1->expects($this->once())
       ->method('access')
       ->will($this->returnValue(TRUE));
@@ -231,7 +237,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
     $block1->expects($this->once())
       ->method('getDerivativeId')
       ->will($this->returnValue('block_derivative_plugin_id'));
-    $block2 = $this->getMock('Drupal\Tests\page_manager\Unit\TestContextAwareBlockPluginInterface');
+    $block2 = $this->getMock(TestContextAwareBlockPluginInterface::class);
     $block2->expects($this->once())
       ->method('access')
       ->will($this->returnValue(TRUE));
@@ -259,24 +265,24 @@ class BlockDisplayVariantTest extends UnitTestCase {
         'block2' => $block2,
       ],
     ];
-    $block_collection = $this->getMockBuilder('Drupal\page_manager\Plugin\BlockPluginCollection')
+    $block_collection = $this->getMockBuilder(BlockPluginCollection::class)
       ->disableOriginalConstructor()
       ->getMock();
     $block_collection->expects($this->once())
       ->method('getAllByRegion')
       ->will($this->returnValue($blocks));
 
-    $context_handler = $this->getMock('Drupal\Core\Plugin\Context\ContextHandlerInterface');
+    $context_handler = $this->getMock(ContextHandlerInterface::class);
     $context_handler->expects($this->once())
       ->method('applyContextMapping')
       ->with($block2, []);
-    $account = $this->getMock('Drupal\Core\Session\AccountInterface');
-    $uuid_generator = $this->getMock('Drupal\Component\Uuid\UuidInterface');
+    $account = $this->getMock(AccountInterface::class);
+    $uuid_generator = $this->getMock(UuidInterface::class);
     $page_title = 'Page title';
-    $token = $this->getMockBuilder('Drupal\Core\Utility\Token')
+    $token = $this->getMockBuilder(Token::class)
       ->disableOriginalConstructor()
       ->getMock();
-    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
+    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
       ->setConstructorArgs([['page_title' => $page_title, 'uuid' => 'UUID'], 'test', [], $context_handler, $account, $uuid_generator, $token])
       ->setMethods(array('getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'))
       ->getMock();
@@ -345,7 +351,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
    * @dataProvider providerTestSubmitConfigurationForm
    */
   public function testSubmitConfigurationForm($values, $update_block_count) {
-    $display_variant = $this->getMockBuilder('Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant')
+    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
       ->disableOriginalConstructor()
       ->setMethods(['updateBlock'])
       ->getMock();

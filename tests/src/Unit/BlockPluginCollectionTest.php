@@ -7,6 +7,8 @@
 
 namespace Drupal\Tests\page_manager\Unit;
 
+use Drupal\Core\Block\BlockManagerInterface;
+use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\page_manager\Plugin\BlockPluginCollection;
 use Drupal\Tests\UnitTestCase;
 
@@ -55,7 +57,7 @@ class BlockPluginCollectionTest extends UnitTestCase {
     $plugins = [];
     $plugin_map = [];
     foreach ($blocks as $block_id => $block) {
-      $plugin = $this->getMock('Drupal\Core\Block\BlockPluginInterface');
+      $plugin = $this->getMock(BlockPluginInterface::class);
       $plugin->expects($this->any())
         ->method('label')
         ->will($this->returnValue($block['label']));
@@ -65,7 +67,7 @@ class BlockPluginCollectionTest extends UnitTestCase {
       $plugins[$block_id] = $plugin;
       $plugin_map[] = [$block_id, $block, $plugin];
     }
-    $block_manager = $this->getMock('Drupal\Core\Block\BlockManagerInterface');
+    $block_manager = $this->getMock(BlockManagerInterface::class);
     $block_manager->expects($this->exactly(4))
       ->method('createInstance')
       ->will($this->returnValueMap($plugin_map));

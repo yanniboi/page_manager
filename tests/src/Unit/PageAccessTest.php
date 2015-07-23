@@ -7,7 +7,13 @@
 
 namespace Drupal\Tests\page_manager\Unit;
 
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Plugin\Context\ContextHandlerInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\page_manager\Entity\PageAccess;
+use Drupal\page_manager\PageExecutableInterface;
+use Drupal\page_manager\PageInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -41,10 +47,10 @@ class PageAccessTest extends UnitTestCase {
    */
   public function setUp() {
     parent::setUp();
-    $this->contextHandler = $this->getMock('Drupal\Core\Plugin\Context\ContextHandlerInterface');
-    $this->entityType = $this->getMock('Drupal\Core\Entity\EntityTypeInterface');
+    $this->contextHandler = $this->getMock(ContextHandlerInterface::class);
+    $this->entityType = $this->getMock(EntityTypeInterface::class);
 
-    $module_handler = $this->getMock('Drupal\Core\Extension\ModuleHandlerInterface');
+    $module_handler = $this->getMock(ModuleHandlerInterface::class);
     $module_handler->expects($this->any())
       ->method('invokeAll')
       ->will($this->returnValue([]));
@@ -57,12 +63,12 @@ class PageAccessTest extends UnitTestCase {
    * @covers ::checkAccess
    */
   public function testAccessView() {
-    $executable = $this->getMock('Drupal\page_manager\PageExecutableInterface');
+    $executable = $this->getMock(PageExecutableInterface::class);
     $executable->expects($this->once())
       ->method('getContexts')
       ->will($this->returnValue([]));
 
-    $page = $this->getMock('Drupal\page_manager\PageInterface');
+    $page = $this->getMock(PageInterface::class);
     $page->expects($this->once())
       ->method('getExecutable')
       ->will($this->returnValue($executable));
@@ -76,7 +82,7 @@ class PageAccessTest extends UnitTestCase {
       ->method('status')
       ->will($this->returnValue(TRUE));
 
-    $account = $this->getMock('Drupal\Core\Session\AccountInterface');
+    $account = $this->getMock(AccountInterface::class);
 
     $this->assertTrue($this->pageAccess->access($page, 'view', NULL, $account));
   }
@@ -85,11 +91,11 @@ class PageAccessTest extends UnitTestCase {
    * @covers ::checkAccess
    */
   public function testAccessViewDisabled() {
-    $page = $this->getMock('Drupal\page_manager\PageInterface');
+    $page = $this->getMock(PageInterface::class);
     $page->expects($this->once())
       ->method('status')
       ->will($this->returnValue(FALSE));
-    $account = $this->getMock('Drupal\Core\Session\AccountInterface');
+    $account = $this->getMock(AccountInterface::class);
 
     $page->expects($this->once())
       ->method('getCacheTags')
@@ -108,7 +114,7 @@ class PageAccessTest extends UnitTestCase {
       ->method('getAdminPermission')
       ->will($this->returnValue('test permission'));
 
-    $page = $this->getMock('Drupal\page_manager\PageInterface');
+    $page = $this->getMock(PageInterface::class);
     $page->expects($this->any())
       ->method('isNew')
       ->will($this->returnValue($is_new));
@@ -123,7 +129,7 @@ class PageAccessTest extends UnitTestCase {
         ->willReturn(['page:1']);
     }
 
-    $account = $this->getMock('Drupal\Core\Session\AccountInterface');
+    $account = $this->getMock(AccountInterface::class);
     $account->expects($this->any())
       ->method('hasPermission')
       ->with('test permission')

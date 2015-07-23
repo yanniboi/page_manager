@@ -8,7 +8,9 @@
 namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\TypedData\TypedDataManager;
 use Drupal\page_manager\Event\PageManagerContextEvent;
+use Drupal\page_manager\PageExecutable;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -43,7 +45,7 @@ abstract class PageContextTestBase extends UnitTestCase {
   protected function setUp() {
     parent::setUp();
 
-    $this->typedDataManager = $this->getMockBuilder('Drupal\Core\TypedData\TypedDataManager')
+    $this->typedDataManager = $this->getMockBuilder(TypedDataManager::class)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -52,7 +54,7 @@ abstract class PageContextTestBase extends UnitTestCase {
     $container->set('typed_data_manager', $this->typedDataManager);
     \Drupal::setContainer($container);
 
-    $this->executable = $this->getMockBuilder('Drupal\page_manager\PageExecutable')
+    $this->executable = $this->getMockBuilder(PageExecutable::class)
       ->disableOriginalConstructor()
       ->setMethods(['getPage', 'addContext'])
       ->getMock();
