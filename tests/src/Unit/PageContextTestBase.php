@@ -45,13 +45,11 @@ abstract class PageContextTestBase extends UnitTestCase {
   protected function setUp() {
     parent::setUp();
 
-    $this->typedDataManager = $this->getMockBuilder(TypedDataManager::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->typedDataManager = $this->prophesize(TypedDataManager::class);
 
     $container = new ContainerBuilder();
     $container->set('string_translation', $this->getStringTranslationStub());
-    $container->set('typed_data_manager', $this->typedDataManager);
+    $container->set('typed_data_manager', $this->typedDataManager->reveal());
     \Drupal::setContainer($container);
 
     $this->executable = $this->getMockBuilder(PageExecutable::class)

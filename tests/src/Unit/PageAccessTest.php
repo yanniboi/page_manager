@@ -15,6 +15,7 @@ use Drupal\page_manager\Entity\PageAccess;
 use Drupal\page_manager\PageExecutableInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Tests\UnitTestCase;
+use Prophecy\Argument;
 
 /**
  * Tests access for Page entities.
@@ -47,61 +48,52 @@ class PageAccessTest extends UnitTestCase {
    */
   public function setUp() {
     parent::setUp();
-    $this->contextHandler = $this->getMock(ContextHandlerInterface::class);
-    $this->entityType = $this->getMock(EntityTypeInterface::class);
+    $this->contextHandler = $this->prophesize(ContextHandlerInterface::class);
+    $this->entityType = $this->prophesize(EntityTypeInterface::class);
 
-    $module_handler = $this->getMock(ModuleHandlerInterface::class);
-    $module_handler->expects($this->any())
-      ->method('invokeAll')
-      ->will($this->returnValue([]));
+    $module_handler = $this->prophesize(ModuleHandlerInterface::class);
+    $module_handler->invokeAll(Argument::cetera())->willReturn([]);
 
-    $this->pageAccess = new PageAccess($this->entityType, $this->contextHandler);
-    $this->pageAccess->setModuleHandler($module_handler);
+    $this->pageAccess = new PageAccess($this->entityType->reveal(), $this->contextHandler->reveal());
+    $this->pageAccess->setModuleHandler($module_handler->reveal());
   }
 
   /**
    * @covers ::checkAccess
    */
   public function testAccessView() {
-    $executable = $this->getMock(PageExecutableInterface::class);
-    $executable->expects($this->once())
-      ->method('getContexts')
-      ->will($this->returnValue([]));
+    $executable = $this->prophesize(PageExecutableInterface::class);
+    $executable->getContexts()->willReturn([]);
 
-    $page = $this->getMock(PageInterface::class);
-    $page->expects($this->once())
-      ->method('getExecutable')
-      ->will($this->returnValue($executable));
-    $page->expects($this->once())
-      ->method('getAccessConditions')
-      ->will($this->returnValue([]));
-    $page->expects($this->once())
-      ->method('getAccessLogic')
-      ->will($this->returnValue('and'));
-    $page->expects($this->once())
-      ->method('status')
-      ->will($this->returnValue(TRUE));
+    $page = $this->prophesize(PageInterface::class);
 
-    $account = $this->getMock(AccountInterface::class);
+    $page->getExecutable()->willReturn($executable->reveal());
+    $page->getAccessConditions()->willReturn([]);
+    $page->getAccessLogic()->willReturn('and');
+    $page->status()->willReturn(TRUE);
 
-    $this->assertTrue($this->pageAccess->access($page, 'view', NULL, $account));
+    $page->uuid()->shouldBeCalled();
+    $page->getEntityTypeId()->shouldBeCalled();
+
+    $account = $this->prophesize(AccountInterface::class);
+
+    $this->assertTrue($this->pageAccess->access($page->reveal(), 'view', NULL, $account->reveal()));
   }
 
   /**
    * @covers ::checkAccess
    */
   public function testAccessViewDisabled() {
-    $page = $this->getMock(PageInterface::class);
-    $page->expects($this->once())
-      ->method('status')
-      ->will($this->returnValue(FALSE));
-    $account = $this->getMock(AccountInterface::class);
+    $page = $this->prophesize(PageInterface::class);
+    $page->status()->willReturn(FALSE);
+    $page->getCacheTags()->willReturn(['page:1']);
 
-    $page->expects($this->once())
-      ->method('getCacheTags')
-      ->willReturn(['page:1']);
+    $page->uuid()->shouldBeCalled();
+    $page->getEntityTypeId()->shouldBeCalled();
 
-    $this->assertFalse($this->pageAccess->access($page, 'view', NULL, $account));
+    $account = $this->prophesize(AccountInterface::class);
+
+    $this->assertFalse($this->pageAccess->access($page->reveal(), 'view', NULL, $account->reveal()));
   }
 
   /**
@@ -110,32 +102,25 @@ class PageAccessTest extends UnitTestCase {
    * @dataProvider providerTestAccessDelete
    */
   public function testAccessDelete($is_new, $is_fallback, $expected) {
-    $this->entityType->expects($this->any())
-      ->method('getAdminPermission')
-      ->will($this->returnValue('test permission'));
+    $this->entityType->getAdminPermission()->willReturn('test permission');
 
-    $page = $this->getMock(PageInterface::class);
-    $page->expects($this->any())
-      ->method('isNew')
-      ->will($this->returnValue($is_new));
-    $page->expects($this->any())
-      ->method('isFallbackPage')
-      ->will($this->returnValue($is_fallback));
+    $page = $this->prophesize(PageInterface::class);
+    $page->isNew()->willReturn($is_new);
+    $page->isFallbackPage()->willReturn($is_fallback);
+
+    $page->uuid()->shouldBeCalled();
+    $page->getEntityTypeId()->shouldBeCalled();
 
     // Ensure that the cache tag is added for the temporary conditions.
     if ($is_new || $is_fallback) {
-      $page->expects($this->once())
-        ->method('getCacheTags')
-        ->willReturn(['page:1']);
+      $page->getCacheTags()->willReturn(['page:1']);
     }
 
-    $account = $this->getMock(AccountInterface::class);
-    $account->expects($this->any())
-      ->method('hasPermission')
-      ->with('test permission')
-      ->will($this->returnValue(TRUE));
+    $account = $this->prophesize(AccountInterface::class);
+    $account->hasPermission('test permission')->willReturn(TRUE);
+    $account->id()->shouldBeCalled();
 
-    $this->assertSame($expected, $this->pageAccess->access($page, 'delete', NULL, $account));
+    $this->assertSame($expected, $this->pageAccess->access($page->reveal(), 'delete', NULL, $account->reveal()));
   }
 
   /**

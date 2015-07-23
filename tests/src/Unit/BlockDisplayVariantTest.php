@@ -64,58 +64,33 @@ class BlockDisplayVariantTest extends UnitTestCase {
    */
   public function testBuildNoCache() {
     $container = new ContainerBuilder();
-    $cache_contexts = $this
-      ->getMockBuilder(CacheContextsManager::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $container->set('cache_contexts_manager', $cache_contexts);
+    $cache_contexts = $this->prophesize(CacheContextsManager::class);
+    $container->set('cache_contexts_manager', $cache_contexts->reveal());
     \Drupal::setContainer($container);
 
-    $block1 = $this->getMock(BlockPluginInterface::class);
-    $block1->expects($this->once())
-      ->method('access')
-      ->will($this->returnValue(TRUE));
-    $block1->expects($this->once())
-      ->method('build')
-      ->will($this->returnValue([
-        '#markup' => 'block1_build_value',
-      ]));
-    $block1->expects($this->once())
-      ->method('getConfiguration')
-      ->will($this->returnValue(['label' => 'Block label']));
-    $block1->expects($this->once())
-      ->method('getPluginId')
-      ->will($this->returnValue('block_plugin_id'));
-    $block1->expects($this->once())
-      ->method('getBaseId')
-      ->will($this->returnValue('block_base_plugin_id'));
-    $block1->expects($this->once())
-      ->method('getDerivativeId')
-      ->will($this->returnValue('block_derivative_plugin_id'));
-    $block2 = $this->getMock(TestContextAwareBlockPluginInterface::class);
-    $block2->expects($this->once())
-      ->method('access')
-      ->will($this->returnValue(FALSE));
-    $block1->expects($this->atLeastOnce())
-      ->method('getCacheTags')
-      ->willReturn(array('block_plugin:block_plugin_id'));
-    $block2->expects($this->never())
-      ->method('getCacheTags')
-      ->willReturn(array('block_plugin:block_plugin_id'));
-    $block1->expects($this->once())
-      ->method('getCacheMaxAge')
-      ->willReturn(0);
-    $block1->expects($this->once())
-      ->method('getCacheContexts')
-      ->willReturn(['url']);
-    $block2->expects($this->never())
-      ->method('getCacheContexts');
-    $block2->expects($this->never())
-      ->method('build');
+    $account = $this->prophesize(AccountInterface::class);
+
+    $block1 = $this->prophesize(BlockPluginInterface::class);
+    $block1->access($account)->willReturn(TRUE);
+    $block1->build()->willReturn(['#markup' => 'block1_build_value']);
+    $block1->getConfiguration()->willReturn(['label' => 'Block label']);
+    $block1->getPluginId()->willReturn('block_plugin_id');
+    $block1->getBaseId()->willReturn('block_base_plugin_id');
+    $block1->getDerivativeId()->willReturn('block_derivative_plugin_id');
+    $block1->getCacheTags()->willReturn(['block_plugin:block_plugin_id']);
+    $block1->getCacheMaxAge()->willReturn(0);
+    $block1->getCacheContexts()->willReturn(['url']);
+
+    $block2 = $this->prophesize()->willImplement(ContextAwarePluginInterface::class)->willImplement(BlockPluginInterface::class);
+    $block2->access($account)->willReturn(FALSE);
+    $block2->getCacheTags()->willReturn([]);
+    $block2->getCacheContexts()->shouldNotBeCalled();
+    $block2->build()->shouldNotBeCalled();
+
     $blocks = [
       'top' => [
-        'block1' => $block1,
-        'block2' => $block2,
+        'block1' => $block1->reveal(),
+        'block2' => $block2->reveal(),
       ],
     ];
     $block_collection = $this->getMockBuilder(BlockPluginCollection::class)
@@ -123,40 +98,34 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->getMock();
     $block_collection->expects($this->once())
       ->method('getAllByRegion')
-      ->will($this->returnValue($blocks));
+      ->willReturn($blocks);
 
-    $context_handler = $this->getMock(ContextHandlerInterface::class);
-    $context_handler->expects($this->once())
-      ->method('applyContextMapping')
-      ->with($block2, []);
-    $account = $this->getMock(AccountInterface::class);
-    $uuid_generator = $this->getMock(UuidInterface::class);
+    $context_handler = $this->prophesize(ContextHandlerInterface::class);
+    $context_handler->applyContextMapping($block2->reveal(), [])->shouldBeCalledTimes(1);
+
+    $uuid_generator = $this->prophesize(UuidInterface::class);
     $page_title = 'Page title';
     $token = $this->getMockBuilder(Token::class)
       ->disableOriginalConstructor()
       ->getMock();
     $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
-      ->setConstructorArgs([['page_title' => $page_title], 'test', array(), $context_handler, $account, $uuid_generator, $token])
-      ->setMethods(array('getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'))
+      ->setConstructorArgs([['page_title' => $page_title], 'test', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token])
+      ->setMethods(['getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'])
       ->getMock();
 
-    $page = $this->getMock(PageInterface::class);
-    $page->expects($this->atLeastOnce())
-      ->method('id')
-      ->willReturn('page_id');
-    $page->expects($this->atLeastOnce())
-      ->method('getCacheTags')
-      ->willReturn(array('page:page_id'));
-    $page_executable = new PageExecutable($page);
+    $page = $this->prophesize(PageInterface::class);
+    $page->id()->willReturn('page_id');
+    $page->getCacheTags()->willReturn(['page:page_id']);
+    $page_executable = new PageExecutable($page->reveal());
     $display_variant->setExecutable($page_executable);
 
     $display_variant->expects($this->once())
       ->method('getBlockCollection')
-      ->will($this->returnValue($block_collection));
+      ->willReturn($block_collection);
     $display_variant->expects($this->once())
       ->method('renderPageTitle')
       ->with($page_title)
-      ->will($this->returnValue($page_title));
+      ->willReturn($page_title);
 
     $expected_build = [
       'regions' => [
@@ -215,55 +184,35 @@ class BlockDisplayVariantTest extends UnitTestCase {
    */
   public function testBuildCache() {
     $container = new ContainerBuilder();
-    $cache_contexts = $this
-      ->getMockBuilder(CacheContextsManager::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $container->set('cache_contexts_manager', $cache_contexts);
+    $cache_contexts = $this->prophesize(CacheContextsManager::class);
+    $container->set('cache_contexts_manager', $cache_contexts->reveal());
     \Drupal::setContainer($container);
 
-    $block1 = $this->getMock(BlockPluginInterface::class);
-    $block1->expects($this->once())
-      ->method('access')
-      ->will($this->returnValue(TRUE));
-    $block1->expects($this->once())
-      ->method('getConfiguration')
-      ->will($this->returnValue(['label' => 'Block label']));
-    $block1->expects($this->once())
-      ->method('getPluginId')
-      ->will($this->returnValue('block_plugin_id'));
-    $block1->expects($this->once())
-      ->method('getBaseId')
-      ->will($this->returnValue('block_base_plugin_id'));
-    $block1->expects($this->once())
-      ->method('getDerivativeId')
-      ->will($this->returnValue('block_derivative_plugin_id'));
-    $block2 = $this->getMock(TestContextAwareBlockPluginInterface::class);
-    $block2->expects($this->once())
-      ->method('access')
-      ->will($this->returnValue(TRUE));
-    $block1->expects($this->once())
-      ->method('getCacheContexts')
-      ->willReturn(['url']);
-    $block2->expects($this->once())
-      ->method('getCacheContexts')
-      ->willReturn([]);
-    $block1->expects($this->once())
-      ->method('getCacheMaxAge')
-      ->willReturn(3600);
-    $block2->expects($this->once())
-      ->method('getCacheMaxAge')
-      ->willReturn(Cache::PERMANENT);
-    $block1->expects($this->atLeastOnce())
-      ->method('getCacheTags')
-      ->willReturn(array('block_plugin1:block_plugin_id'));
-    $block2->expects($this->atLeastOnce())
-      ->method('getCacheTags')
-      ->willReturn(array('block_plugin2:block_plugin_id'));
+    $account = $this->prophesize(AccountInterface::class);
+
+    $block1 = $this->prophesize(BlockPluginInterface::class);
+    $block1->access($account)->willReturn(TRUE);
+    $block1->getConfiguration()->willReturn(['label' => 'Block label']);
+    $block1->getPluginId()->willReturn('block_plugin_id');
+    $block1->getBaseId()->willReturn('block_base_plugin_id');
+    $block1->getDerivativeId()->willReturn('block_derivative_plugin_id');
+    $block1->getCacheTags()->willReturn(['block_plugin1:block_plugin_id']);
+    $block1->getCacheMaxAge()->willReturn(3600);
+    $block1->getCacheContexts()->willReturn(['url']);
+
+    $block2 = $this->prophesize()->willImplement(ContextAwarePluginInterface::class)->willImplement(BlockPluginInterface::class);
+    $block2->access($account)->willReturn(TRUE);
+    $block2->getConfiguration()->willReturn([]);
+    $block2->getPluginId()->willReturn('block_plugin_id');
+    $block2->getBaseId()->willReturn('block_base_plugin_id');
+    $block2->getDerivativeId()->willReturn('block_derivative_plugin_id');
+    $block2->getCacheContexts()->willReturn([]);
+    $block2->getCacheMaxAge()->willReturn(Cache::PERMANENT);
+    $block2->getCacheTags()->willReturn(['block_plugin2:block_plugin_id']);
     $blocks = [
       'top' => [
-        'block1' => $block1,
-        'block2' => $block2,
+        'block1' => $block1->reveal(),
+        'block2' => $block2->reveal(),
       ],
     ];
     $block_collection = $this->getMockBuilder(BlockPluginCollection::class)
@@ -271,40 +220,36 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->getMock();
     $block_collection->expects($this->once())
       ->method('getAllByRegion')
-      ->will($this->returnValue($blocks));
+      ->willReturn($blocks);
 
-    $context_handler = $this->getMock(ContextHandlerInterface::class);
-    $context_handler->expects($this->once())
-      ->method('applyContextMapping')
-      ->with($block2, []);
-    $account = $this->getMock(AccountInterface::class);
-    $uuid_generator = $this->getMock(UuidInterface::class);
+    $context_handler = $this->prophesize(ContextHandlerInterface::class);
+    $context_handler->applyContextMapping($block2->reveal(), [])->shouldBeCalledTimes(1);
+
+    $uuid_generator = $this->prophesize(UuidInterface::class);
     $page_title = 'Page title';
     $token = $this->getMockBuilder(Token::class)
       ->disableOriginalConstructor()
       ->getMock();
     $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
-      ->setConstructorArgs([['page_title' => $page_title, 'uuid' => 'UUID'], 'test', [], $context_handler, $account, $uuid_generator, $token])
-      ->setMethods(array('getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'))
+      ->setConstructorArgs([['page_title' => $page_title, 'uuid' => 'UUID'], 'test', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token])
+      ->setMethods(['getBlockCollection', 'drupalHtmlClass', 'renderPageTitle'])
       ->getMock();
 
-    $page = $this->getMock(PageInterface::class);
-    $page->expects($this->atLeastOnce())
-      ->method('id')
-      ->willReturn('page_id');
-    $page->expects($this->atLeastOnce())
-      ->method('getCacheTags')
-      ->willReturn(array('page:page_id'));
-    $page_executable = new PageExecutable($page);
+    $page = $this->prophesize(PageInterface::class);
+    $page->id()->willReturn('page_id');
+    $page->getCacheTags()
+      ->willReturn(['page:page_id'])
+      ->shouldBeCalled();
+    $page_executable = new PageExecutable($page->reveal());
     $display_variant->setExecutable($page_executable);
 
     $display_variant->expects($this->once())
       ->method('getBlockCollection')
-      ->will($this->returnValue($block_collection));
+      ->willReturn($block_collection);
     $display_variant->expects($this->once())
       ->method('renderPageTitle')
       ->with($page_title)
-      ->will($this->returnValue($page_title));
+      ->willReturn($page_title);
 
     $expected_cache_block1 = [
       'keys' => ['page_manager_page', 'page_id', 'block', 'block1'],
@@ -332,11 +277,10 @@ class BlockDisplayVariantTest extends UnitTestCase {
     $this->assertSame($expected_cache_block2, $build['regions']['top']['block2']['#cache']);
     $this->assertSame($expected_cache_page, $build['regions']['#cache']);
 
-    $block1->expects($this->once())
-      ->method('build')
-      ->will($this->returnValue([
-        '#markup' => 'block1_build_value',
-      ]));
+    $block1->build()->willReturn([
+      '#markup' => 'block1_build_value',
+    ]);
+    $block2->build()->willReturn([]);
 
     $block1_build = $display_variant->buildBlock($build['regions']['top']['block1']);
     $block2_build = $display_variant->buildBlock($build['regions']['top']['block2']);
@@ -393,7 +337,4 @@ class BlockDisplayVariantTest extends UnitTestCase {
     return $data;
   }
 
-}
-
-interface TestContextAwareBlockPluginInterface extends ContextAwarePluginInterface, BlockPluginInterface {
 }
