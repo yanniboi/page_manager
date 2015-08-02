@@ -7,6 +7,8 @@
 
 namespace Drupal\Tests\page_manager\Unit;
 
+use Drupal\Core\Cache\Context\CacheContextsManager;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
@@ -84,9 +86,13 @@ class PageAccessTest extends UnitTestCase {
    * @covers ::checkAccess
    */
   public function testAccessViewDisabled() {
+    $this->setUpCacheContextsManager();
+
     $page = $this->prophesize(PageInterface::class);
     $page->status()->willReturn(FALSE);
     $page->getCacheTags()->willReturn(['page:1']);
+    $page->getCacheContexts()->willReturn([]);
+    $page->getCacheMaxAge()->willReturn(0);
 
     $page->uuid()->shouldBeCalled();
     $page->getEntityTypeId()->shouldBeCalled();
@@ -113,7 +119,11 @@ class PageAccessTest extends UnitTestCase {
 
     // Ensure that the cache tag is added for the temporary conditions.
     if ($is_new || $is_fallback) {
+      $this->setUpCacheContextsManager();
+
       $page->getCacheTags()->willReturn(['page:1']);
+      $page->getCacheContexts()->willReturn([]);
+      $page->getCacheMaxAge()->willReturn(0);
     }
 
     $account = $this->prophesize(AccountInterface::class);
@@ -133,6 +143,17 @@ class PageAccessTest extends UnitTestCase {
     $data[] = [TRUE, TRUE, FALSE];
     $data[] = [FALSE, FALSE, TRUE];
     return $data;
+  }
+
+  /**
+   * Sets up the cache contexts manager in the container.
+   */
+  protected function setUpCacheContextsManager() {
+    $prophecy = $this->prophesize(CacheContextsManager::class);
+    $container = new ContainerBuilder();
+    $container->set('cache_contexts_manager', $prophecy->reveal());
+    \Drupal::setContainer($container);
+    return $this;
   }
 
 }
