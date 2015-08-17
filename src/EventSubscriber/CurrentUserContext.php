@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\EventSubscriber;
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\page_manager\Event\PageManagerContextEvent;
@@ -62,6 +63,9 @@ class CurrentUserContext implements EventSubscriberInterface {
 
     $context = new Context(new ContextDefinition('entity:user', $this->t('Current user')));
     $context->setContextValue($current_user);
+    $cacheability = new CacheableMetadata();
+    $cacheability->setCacheContexts(['user']);
+    $context->addCacheableDependency($cacheability);
     $event->getPageExecutable()->addContext('current_user', $context);
   }
 

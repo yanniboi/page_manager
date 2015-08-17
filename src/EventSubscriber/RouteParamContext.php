@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\EventSubscriber;
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\page_manager\Event\PageManagerContextEvent;
@@ -70,9 +71,12 @@ class RouteParamContext implements EventSubscriberInterface {
         }
 
         $context_name = $this->t('{@name} from route', ['@name' => $route_context_name]);
-        $context = new Context(new ContextDefinition($route_context['type'], $context_name));
+        $context = new Context(new ContextDefinition($route_context['type'], $context_name, FALSE));
         if ($request->attributes->has($route_context_name)) {
           $context->setContextValue($request->attributes->get($route_context_name));
+          $cacheability = new CacheableMetadata();
+          $cacheability->setCacheContexts(['route']);
+          $context->addCacheableDependency($cacheability);
         }
         else {
           // @todo Find a way to add in a fake value for configuration.

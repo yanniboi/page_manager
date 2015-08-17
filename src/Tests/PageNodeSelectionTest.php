@@ -39,6 +39,7 @@ class PageNodeSelectionTest extends WebTestBase {
     // Create two nodes, and view their pages.
     $node1 = $this->drupalCreateNode(['type' => 'page']);
     $node2 = $this->drupalCreateNode(['type' => 'article']);
+    $node3 = $this->drupalCreateNode(['type' => 'article']);
     $this->drupalGet('node/' . $node1->id());
     $this->assertResponse(200);
     $this->assertText($node1->label());
@@ -104,6 +105,10 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->assertResponse(200);
     $this->assertTitle($node2->label() . ' | Drupal');
     $this->assertText($node2->body->value);
+
+    // Test cacheability metadata.
+    $this->drupalGet('node/' . $node3->id());
+    $this->assertNoText($node2->label());
 
   }
 
