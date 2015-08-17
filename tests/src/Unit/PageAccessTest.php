@@ -8,6 +8,7 @@
 namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\Cache\Context\CacheContextsManager;
+use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -58,6 +59,11 @@ class PageAccessTest extends UnitTestCase {
 
     $this->pageAccess = new PageAccess($this->entityType->reveal(), $this->contextHandler->reveal());
     $this->pageAccess->setModuleHandler($module_handler->reveal());
+
+    $cache_contexts_manager = $this->prophesize(CacheContextsManager::class);
+    $container = new Container();
+    $container->set('cache_contexts_manager', $cache_contexts_manager->reveal());
+    \Drupal::setContainer($container);
   }
 
   /**
