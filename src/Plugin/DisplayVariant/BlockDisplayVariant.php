@@ -13,11 +13,13 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Display\VariantBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Utility\Token;
@@ -230,7 +232,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
     $content = $build['#block_plugin']->build();
     // Remove the block plugin from the render array.
     unset($build['#block_plugin']);
-    if (!empty($content)) {
+    if ($content !== NULL && !Element::isEmpty($content)) {
       $build['content'] = $content;
     }
     else {
@@ -242,6 +244,15 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
         '#markup' => '',
         '#cache' => $build['#cache'],
       ];
+    }
+    // If $content is not empty, then it contains cacheability metadata, and
+    // we must merge it with the existing cacheability metadata. This allows
+    // blocks to be empty, yet still bubble cacheability metadata, to indicate
+    // why they are empty.
+    if (!empty($content)) {
+      CacheableMetadata::createFromRenderArray($build)
+        ->merge(CacheableMetadata::createFromRenderArray($content))
+        ->applyTo($build);
     }
     return $build;
   }
