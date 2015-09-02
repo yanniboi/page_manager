@@ -194,9 +194,6 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
         // the page, which the page must respect as well.
         $cacheability->addCacheableDependency($block);
 
-        if (!empty($block_build['#configuration']['label'])) {
-          $block_build['#configuration']['label'] = SafeMarkup::checkPlain($block_build['#configuration']['label']);
-        }
         $build['regions'][$region][$block_id] = $block_build;
       }
     }

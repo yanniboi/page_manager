@@ -9,7 +9,6 @@ namespace Drupal\page_manager\Controller;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
@@ -317,7 +316,7 @@ class PageManagerController extends ControllerBase {
     $available_plugins = $this->blockManager->getDefinitionsForContexts($page->getContexts());
     foreach ($available_plugins as $plugin_id => $plugin_definition) {
       // Make a section for each region.
-      $category = SafeMarkup::checkPlain($plugin_definition['category']);
+      $category = $plugin_definition['category'];
       $category_key = 'category-' . $category;
       if (!isset($build[$category_key])) {
         $build[$category_key] = [
