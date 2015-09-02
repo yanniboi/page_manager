@@ -27,7 +27,7 @@ class PageManagerAdminTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['page_manager', 'page_manager_test'];
+  public static $modules = ['block', 'page_manager', 'page_manager_test'];
 
   /**
    * {@inheritdoc}
@@ -35,6 +35,8 @@ class PageManagerAdminTest extends WebTestBase {
   protected function setUp() {
     parent::setUp();
 
+    $this->drupalPlaceBlock('local_tasks_block');
+    $this->drupalPlaceBlock('local_actions_block');
     \Drupal::service('theme_handler')->install(['bartik', 'classy']);
     $this->config('system.theme')->set('admin', 'classy')->save();
 
