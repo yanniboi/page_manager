@@ -156,15 +156,17 @@ class PageManagerRoutesTest extends UnitTestCase {
    * Tests overriding an existing route.
    *
    * @covers ::alterRoutes
+   *
+   * @dataProvider providerTestAlterRoutesOverrideExisting
    */
-  public function testAlterRoutesOverrideExisting() {
+  public function testAlterRoutesOverrideExisting($page_path, $existing_route_path) {
     // Set up a page with the same path as an existing route.
     $page = $this->prophesize(PageInterface::class);
     $page->status()
       ->willReturn(TRUE)
       ->shouldBeCalledTimes(1);
     $page->getPath()
-      ->willReturn('/test_route')
+      ->willReturn($page_path)
       ->shouldBeCalledTimes(1);
     $page->isFallbackPage()->willReturn(FALSE);
     $page->label()->willReturn(NULL);
@@ -175,7 +177,7 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->shouldBeCalledTimes(1);
 
     $collection = new RouteCollection();
-    $collection->add('test_route', new Route('test_route', [], [], ['parameters' => ['foo' => 'bar']]));
+    $collection->add('test_route', new Route($existing_route_path, [], [], ['parameters' => ['foo' => 'bar']]));
     $route_event = new RouteBuildEvent($collection);
     $this->routeSubscriber->onAlterRoutes($route_event);
 
@@ -202,7 +204,15 @@ class PageManagerRoutesTest extends UnitTestCase {
       ],
       '_admin_route' => FALSE,
     ];
-    $this->assertMatchingRoute($route, '/test_route', $expected_defaults, $expected_requirements, $expected_options);
+    $this->assertMatchingRoute($route, $existing_route_path, $expected_defaults, $expected_requirements, $expected_options);
+  }
+
+  public function providerTestAlterRoutesOverrideExisting() {
+    $data = [];
+    $data['no_slug'] = ['/test_route', '/test_route'];
+    $data['slug'] = ['/test_route/{test_route}', '/test_route/{test_route}'];
+    $data['placeholder'] = ['/test_route/%', '/test_route/{test_route}'];
+    return $data;
   }
 
   /**

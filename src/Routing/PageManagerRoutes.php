@@ -63,9 +63,10 @@ class PageManagerRoutes extends RouteSubscriberBase {
       foreach ($collection->all() as $name => $collection_route) {
         // Find all paths which match the path of the current display.
         $route_path = RouteCompiler::getPathWithoutDefaults($collection_route);
-        $route_path = RouteCompiler::getPatternOutline($route_path);
+        $route_path_outline = RouteCompiler::getPatternOutline($route_path);
 
-        if ($path == $route_path) {
+        // Match either the path or the outline, e.g., '/foo/{foo}' or '/foo/%'.
+        if ($path === $route_path || $path === $route_path_outline) {
           // Adjust the path to translate %placeholders to {slugs}.
           $path = $collection_route->getPath();
 
