@@ -37,6 +37,7 @@ class PageManagerAdminTest extends WebTestBase {
 
     $this->drupalPlaceBlock('local_tasks_block');
     $this->drupalPlaceBlock('local_actions_block');
+    $this->drupalPlaceBlock('system_branding_block');
     \Drupal::service('theme_handler')->install(['bartik', 'classy']);
     $this->config('system.theme')->set('admin', 'classy')->save();
 
