@@ -7,6 +7,7 @@
 
 namespace Drupal\page_manager\Tests;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -46,6 +47,7 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->assertTitle($node1->label() . ' | Drupal');
     $this->drupalGet('node/' . $node2->id());
     $this->assertResponse(200);
+    $this->assertCacheTag('page_manager_route_name:entity.node.canonical');
     $this->assertText($node2->label());
     $this->assertTitle($node2->label() . ' | Drupal');
 
@@ -59,6 +61,7 @@ class PageNodeSelectionTest extends WebTestBase {
     // Their pages should now use the default 404 display variant.
     $this->drupalGet('node/' . $node1->id());
     $this->assertResponse(404);
+    $this->assertCacheTag('page_manager_route_name:entity.node.canonical');
     $this->assertNoText($node1->label());
     $this->drupalGet('node/' . $node2->id());
     $this->assertResponse(404);

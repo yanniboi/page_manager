@@ -7,6 +7,7 @@
 
 namespace Drupal\Tests\page_manager\Unit;
 
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Routing\RouteBuildEvent;
@@ -40,6 +41,13 @@ class PageManagerRoutesTest extends UnitTestCase {
   protected $pageStorage;
 
   /**
+   * The cache tags invalidator.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface|\Prophecy\Prophecy\ProphecyInterface
+   */
+  protected $cacheTagsInvalidator;
+
+  /**
    * The tested page route subscriber.
    *
    * @var \Drupal\page_manager\Routing\PageManagerRoutes
@@ -57,8 +65,9 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->entityManager = $this->prophesize(EntityManagerInterface::class);
     $this->entityManager->getStorage('page')
       ->willReturn($this->pageStorage);
+    $this->cacheTagsInvalidator = $this->prophesize(CacheTagsInvalidatorInterface::class);
 
-    $this->routeSubscriber = new PageManagerRoutes($this->entityManager->reveal());
+    $this->routeSubscriber = new PageManagerRoutes($this->entityManager->reveal(), $this->cacheTagsInvalidator->reveal());
   }
 
   /**
@@ -160,6 +169,7 @@ class PageManagerRoutesTest extends UnitTestCase {
    * @dataProvider providerTestAlterRoutesOverrideExisting
    */
   public function testAlterRoutesOverrideExisting($page_path, $existing_route_path) {
+    $route_name = 'test_route';
     // Set up a page with the same path as an existing route.
     $page = $this->prophesize(PageInterface::class);
     $page->status()
@@ -176,8 +186,10 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->willReturn(['page1' => $page->reveal()])
       ->shouldBeCalledTimes(1);
 
+    $this->cacheTagsInvalidator->invalidateTags(["page_manager_route_name:$route_name"])->shouldBeCalledTimes(1);
+
     $collection = new RouteCollection();
-    $collection->add('test_route', new Route($existing_route_path, [], [], ['parameters' => ['foo' => 'bar']]));
+    $collection->add($route_name, new Route($existing_route_path, [], [], ['parameters' => ['foo' => 'bar']]));
     $route_event = new RouteBuildEvent($collection);
     $this->routeSubscriber->onAlterRoutes($route_event);
 
@@ -185,7 +197,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->assertSame(1, $collection->count());
     $this->assertNull($collection->get('page_manager.page_view_page1'));
 
-    $route = $collection->get('test_route');
+    $route = $collection->get($route_name);
     $expected_defaults = [
       '_entity_view' => 'page_manager_page',
       'page_manager_page' => 'page1',
