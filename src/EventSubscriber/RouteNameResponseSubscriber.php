@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\EventSubscriber;
 
 use Drupal\Core\Cache\CacheableResponseInterface;
-use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Routing\StackedRouteMatchInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class RouteNameResponseSubscriber implements EventSubscriberInterface {
 
   /**
-   * The current route match.
+   * The master route match.
    *
    * @var \Drupal\Core\Routing\RouteMatchInterface
    */
@@ -28,11 +28,11 @@ class RouteNameResponseSubscriber implements EventSubscriberInterface {
   /**
    * Constructs a new RouteNameResponseSubscriber.
    *
-   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   * @param \Drupal\Core\Routing\StackedRouteMatchInterface $route_match
    *   The current route match.
    */
-  public function __construct(RouteMatchInterface $route_match) {
-    $this->routeMatch = $route_match;
+  public function __construct(StackedRouteMatchInterface $route_match) {
+    $this->routeMatch = $route_match->getMasterRouteMatch();
   }
 
   /**

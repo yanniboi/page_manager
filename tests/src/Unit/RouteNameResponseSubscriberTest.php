@@ -9,6 +9,7 @@ namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\Cache\CacheableResponse;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Routing\StackedRouteMatchInterface;
 use Drupal\page_manager\EventSubscriber\RouteNameResponseSubscriber;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,10 +31,12 @@ class RouteNameResponseSubscriberTest extends UnitTestCase {
     $event = $this->buildEvent($response);
 
     $route_name = 'the_route_name';
-    $route_match = $this->prophesize(RouteMatchInterface::class);
-    $route_match->getRouteName()->willReturn($route_name);
+    $master_route_match = $this->prophesize(RouteMatchInterface::class);
+    $master_route_match->getRouteName()->willReturn($route_name);
+    $current_route_match = $this->prophesize(StackedRouteMatchInterface::class);
+    $current_route_match->getMasterRouteMatch()->willReturn($master_route_match->reveal());
 
-    $subscriber = new RouteNameResponseSubscriber($route_match->reveal());
+    $subscriber = new RouteNameResponseSubscriber($current_route_match->reveal());
     $subscriber->onResponse($event);
 
     $expected = ["page_manager_route_name:$route_name"];
@@ -47,10 +50,12 @@ class RouteNameResponseSubscriberTest extends UnitTestCase {
     $response = new Response('');
     $event = $this->buildEvent($response);
 
-    $route_match = $this->prophesize(RouteMatchInterface::class);
-    $route_match->getRouteName()->shouldNotBeCalled();
+    $master_route_match = $this->prophesize(RouteMatchInterface::class);
+    $master_route_match->getRouteName()->shouldNotBeCalled();
+    $current_route_match = $this->prophesize(StackedRouteMatchInterface::class);
+    $current_route_match->getMasterRouteMatch()->willReturn($master_route_match->reveal());
 
-    $subscriber = new RouteNameResponseSubscriber($route_match->reveal());
+    $subscriber = new RouteNameResponseSubscriber($current_route_match->reveal());
     $subscriber->onResponse($event);
   }
 
