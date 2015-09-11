@@ -80,11 +80,11 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page = $this->prophesize(PageInterface::class);
     $page->status()
       ->willReturn(TRUE)
-      ->shouldBeCalledTimes(1);
-    $page->getPath()->shouldNotBeCalled();
+      ->shouldBeCalled();
+    $page->getPath()->willReturn('/page');
     $page->isFallbackPage()
       ->willReturn(TRUE)
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $pages['page1'] = $page->reveal();
 
     $this->pageStorage->loadMultiple()
@@ -109,25 +109,27 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page1 = $this->prophesize(PageInterface::class);
     $page1->status()
       ->willReturn(TRUE)
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $page1->getPath()
       ->willReturn('/page1')
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $page1->isFallbackPage()
       ->willReturn(FALSE);
     $page1->label()
       ->willReturn('Page label')
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $page1->usesAdminTheme()
       ->willReturn(TRUE)
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $pages['page1'] = $page1->reveal();
 
     // Set up a disabled page.
     $page2 = $this->prophesize(PageInterface::class);
     $page2->status()
       ->willReturn(FALSE)
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
+    $page2->isFallbackPage()->willReturn(FALSE);
+    $page2->getPath()->willReturn('/page2');
     $pages['page2'] = $page2->reveal();
 
     $this->pageStorage->loadMultiple()
@@ -165,6 +167,7 @@ class PageManagerRoutesTest extends UnitTestCase {
    * Tests overriding an existing route.
    *
    * @covers ::alterRoutes
+   * @covers ::findPageRouteName
    *
    * @dataProvider providerTestAlterRoutesOverrideExisting
    */
@@ -174,10 +177,10 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page = $this->prophesize(PageInterface::class);
     $page->status()
       ->willReturn(TRUE)
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $page->getPath()
       ->willReturn($page_path)
-      ->shouldBeCalledTimes(1);
+      ->shouldBeCalled();
     $page->isFallbackPage()->willReturn(FALSE);
     $page->label()->willReturn(NULL);
     $page->usesAdminTheme()->willReturn(FALSE);
