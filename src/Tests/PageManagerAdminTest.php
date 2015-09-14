@@ -134,7 +134,6 @@ class PageManagerAdminTest extends WebTestBase {
     // Add a new display variant.
     $this->clickLink('Add new display variant');
     $this->clickLink('Block page');
-    $this->assertFieldByName("display_variant[page_title]", 'Foo', 'Default page title "Foo" was taken from page label.');
     $edit = [
       'display_variant[label]' => 'First',
       'display_variant[page_title]' => 'Example title',

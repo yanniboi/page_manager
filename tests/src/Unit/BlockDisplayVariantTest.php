@@ -10,14 +10,12 @@ namespace Drupal\Tests\page_manager\Unit;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockPluginInterface;
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
-use Drupal\page_manager\PageExecutable;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Plugin\BlockPluginCollection;
 use Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant;
@@ -170,17 +168,6 @@ class BlockDisplayVariantTest extends UnitTestCase {
 
     $page = $this->prophesize(PageInterface::class);
     $page->id()->willReturn('page_id');
-    $page->getCacheTags()
-      ->willReturn(['page:page_id'])
-      ->shouldBeCalled();
-    $page->getCacheContexts()
-      ->willReturn([])
-      ->shouldBeCalled();
-    $page->getCacheMaxAge()
-      ->willReturn(Cache::PERMANENT)
-      ->shouldBeCalled();
-    $page_executable = new PageExecutable($page->reveal());
-    $display_variant->setExecutable($page_executable);
 
     $display_variant->expects($this->once())
       ->method('getBlockCollection')
@@ -191,8 +178,8 @@ class BlockDisplayVariantTest extends UnitTestCase {
       ->willReturn($page_title);
 
     $expected_cache_block1 = [
-      'keys' => ['page_manager_page', 'page_id', 'block', 'block1'],
-      'tags' => ['block_plugin1:block_plugin_id', 'page:page_id'],
+      'keys' => ['page_manager_block_display', 'UUID', 'block', 'block1'],
+      'tags' => ['block_plugin1:block_plugin_id'],
       'contexts' => ['url'],
       'max-age' => 3600,
     ];
@@ -202,9 +189,9 @@ class BlockDisplayVariantTest extends UnitTestCase {
     // metadata of accessible blocks is merged to avoid cache redirects when
     // possible.
     $expected_cache_page = [
-      'keys' => ['page_manager_page', 'page_id', 'UUID'],
+      'keys' => ['page_manager_block_display', 'UUID'],
       'contexts' => ['url', 'user', 'user.permissions'],
-      'tags' => ['block_plugin1:block_plugin_id', 'page:page_id'],
+      'tags' => ['block_plugin1:block_plugin_id'],
       'max-age' => 3600,
     ];
 
@@ -232,13 +219,13 @@ class BlockDisplayVariantTest extends UnitTestCase {
    *
    * @dataProvider providerTestSubmitConfigurationForm
    */
-  public function testSubmitConfigurationForm($values, $update_block_count) {
-    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['updateBlock'])
-      ->getMock();
-    $display_variant->expects($update_block_count)
-      ->method('updateBlock');
+  public function testSubmitConfigurationForm($values) {
+    $account = $this->prophesize(AccountInterface::class);
+    $context_handler = $this->prophesize(ContextHandlerInterface::class);
+    $uuid_generator = $this->prophesize(UuidInterface::class);
+    $token = $this->prophesize(Token::class);
+
+    $display_variant = new BlockDisplayVariant([], '', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token->reveal());
 
     $form = [];
     $form_state = (new FormState())->setValues($values);
@@ -255,21 +242,18 @@ class BlockDisplayVariantTest extends UnitTestCase {
       [
         'label' => 'test_label1',
       ],
-      $this->never(),
     ];
     $data[] = [
       [
         'label' => 'test_label2',
         'blocks' => ['foo1' => []],
       ],
-      $this->once(),
     ];
     $data[] = [
       [
         'label' => 'test_label3',
         'blocks' => ['foo1' => [], 'foo2' => []],
       ],
-      $this->exactly(2),
     ];
     return $data;
   }
