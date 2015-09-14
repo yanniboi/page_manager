@@ -7,17 +7,17 @@
 
 namespace Drupal\page_manager\Form;
 
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\page_manager\PageInterface;
-use Drupal\Component\Serialization\Json;
 use Drupal\page_manager\Plugin\ConditionVariantInterface;
 
 /**
  * Provides a form for editing a display variant.
  */
 class DisplayVariantEditForm extends DisplayVariantFormBase {
+
+  use AjaxFormTrait;
 
   /**
    * {@inheritdoc}
@@ -39,31 +39,33 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
   public function buildForm(array $form, FormStateInterface $form_state, PageInterface $page = NULL, $display_variant_id = NULL) {
     $form = parent::buildForm($form, $form_state, $page, $display_variant_id);
 
-    // Set up the attributes used by a modal to prevent duplication later.
-    $attributes = [
-      'class' => ['use-ajax'],
-      'data-dialog-type' => 'modal',
-      'data-dialog-options' => Json::encode([
-        'width' => 'auto',
-      ]),
-    ];
-    $add_button_attributes = NestedArray::mergeDeep($attributes, [
-      'class' => [
-        'button',
-        'button--small',
-        'button-action',
-      ]
-    ]);
+    if ($this->displayVariant instanceof ConditionVariantInterface) {
+      $form['selection_section'] = $this->buildSelectionForm();
+    }
 
+    return $form;
+  }
+
+  /**
+   * Builds the selection form for a variant.
+   *
+   * @return array
+   */
+  protected function buildSelectionForm() {
+    // Set up the attributes used by a modal to prevent duplication later.
+    $attributes = $this->getAjaxAttributes();
+    $add_button_attributes = $this->getAjaxButtonAttributes();
+
+    $form = [];
     if ($this->displayVariant instanceof ConditionVariantInterface) {
       if ($selection_conditions = $this->displayVariant->getSelectionConditions()) {
         // Selection conditions.
-        $form['selection_section'] = [
+        $form = [
           '#type' => 'details',
           '#title' => $this->t('Selection Conditions'),
           '#open' => TRUE,
         ];
-        $form['selection_section']['add'] = [
+        $form['add'] = [
           '#type' => 'link',
           '#title' => $this->t('Add new selection condition'),
           '#url' => Url::fromRoute('page_manager.selection_condition_select', [
@@ -77,7 +79,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
             ],
           ],
         ];
-        $form['selection_section']['table'] = [
+        $form['table'] = [
           '#type' => 'table',
           '#header' => [
             $this->t('Label'),
@@ -87,7 +89,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
           '#empty' => $this->t('There are no selection conditions.'),
         ];
 
-        $form['selection_section']['selection_logic'] = [
+        $form['selection_logic'] = [
           '#type' => 'radios',
           '#options' => [
             'and' => $this->t('All conditions must pass'),
@@ -96,7 +98,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
           '#default_value' => $this->displayVariant->getSelectionLogic(),
         ];
 
-        $form['selection_section']['selection'] = [
+        $form['selection'] = [
           '#tree' => TRUE,
         ];
         foreach ($selection_conditions as $selection_id => $selection_condition) {
@@ -126,7 +128,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
             '#type' => 'operations',
             '#links' => $operations,
           ];
-          $form['selection_section']['table'][$selection_id] = $row;
+          $form['table'][$selection_id] = $row;
         }
       }
     }

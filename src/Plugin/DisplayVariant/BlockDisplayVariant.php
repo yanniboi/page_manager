@@ -7,10 +7,7 @@
 
 namespace Drupal\page_manager\Plugin\DisplayVariant;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\NestedArray;
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableMetadata;
@@ -23,6 +20,7 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Utility\Token;
+use Drupal\page_manager\Form\AjaxFormTrait;
 use Drupal\page_manager\PageExecutableInterface;
 use Drupal\page_manager\Plugin\BlockVariantInterface;
 use Drupal\page_manager\Plugin\BlockVariantTrait;
@@ -43,6 +41,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInterface, ConditionVariantInterface, ContainerFactoryPluginInterface, PageAwareVariantInterface, BlockVariantInterface {
 
+  use AjaxFormTrait;
   use BlockVariantTrait;
   use ContextAwareVariantTrait;
   use ConditionVariantTrait;
@@ -262,37 +261,35 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
     ];
 
     // Do not allow blocks to be added until the display variant has been saved.
-    if (!$this->id()) {
-      return $form;
+    if ($this->id()) {
+      $form['block_section'] = $this->buildBlockForm();
     }
 
+    return $form;
+  }
+
+  /**
+   * Builds the block form for a variant.
+   *
+   * @return array
+   */
+  protected function buildBlockForm() {
     // Determine the page ID, used for links below.
     $page_id = $this->executable->getPage()->id();
 
     // Set up the attributes used by a modal to prevent duplication later.
-    $attributes = [
-      'class' => ['use-ajax'],
-      'data-dialog-type' => 'modal',
-      'data-dialog-options' => Json::encode([
-        'width' => 'auto',
-      ]),
-    ];
-    $add_button_attributes = NestedArray::mergeDeep($attributes, [
-      'class' => [
-        'button',
-        'button--small',
-        'button-action',
-      ],
-    ]);
+    $attributes = $this->getAjaxAttributes();
+    $add_button_attributes = $this->getAjaxButtonAttributes();
 
+    $form = [];
     if ($block_assignments = $this->getRegionAssignments()) {
       // Build a table of all blocks used by this display variant.
-      $form['block_section'] = [
+      $form = [
         '#type' => 'details',
         '#title' => $this->t('Blocks'),
         '#open' => TRUE,
       ];
-      $form['block_section']['add'] = [
+      $form['add'] = [
         '#type' => 'link',
         '#title' => $this->t('Add new block'),
         '#url' => Url::fromRoute('page_manager.display_variant_select_block', [
@@ -306,7 +303,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
           ],
         ],
       ];
-      $form['block_section']['blocks'] = [
+      $form['blocks'] = [
         '#type' => 'table',
         '#header' => [
           $this->t('Label'),
@@ -323,32 +320,32 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
       foreach ($block_assignments as $region => $blocks) {
         // Add a section for each region and allow blocks to be dragged between
         // them.
-        $form['block_section']['blocks']['#tabledrag'][] = [
+        $form['blocks']['#tabledrag'][] = [
           'action' => 'match',
           'relationship' => 'sibling',
           'group' => 'block-region-select',
           'subgroup' => 'block-region-' . $region,
           'hidden' => FALSE,
         ];
-        $form['block_section']['blocks']['#tabledrag'][] = [
+        $form['blocks']['#tabledrag'][] = [
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => 'block-weight',
           'subgroup' => 'block-weight-' . $region,
         ];
-        $form['block_section']['blocks'][$region] = [
+        $form['blocks'][$region] = [
           '#attributes' => [
             'class' => ['region-title', 'region-title-' . $region],
             'no_striping' => TRUE,
           ],
         ];
-        $form['block_section']['blocks'][$region]['title'] = [
+        $form['blocks'][$region]['title'] = [
           '#markup' => $this->getRegionName($region),
           '#wrapper_attributes' => [
             'colspan' => 5,
           ],
         ];
-        $form['block_section']['blocks'][$region . '-message'] = [
+        $form['blocks'][$region . '-message'] = [
           '#attributes' => [
             'class' => [
               'region-message',
@@ -357,7 +354,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
             ],
           ],
         ];
-        $form['block_section']['blocks'][$region . '-message']['message'] = [
+        $form['blocks'][$region . '-message']['message'] = [
           '#markup' => '<em>' . $this->t('No blocks in this region') . '</em>',
           '#wrapper_attributes' => [
             'colspan' => 5,
@@ -420,7 +417,7 @@ class BlockDisplayVariant extends VariantBase implements ContextAwareVariantInte
             '#type' => 'operations',
             '#links' => $operations,
           ];
-          $form['block_section']['blocks'][$block_id] = $row;
+          $form['blocks'][$block_id] = $row;
         }
       }
     }
