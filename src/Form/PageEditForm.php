@@ -7,18 +7,15 @@
 
 namespace Drupal\page_manager\Form;
 
-use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\NestedArray;
-use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a form for editing a page entity.
  */
 class PageEditForm extends PageFormBase {
+
+  use AjaxFormTrait;
 
   /**
    * {@inheritdoc}
@@ -31,20 +28,8 @@ class PageEditForm extends PageFormBase {
       '#title' => $this->t('Use admin theme'),
       '#default_value' => $this->entity->usesAdminTheme(),
     ];
-    $attributes = [
-      'class' => ['use-ajax'],
-      'data-dialog-type' => 'modal',
-      'data-dialog-options' => Json::encode([
-        'width' => 'auto',
-      ]),
-    ];
-    $add_button_attributes = NestedArray::mergeDeep($attributes, [
-      'class' => [
-        'button',
-        'button--small',
-        'button-action',
-      ]
-    ]);
+    $attributes = $this->getAjaxAttributes();
+    $add_button_attributes = $this->getAjaxButtonAttributes();
 
     $form['context'] = [
       '#type' => 'details',

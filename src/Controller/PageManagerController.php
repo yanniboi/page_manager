@@ -8,11 +8,11 @@
 namespace Drupal\page_manager\Controller;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Url;
+use Drupal\page_manager\Form\AjaxFormTrait;
 use Drupal\page_manager\PageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Provides route controllers for Page Manager.
  */
 class PageManagerController extends ControllerBase {
+
+  use AjaxFormTrait;
 
   /**
    * The block manager.
@@ -207,13 +209,7 @@ class PageManagerController extends ControllerBase {
           'page' => $page->id(),
           'display_variant_id' => $display_variant_id,
         ]),
-        'attributes' => [
-          'class' => ['use-ajax'],
-          'data-dialog-type' => 'modal',
-          'data-dialog-options' => Json::encode([
-            'width' => 'auto',
-          ]),
-        ],
+        'attributes' => $this->getAjaxAttributes(),
       ];
     }
     return $build;
@@ -241,13 +237,7 @@ class PageManagerController extends ControllerBase {
           'page' => $page->id(),
           'condition_id' => $access_id,
         ]),
-        'attributes' => [
-          'class' => ['use-ajax'],
-          'data-dialog-type' => 'modal',
-          'data-dialog-options' => Json::encode([
-            'width' => 'auto',
-          ]),
-        ],
+        'attributes' => $this->getAjaxAttributes(),
       ];
     }
     return $build;
@@ -278,13 +268,7 @@ class PageManagerController extends ControllerBase {
           'display_variant_id' => $display_variant_id,
           'condition_id' => $selection_id,
         ]),
-        'attributes' => [
-          'class' => ['use-ajax'],
-          'data-dialog-type' => 'modal',
-          'data-dialog-options' => Json::encode([
-            'width' => 'auto',
-          ]),
-        ],
+        'attributes' => $this->getAjaxAttributes(),
       ];
     }
     return $build;
@@ -336,13 +320,7 @@ class PageManagerController extends ControllerBase {
           'block_id' => $plugin_id,
           'region' => $request->query->get('region'),
         ]),
-        'attributes' => [
-          'class' => ['use-ajax'],
-          'data-dialog-type' => 'modal',
-          'data-dialog-options' => Json::encode([
-            'width' => 'auto',
-          ]),
-        ],
+        'attributes' => $this->getAjaxAttributes(),
       ];
     }
     return $build;
