@@ -192,7 +192,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->cacheTagsInvalidator->invalidateTags(["page_manager_route_name:$route_name"])->shouldBeCalledTimes(1);
 
     $collection = new RouteCollection();
-    $collection->add($route_name, new Route($existing_route_path, [], [], ['parameters' => ['foo' => 'bar']]));
+    $collection->add($route_name, new Route($existing_route_path, ['default_exists' => 'default_value'], [], ['parameters' => ['foo' => 'bar']]));
     $route_event = new RouteBuildEvent($collection);
     $this->routeSubscriber->onAlterRoutes($route_event);
 
@@ -227,6 +227,8 @@ class PageManagerRoutesTest extends UnitTestCase {
     $data['no_slug'] = ['/test_route', '/test_route'];
     $data['slug'] = ['/test_route/{test_route}', '/test_route/{test_route}'];
     $data['placeholder'] = ['/test_route/%', '/test_route/{test_route}'];
+    $data['slug_with_default'] = ['/test_route/{default_exists}', '/test_route/{default_exists}'];
+    $data['placeholder_with_default'] = ['/test_route/%', '/test_route/{default_exists}'];
     return $data;
   }
 

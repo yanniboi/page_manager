@@ -63,6 +63,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestEditBlock();
     $this->doTestExistingPathWithoutParameters();
     $this->doTestDeletePage();
+    $this->doTestExistingRoutes();
   }
 
   /**
@@ -399,6 +400,27 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/foo');
     // The custom page is no longer found.
     $this->assertResponse(404);
+  }
+
+  /**
+   * Tests that default arguments are not removed from existing routes.
+   */
+  public function doTestExistingRoutes() {
+
+    // Test that the page without placeholder is accessible.
+    $edit = [
+      'label' => 'Placeholder test 2',
+      'id' => 'placeholder2',
+      'path' => '/page-manager-test',
+    ];
+    $this->drupalPostForm('admin/structure/page_manager/add', $edit, 'Save');
+    $this->drupalGet('page-manager-test');
+    $this->assertResponse(404);
+
+    // Test that the page test is accessible.
+    $page_string = 'test-page';
+    $this->drupalGet('page-manager-test/' . $page_string);
+    $this->assertResponse(200);
   }
 
   /**
