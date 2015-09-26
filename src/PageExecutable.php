@@ -8,9 +8,9 @@
 namespace Drupal\page_manager;
 
 use Drupal\Component\Plugin\Context\ContextInterface;
+use Drupal\Core\Display\ContextAwareVariantInterface;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
-use Drupal\page_manager\Plugin\ContextAwareVariantInterface;
 
 /**
  * Represents a page entity during runtime execution.

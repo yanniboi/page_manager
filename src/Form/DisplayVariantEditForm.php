@@ -9,9 +9,10 @@ namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\ctools\Form\AjaxFormTrait;
+use Drupal\ctools\Plugin\BlockVariantInterface;
+use Drupal\ctools\Plugin\ConditionVariantInterface;
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\Plugin\BlockVariantInterface;
-use Drupal\page_manager\Plugin\ConditionVariantInterface;
 
 /**
  * Provides a form for editing a display variant.

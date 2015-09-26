@@ -7,11 +7,11 @@
 
 namespace Drupal\page_manager\Form;
 
+use Drupal\Core\Display\ContextAwareVariantInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\Core\Form\FormBase;
-use Drupal\page_manager\Plugin\ContextAwareVariantInterface;
 
 /**
  * Provides a base form for editing and adding a display variant.

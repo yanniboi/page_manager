@@ -9,6 +9,7 @@ namespace Drupal\page_manager\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\ctools\Form\AjaxFormTrait;
 
 /**
  * Provides a form for editing a page entity.

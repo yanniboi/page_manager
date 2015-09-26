@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\Tests\page_manager\Unit\BlockDisplayVariantTest.
+ * Contains \Drupal\Tests\page_manager\Unit\PageBlockDisplayVariantTest.
  */
 
 namespace Drupal\Tests\page_manager\Unit;
@@ -16,50 +16,27 @@ use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
+use Drupal\ctools\Plugin\BlockPluginCollection;
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\Plugin\BlockPluginCollection;
-use Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant;
+use Drupal\page_manager\Plugin\DisplayVariant\PageBlockDisplayVariant;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Tests the block display variant plugin.
  *
- * @coversDefaultClass \Drupal\page_manager\Plugin\DisplayVariant\BlockDisplayVariant
+ * @coversDefaultClass \Drupal\page_manager\Plugin\DisplayVariant\PageBlockDisplayVariant
  *
  * @group PageManager
  */
-class BlockDisplayVariantTest extends UnitTestCase {
-
-  /**
-   * Tests the access() method.
-   *
-   * @covers ::access
-   */
-  public function testAccess() {
-    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['determineSelectionAccess'])
-      ->getMock();
-    $display_variant->expects($this->once())
-      ->method('determineSelectionAccess')
-      ->willReturn(FALSE);
-    $this->assertSame(FALSE, $display_variant->access());
-
-    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['determineSelectionAccess'])
-      ->getMock();
-    $display_variant->expects($this->once())
-      ->method('determineSelectionAccess')
-      ->willReturn(TRUE);
-    $this->assertSame(TRUE, $display_variant->access());
-  }
+class PageBlockDisplayVariantTest extends UnitTestCase {
 
   /**
    * Tests the build() method when a block is empty.
    *
    * @covers ::build
+   * @covers ::buildRegions
+   * @covers ::buildBlock
    */
   public function testBuildEmptyBlock() {
     $account = $this->prophesize(AccountInterface::class);
@@ -73,7 +50,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
     $uuid_generator = $this->prophesize(UuidInterface::class);
     $token = $this->prophesize(Token::class);
 
-    $display_variant = new BlockDisplayVariant([], '', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token->reveal());
+    $display_variant = new PageBlockDisplayVariant([], '', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token->reveal());
 
     // Empty block.
     $expected_build = [
@@ -109,6 +86,8 @@ class BlockDisplayVariantTest extends UnitTestCase {
    * Tests the build() method when blocks can be cached.
    *
    * @covers ::build
+   * @covers ::buildRegions
+   * @covers ::buildBlock
    */
   public function testBuild() {
     $container = new ContainerBuilder();
@@ -161,7 +140,7 @@ class BlockDisplayVariantTest extends UnitTestCase {
     $token = $this->getMockBuilder(Token::class)
       ->disableOriginalConstructor()
       ->getMock();
-    $display_variant = $this->getMockBuilder(BlockDisplayVariant::class)
+    $display_variant = $this->getMockBuilder(PageBlockDisplayVariant::class)
       ->setConstructorArgs([['page_title' => $page_title, 'uuid' => 'UUID'], 'test', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token])
       ->setMethods(['getBlockCollection', 'renderPageTitle'])
       ->getMock();
@@ -216,46 +195,24 @@ class BlockDisplayVariantTest extends UnitTestCase {
    * Tests the submitConfigurationForm() method.
    *
    * @covers ::submitConfigurationForm
-   *
-   * @dataProvider providerTestSubmitConfigurationForm
    */
-  public function testSubmitConfigurationForm($values) {
+  public function testSubmitConfigurationForm() {
     $account = $this->prophesize(AccountInterface::class);
     $context_handler = $this->prophesize(ContextHandlerInterface::class);
     $uuid_generator = $this->prophesize(UuidInterface::class);
     $token = $this->prophesize(Token::class);
 
-    $display_variant = new BlockDisplayVariant([], '', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token->reveal());
+    $display_variant = new PageBlockDisplayVariant([], '', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token->reveal());
+
+    $values = ['page_title' => "Go hang a salami, I'm a lasagna hog!"];
 
     $form = [];
     $form_state = (new FormState())->setValues($values);
     $display_variant->submitConfigurationForm($form, $form_state);
-    $this->assertSame($values['label'], $display_variant->label());
-  }
 
-  /**
-   * Provides data for testSubmitConfigurationForm().
-   */
-  public function providerTestSubmitConfigurationForm() {
-    $data = [];
-    $data[] = [
-      [
-        'label' => 'test_label1',
-      ],
-    ];
-    $data[] = [
-      [
-        'label' => 'test_label2',
-        'blocks' => ['foo1' => []],
-      ],
-    ];
-    $data[] = [
-      [
-        'label' => 'test_label3',
-        'blocks' => ['foo1' => [], 'foo2' => []],
-      ],
-    ];
-    return $data;
+    $property = new \ReflectionProperty($display_variant, 'configuration');
+    $property->setAccessible(TRUE);
+    $this->assertSame($values['page_title'], $property->getValue($display_variant)['page_title']);
   }
 
 }
