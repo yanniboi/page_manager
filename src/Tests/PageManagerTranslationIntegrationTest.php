@@ -51,6 +51,8 @@ class PageManagerTranslationIntegrationTest extends ContentTranslationTestBase {
    */
   public function testNode() {
     $this->drupalPlaceBlock('local_tasks_block');
+    $this->drupalPlaceBlock('page_title_block');
+
     $node = $this->drupalCreateNode(['type' => 'article']);
     $this->drupalGet('node/' . $node->id());
     $this->assertResponse(200);

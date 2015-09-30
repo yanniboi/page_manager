@@ -31,6 +31,8 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->drupalCreateContentType(['type' => 'article', 'name' => 'Article']);
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Page']);
     $this->drupalLogin($this->drupalCreateUser(['administer pages', 'create article content', 'create page content']));
+
+    $this->drupalPlaceBlock('page_title_block');
   }
 
   /**
