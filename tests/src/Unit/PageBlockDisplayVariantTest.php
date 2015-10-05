@@ -98,6 +98,7 @@ class PageBlockDisplayVariantTest extends UnitTestCase {
     $account = $this->prophesize(AccountInterface::class);
 
     // Define one block that allows access, access varies by permissions.
+    $cache_contexts->assertValidTokens(['user.permissions'])->willReturn(TRUE);
     $block1 = $this->prophesize(BlockPluginInterface::class);
     $block1->access($account, TRUE)->willReturn(AccessResult::allowed()->cachePerPermissions());
     $block1->getConfiguration()->willReturn(['label' => 'Block label']);
@@ -108,7 +109,8 @@ class PageBlockDisplayVariantTest extends UnitTestCase {
     $block1->getCacheMaxAge()->willReturn(3600);
     $block1->getCacheContexts()->willReturn(['url']);
 
-    // Define another block that doesn't allow access
+    // Define another block that doesn't allow access, varies by user.
+    $cache_contexts->assertValidTokens(['user'])->willReturn(TRUE);
     $block2 = $this->prophesize()->willImplement(ContextAwarePluginInterface::class)->willImplement(BlockPluginInterface::class);
     $block2->access($account, TRUE)->willReturn(AccessResult::forbidden()->cachePerUser());
     $block2->getConfiguration()->willReturn([]);
@@ -162,6 +164,7 @@ class PageBlockDisplayVariantTest extends UnitTestCase {
       'contexts' => ['url'],
       'max-age' => 3600,
     ];
+    $cache_contexts->assertValidTokens(['user.permissions', 'url'])->willReturn(TRUE);
 
     // The page cacheability metadata contains the access cacheability metadata
     // of accessible and non-accessible blocks. Additionally, the cacheability
@@ -173,6 +176,7 @@ class PageBlockDisplayVariantTest extends UnitTestCase {
       'tags' => ['block_plugin1:block_plugin_id'],
       'max-age' => 3600,
     ];
+    $cache_contexts->assertValidTokens(['url', 'user.permissions', 'user'])->willReturn(TRUE);
 
     // Build the variant and ensure that pre_render is set only for the first
     // block.
