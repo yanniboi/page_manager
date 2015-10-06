@@ -57,7 +57,7 @@ class PageBlockDisplayVariant extends BlockDisplayVariant {
       $build[$region]['#prefix'] = '<div class="' . $region_name . '">';
       $build[$region]['#suffix'] = '</div>';
 
-      /** @var $blocks \Drupal\Core\Block\BlockPluginInterface[] */
+      /** @var \Drupal\Core\Block\BlockPluginInterface[] $blocks */
       $weight = 0;
       foreach ($blocks as $block_id => $block) {
         if ($block instanceof ContextAwarePluginInterface) {

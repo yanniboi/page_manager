@@ -148,7 +148,7 @@ class DisplayVariantEditForm extends DisplayVariantFormBase {
           ],
         ];
 
-        /** @var $blocks \Drupal\Core\Block\BlockPluginInterface[] */
+        /** @var \Drupal\Core\Block\BlockPluginInterface[] $blocks */
         foreach ($blocks as $block_id => $block) {
           $row = [
             '#attributes' => [

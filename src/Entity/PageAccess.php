@@ -68,7 +68,7 @@ class PageAccess extends EntityAccessControlHandler implements EntityHandlerInte
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, $langcode, AccountInterface $account) {
-    /** @var $entity \Drupal\page_manager\PageInterface */
+    /** @var \Drupal\page_manager\PageInterface $entity */
     if ($operation == 'view') {
       if (!$entity->status()) {
         return AccessResult::forbidden()->cacheUntilEntityChanges($entity);

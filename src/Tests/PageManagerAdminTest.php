@@ -452,9 +452,9 @@ class PageManagerAdminTest extends WebTestBase {
    */
   protected function findBlockByLabel($page_id, $display_variant_label, $block_label) {
     if ($display_variant = $this->findDisplayVariantByLabel($page_id, $display_variant_label)) {
-      /** @var $display_variant \Drupal\ctools\Plugin\BlockVariantInterface */
+      /** @var \Drupal\ctools\Plugin\BlockVariantInterface $display_variant */
       foreach ($display_variant->getRegionAssignments() as $blocks) {
-        /** @var $blocks \Drupal\Core\Block\BlockPluginInterface[] */
+        /** @var \Drupal\Core\Block\BlockPluginInterface[] $blocks */
         foreach ($blocks as $block) {
           if ($block->label() == $block_label) {
             return $block;
@@ -478,7 +478,7 @@ class PageManagerAdminTest extends WebTestBase {
    */
   protected function findDisplayVariantByLabel($page_id, $display_variant_label) {
     if ($page = Page::load($page_id)) {
-      /** @var $page \Drupal\page_manager\PageInterface */
+      /** @var \Drupal\page_manager\PageInterface $page */
       foreach ($page->getVariants() as $display_variant) {
         if ($display_variant->label() == $display_variant_label) {
           return $display_variant;

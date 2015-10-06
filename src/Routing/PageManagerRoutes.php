@@ -53,7 +53,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
    */
   protected function alterRoutes(RouteCollection $collection) {
     foreach ($this->entityStorage->loadMultiple() as $entity_id => $entity) {
-      /** @var $entity \Drupal\page_manager\PageInterface */
+      /** @var \Drupal\page_manager\PageInterface $entity */
 
       // If the page is disabled skip making a route for it.
       if (!$entity->status() || $entity->isFallbackPage()) {
