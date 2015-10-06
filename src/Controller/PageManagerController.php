@@ -34,7 +34,7 @@ class PageManagerController extends ControllerBase {
   /**
    * The condition manager.
    *
-   * @var \Drupal\Component\Plugin\PluginManagerInterface
+   * @var \Drupal\Core\Plugin\Context\ContextAwarePluginManagerInterface
    */
   protected $conditionManager;
 

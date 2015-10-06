@@ -7,7 +7,6 @@
 
 namespace Drupal\page_manager\Tests;
 
-use Drupal\Core\Cache\Cache;
 use Drupal\simpletest\WebTestBase;
 
 /**
