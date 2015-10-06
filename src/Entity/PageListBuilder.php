@@ -32,7 +32,7 @@ class PageListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     /** @var \Drupal\page_manager\PageInterface $entity */
-    $row['label'] = $this->getLabel($entity);
+    $row['label'] = $entity->label();
     $row['id'] = $entity->id();
     $row['path'] = $this->getPath($entity);
 
