@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Tests;
 
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Url;
 use Drupal\page_manager\Entity\Page;
 use Drupal\simpletest\WebTestBase;
@@ -88,7 +88,7 @@ class PageManagerAdminTest extends WebTestBase {
     // Add a new page with a label.
     $edit += ['label' => 'Foo'];
     $this->drupalPostForm(NULL, $edit, 'Save');
-    $this->assertRaw(SafeMarkup::format('The %label page has been added.', ['%label' => 'Foo']));
+    $this->assertRaw(new FormattableMarkup('The %label page has been added.', ['%label' => 'Foo']));
 
     // Test that it is available immediately.
     $this->drupalGet('admin/foo');
@@ -142,7 +142,7 @@ class PageManagerAdminTest extends WebTestBase {
       'display_variant[page_title]' => 'Example title',
     ];
     $this->drupalPostForm(NULL, $edit, 'Add display variant');
-    $this->assertRaw(SafeMarkup::format('The %label display variant has been added.', ['%label' => 'First']));
+    $this->assertRaw(new FormattableMarkup('The %label display variant has been added.', ['%label' => 'First']));
 
     // Test that the variant is still used but empty.
     $this->drupalGet('admin/foo');
@@ -228,7 +228,7 @@ class PageManagerAdminTest extends WebTestBase {
       $form_name . '[weight]' => -10,
     ];
     $this->drupalPostForm(NULL, $edit, 'Update display variant');
-    $this->assertRaw(SafeMarkup::format('The %label display variant has been updated.', ['%label' => 'First']));
+    $this->assertRaw(new FormattableMarkup('The %label display variant has been updated.', ['%label' => 'First']));
     $this->clickLink('Edit');
     $this->assertOptionSelected('edit-display-variant-blocks-' . $block_config['uuid'] . '-region', 'bottom');
     $this->assertOptionSelected('edit-display-variant-blocks-' . $block_config['uuid'] . '-weight', -10);
@@ -298,9 +298,9 @@ class PageManagerAdminTest extends WebTestBase {
   protected function doTestRemoveDisplayVariant() {
     $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Delete');
-    $this->assertRaw(SafeMarkup::format('Are you sure you want to delete the display variant %label?', ['%label' => 'Default']));
+    $this->assertRaw(new FormattableMarkup('Are you sure you want to delete the display variant %label?', ['%label' => 'Default']));
     $this->drupalPostForm(NULL, [], 'Delete');
-    $this->assertRaw(SafeMarkup::format('The display variant %label has been removed.', ['%label' => 'Default']));
+    $this->assertRaw(new FormattableMarkup('The display variant %label has been removed.', ['%label' => 'Default']));
   }
 
   /**
@@ -321,9 +321,9 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/structure/page_manager/manage/foo');
     $this->clickLink('Edit');
     $this->clickLink('Delete');
-    $this->assertRaw(SafeMarkup::format('Are you sure you want to delete the block %label?', ['%label' => 'Updated block label']));
+    $this->assertRaw(new FormattableMarkup('Are you sure you want to delete the block %label?', ['%label' => 'Updated block label']));
     $this->drupalPostForm(NULL, [], 'Delete');
-    $this->assertRaw(SafeMarkup::format('The block %label has been removed.', ['%label' => 'Updated block label']));
+    $this->assertRaw(new FormattableMarkup('The block %label has been removed.', ['%label' => 'Updated block label']));
 
     // Assert that the block is now gone.
     $this->drupalGet('admin/foo');
@@ -390,7 +390,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/structure/page_manager');
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
-    $this->assertRaw(SafeMarkup::format('The page %name has been removed.', ['%name' => 'existing']));
+    $this->assertRaw(new FormattableMarkup('The page %name has been removed.', ['%name' => 'existing']));
     $this->drupalGet('admin');
     // The overridden page is back to its default.
     $this->assertResponse(200);
@@ -398,7 +398,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/structure/page_manager');
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
-    $this->assertRaw(SafeMarkup::format('The page %name has been removed.', ['%name' => 'Foo']));
+    $this->assertRaw(new FormattableMarkup('The page %name has been removed.', ['%name' => 'Foo']));
     $this->drupalGet('admin/foo');
     // The custom page is no longer found.
     $this->assertResponse(404);
@@ -434,7 +434,7 @@ class PageManagerAdminTest extends WebTestBase {
   protected function assertTheme($theme_name) {
     $url = Url::fromUri('base:core/themes/' . $theme_name . '/logo.svg', ['absolute' => TRUE])->toString();
     $elements = $this->xpath('//img[@src=:url]', [':url' => $url]);
-    $this->assertEqual(count($elements), 1, SafeMarkup::format('Page is rendered in @theme', ['@theme' => $theme_name]));
+    $this->assertEqual(count($elements), 1, new FormattableMarkup('Page is rendered in @theme', ['@theme' => $theme_name]));
   }
 
   /**
