@@ -185,7 +185,7 @@ class PageManagerController extends ControllerBase {
       drupal_set_message($this->t('The %label page has been disabled.', ['%label' => $page->label()]));
     }
 
-    return $this->redirect('page_manager.page_list');
+    return $this->redirect('entity.page.collection');
   }
 
   /**

@@ -260,7 +260,7 @@ class PageEditForm extends PageFormBase {
     }
     parent::save($form, $form_state);
     drupal_set_message($this->t('The %label page has been updated.', ['%label' => $this->entity->label()]));
-    $form_state->setRedirect('page_manager.page_list');
+    $form_state->setRedirect('entity.page.collection');
   }
 
 }
