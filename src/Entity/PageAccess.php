@@ -67,7 +67,7 @@ class PageAccess extends EntityAccessControlHandler implements EntityHandlerInte
   /**
    * {@inheritdoc}
    */
-  protected function checkAccess(EntityInterface $entity, $operation, $langcode, AccountInterface $account) {
+  protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
     /** @var \Drupal\page_manager\PageInterface $entity */
     if ($operation == 'view') {
       if (!$entity->status()) {
@@ -86,7 +86,7 @@ class PageAccess extends EntityAccessControlHandler implements EntityHandlerInte
     if ($operation == 'delete' && $entity->isFallbackPage()) {
       return AccessResult::forbidden()->addCacheableDependency($entity);
     }
-    return parent::checkAccess($entity, $operation, $langcode, $account);
+    return parent::checkAccess($entity, $operation, $account);
   }
 
 }

@@ -11,6 +11,7 @@ use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\page_manager\Entity\PageAccess;
@@ -83,13 +84,14 @@ class PageAccessTest extends UnitTestCase {
     $page->getAccessConditions()->willReturn([]);
     $page->getAccessLogic()->willReturn('and');
     $page->status()->willReturn(TRUE);
+    $page->language()->willReturn($this->prophesize(LanguageInterface::class)->reveal());
 
     $page->uuid()->shouldBeCalled();
     $page->getEntityTypeId()->shouldBeCalled();
 
     $account = $this->prophesize(AccountInterface::class);
 
-    $this->assertTrue($this->pageAccess->access($page->reveal(), 'view', NULL, $account->reveal()));
+    $this->assertTrue($this->pageAccess->access($page->reveal(), 'view', $account->reveal()));
   }
 
   /**
@@ -101,13 +103,14 @@ class PageAccessTest extends UnitTestCase {
     $page->getCacheTags()->willReturn(['page:1']);
     $page->getCacheContexts()->willReturn([]);
     $page->getCacheMaxAge()->willReturn(0);
+    $page->language()->willReturn($this->prophesize(LanguageInterface::class)->reveal());
 
     $page->uuid()->shouldBeCalled();
     $page->getEntityTypeId()->shouldBeCalled();
 
     $account = $this->prophesize(AccountInterface::class);
 
-    $this->assertFalse($this->pageAccess->access($page->reveal(), 'view', NULL, $account->reveal()));
+    $this->assertFalse($this->pageAccess->access($page->reveal(), 'view', $account->reveal()));
   }
 
   /**
@@ -121,6 +124,7 @@ class PageAccessTest extends UnitTestCase {
     $page = $this->prophesize(PageInterface::class);
     $page->isNew()->willReturn($is_new);
     $page->isFallbackPage()->willReturn($is_fallback);
+    $page->language()->willReturn($this->prophesize(LanguageInterface::class)->reveal());
 
     $page->uuid()->shouldBeCalled();
     $page->getEntityTypeId()->shouldBeCalled();
@@ -139,7 +143,7 @@ class PageAccessTest extends UnitTestCase {
     $account->hasPermission('test permission')->willReturn(TRUE);
     $account->id()->shouldBeCalled();
 
-    $this->assertSame($expected, $this->pageAccess->access($page->reveal(), 'delete', NULL, $account->reveal()));
+    $this->assertSame($expected, $this->pageAccess->access($page->reveal(), 'delete', $account->reveal()));
   }
 
   /**
