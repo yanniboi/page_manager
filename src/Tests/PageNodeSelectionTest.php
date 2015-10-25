@@ -114,6 +114,9 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->drupalGet('node/' . $node3->id());
     $this->assertNoText($node2->label());
 
+    // Ensure this doesn't affect the /node/add page.
+    $this->drupalGet('node/add');
+    $this->assertResponse(200);
   }
 
 }

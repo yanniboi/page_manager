@@ -52,6 +52,12 @@ class PageManagerRoutes extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
+    // @todo Until https://www.drupal.org/node/2600666 is in, alter the
+    //   /node/{node} route to add a requirement for a serial ID.
+    if ($node_view_route = $collection->get('entity.node.canonical')) {
+      $node_view_route->setRequirement('node', '\d+');
+    }
+
     foreach ($this->entityStorage->loadMultiple() as $entity_id => $entity) {
       /** @var \Drupal\page_manager\PageInterface $entity */
 
@@ -66,6 +72,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
           'type' => 'entity:page',
         ],
       ];
+      $requirements = [];
 
       if ($route_name = $this->findPageRouteName($entity, $collection)) {
         $this->cacheTagsInvalidator->invalidateTags(["page_manager_route_name:$route_name"]);
@@ -73,31 +80,40 @@ class PageManagerRoutes extends RouteSubscriberBase {
         $collection_route = $collection->get($route_name);
         $path = $collection_route->getPath();
         $parameters += $collection_route->getOption('parameters') ?: [];
+        $requirements += $collection_route->getRequirements();
 
         $collection->remove($route_name);
       }
       else {
         $route_name = "page_manager.page_view_$entity_id";
         $path = $entity->getPath();
+        $requirements['_entity_access'] = 'page_manager_page.view';
       }
 
-      // Construct and add a new route.
-      $route = new Route(
-        $path,
-        [
-          '_entity_view' => 'page_manager_page',
-          'page_manager_page' => $entity_id,
-          '_title' => $entity->label(),
-        ],
-        [
-          '_entity_access' => 'page_manager_page.view',
-        ],
-        [
-          'parameters' => $parameters,
-          '_admin_route' => $entity->usesAdminTheme(),
-        ]
-      );
-      $collection->add($route_name, $route);
+      $first = TRUE;
+      foreach ($entity->getVariants() as $variant_id => $variant) {
+        // Construct and add a new route.
+        $route = new Route(
+          $path,
+          [
+            '_entity_view' => 'page_manager_page',
+            'page_manager_page' => $entity_id,
+            '_title' => $entity->label(),
+            'variant_id' => $variant_id,
+            // When adding multiple variants, the variant ID is added to the
+            // route name. In order to convey the base route name for this set
+            // of variants, add it as a parameter.
+            'base_route_name' => $route_name,
+          ],
+          $requirements,
+          [
+            'parameters' => $parameters,
+            '_admin_route' => $entity->usesAdminTheme(),
+          ]
+        );
+        $collection->add($first ? $route_name : $route_name . '_' . $variant_id, $route);
+        $first = FALSE;
+      }
     }
   }
 

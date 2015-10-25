@@ -25,13 +25,6 @@ class PageExecutable implements PageExecutableInterface {
   protected $page;
 
   /**
-   * The selected display variant.
-   *
-   * @var \Drupal\Core\Display\VariantInterface|null
-   */
-  protected $selectedDisplayVariant;
-
-  /**
    * An array of collected contexts.
    *
    * @var \Drupal\Component\Plugin\Context\ContextInterface[]
@@ -58,24 +51,6 @@ class PageExecutable implements PageExecutableInterface {
   /**
    * {@inheritdoc}
    */
-  public function selectDisplayVariant() {
-    if (!$this->selectedDisplayVariant) {
-      foreach ($this->page->getVariants() as $display_variant) {
-        if ($display_variant instanceof ContextAwareVariantInterface) {
-          $display_variant->setContexts($this->getContexts());
-        }
-        if ($display_variant->access()) {
-          $this->selectedDisplayVariant = $display_variant;
-          break;
-        }
-      }
-    }
-    return $this->selectedDisplayVariant;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getContexts() {
     if (!$this->contexts) {
       $this->eventDispatcher()->dispatch(PageManagerEvents::PAGE_CONTEXT, new PageManagerContextEvent($this));
@@ -88,6 +63,17 @@ class PageExecutable implements PageExecutableInterface {
    */
   public function addContext($name, ContextInterface $value) {
     $this->contexts[$name] = $value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRuntimeVariant($variant_id) {
+    $variant = $this->getPage()->getVariant($variant_id);
+    if ($variant instanceof ContextAwareVariantInterface) {
+      $variant->setContexts($this->getContexts());
+    }
+    return $variant;
   }
 
   /**

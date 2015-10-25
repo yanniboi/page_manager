@@ -115,6 +115,8 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->shouldBeCalled();
     $page1->isFallbackPage()
       ->willReturn(FALSE);
+    $page1->getVariants()
+      ->willReturn(['variant1' => 'variant1']);
     $page1->label()
       ->willReturn('Page label')
       ->shouldBeCalled();
@@ -128,6 +130,8 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page2->status()
       ->willReturn(FALSE)
       ->shouldBeCalled();
+    $page2->getVariants()
+      ->willReturn(['variant2' => 'variant2']);
     $page2->isFallbackPage()->willReturn(FALSE);
     $page2->getPath()->willReturn('/page2');
     $pages['page2'] = $page2->reveal();
@@ -147,6 +151,8 @@ class PageManagerRoutesTest extends UnitTestCase {
       '_entity_view' => 'page_manager_page',
       'page_manager_page' => 'page1',
       '_title' => 'Page label',
+      'variant_id' => 'variant1',
+      'base_route_name' => 'page_manager.page_view_page1',
     ];
     $expected_requirements = [
       '_entity_access' => 'page_manager_page.view',
@@ -171,7 +177,7 @@ class PageManagerRoutesTest extends UnitTestCase {
    *
    * @dataProvider providerTestAlterRoutesOverrideExisting
    */
-  public function testAlterRoutesOverrideExisting($page_path, $existing_route_path) {
+  public function testAlterRoutesOverrideExisting($page_path, $existing_route_path, $requirements = []) {
     $route_name = 'test_route';
     // Set up a page with the same path as an existing route.
     $page = $this->prophesize(PageInterface::class);
@@ -181,6 +187,8 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page->getPath()
       ->willReturn($page_path)
       ->shouldBeCalled();
+    $page->getVariants()
+      ->willReturn(['variant1' => 'variant1']);
     $page->isFallbackPage()->willReturn(FALSE);
     $page->label()->willReturn(NULL);
     $page->usesAdminTheme()->willReturn(FALSE);
@@ -192,23 +200,24 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->cacheTagsInvalidator->invalidateTags(["page_manager_route_name:$route_name"])->shouldBeCalledTimes(1);
 
     $collection = new RouteCollection();
-    $collection->add($route_name, new Route($existing_route_path, ['default_exists' => 'default_value'], [], ['parameters' => ['foo' => 'bar']]));
+    $collection->add($route_name, new Route($existing_route_path, ['default_exists' => 'default_value'], $requirements, ['parameters' => ['foo' => 'bar']]));
     $route_event = new RouteBuildEvent($collection);
     $this->routeSubscriber->onAlterRoutes($route_event);
 
     // The normal route name is not used, the existing route name is instead.
     $this->assertSame(1, $collection->count());
     $this->assertNull($collection->get('page_manager.page_view_page1'));
+    $this->assertNull($collection->get('page_manager.page_view_page1_variant1'));
 
     $route = $collection->get($route_name);
     $expected_defaults = [
       '_entity_view' => 'page_manager_page',
       'page_manager_page' => 'page1',
       '_title' => NULL,
+      'variant_id' => 'variant1',
+      'base_route_name' => $route_name,
     ];
-    $expected_requirements = [
-      '_entity_access' => 'page_manager_page.view',
-    ];
+    $expected_requirements = $requirements;
     $expected_options = [
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
       'parameters' => [
@@ -229,6 +238,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $data['placeholder'] = ['/test_route/%', '/test_route/{test_route}'];
     $data['slug_with_default'] = ['/test_route/{default_exists}', '/test_route/{default_exists}'];
     $data['placeholder_with_default'] = ['/test_route/%', '/test_route/{default_exists}'];
+    $data['with_requirement'] = ['/test_route/{foo}', '/test_route/{foo}', ['foo' => '\d+']];
     return $data;
   }
 
