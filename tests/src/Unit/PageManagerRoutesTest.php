@@ -82,6 +82,7 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->willReturn(TRUE)
       ->shouldBeCalled();
     $page->getPath()->willReturn('/page');
+    $page->id()->willReturn('page1');
     $page->isFallbackPage()
       ->willReturn(TRUE)
       ->shouldBeCalled();
@@ -113,6 +114,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page1->getPath()
       ->willReturn('/page1')
       ->shouldBeCalled();
+    $page1->id()->willReturn('page1');
     $page1->isFallbackPage()
       ->willReturn(FALSE);
     $page1->getVariants()
@@ -132,6 +134,7 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->shouldBeCalled();
     $page2->getVariants()
       ->willReturn(['variant2' => 'variant2']);
+    $page2->id()->willReturn('page1');
     $page2->isFallbackPage()->willReturn(FALSE);
     $page2->getPath()->willReturn('/page2');
     $pages['page2'] = $page2->reveal();
@@ -148,10 +151,10 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->assertSame(1, $collection->count());
     $route = $collection->get('page_manager.page_view_page1');
     $expected_defaults = [
-      '_entity_view' => 'page_manager_page',
-      'page_manager_page' => 'page1',
+      '_entity_view' => 'page_manager_page_variant',
       '_title' => 'Page label',
-      'variant_id' => 'variant1',
+      'page_manager_page_variant' => 'variant1',
+      'page_manager_page' => 'page1',
       'base_route_name' => 'page_manager.page_view_page1',
     ];
     $expected_requirements = [
@@ -160,6 +163,9 @@ class PageManagerRoutesTest extends UnitTestCase {
     $expected_options = [
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
       'parameters' => [
+        'page_manager_page_variant' => [
+          'type' => 'entity:page_variant',
+        ],
         'page_manager_page' => [
           'type' => 'entity:page',
         ],
@@ -189,6 +195,7 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->shouldBeCalled();
     $page->getVariants()
       ->willReturn(['variant1' => 'variant1']);
+    $page->id()->willReturn('page1');
     $page->isFallbackPage()->willReturn(FALSE);
     $page->label()->willReturn(NULL);
     $page->usesAdminTheme()->willReturn(FALSE);
@@ -211,16 +218,19 @@ class PageManagerRoutesTest extends UnitTestCase {
 
     $route = $collection->get($route_name);
     $expected_defaults = [
-      '_entity_view' => 'page_manager_page',
-      'page_manager_page' => 'page1',
+      '_entity_view' => 'page_manager_page_variant',
       '_title' => NULL,
-      'variant_id' => 'variant1',
+      'page_manager_page_variant' => 'variant1',
+      'page_manager_page' => 'page1',
       'base_route_name' => $route_name,
     ];
     $expected_requirements = $requirements;
     $expected_options = [
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
       'parameters' => [
+        'page_manager_page_variant' => [
+          'type' => 'entity:page_variant',
+        ],
         'page_manager_page' => [
           'type' => 'entity:page',
         ],

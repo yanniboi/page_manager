@@ -27,11 +27,11 @@ class VariantRouteFilter implements RouteFilterInterface {
   use RouteEnhancerCollectorTrait;
 
   /**
-   * The page storage.
+   * The page variant storage.
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  protected $pageStorage;
+  protected $pageVariantStorage;
 
   /**
    * The current path stack.
@@ -49,7 +49,7 @@ class VariantRouteFilter implements RouteFilterInterface {
    *   The current path stack.
    */
   public function __construct(EntityManagerInterface $entity_manager, CurrentPathStack $current_path) {
-    $this->pageStorage = $entity_manager->getStorage('page');
+    $this->pageVariantStorage = $entity_manager->getStorage('page_variant');
     $this->currentPath = $current_path;
   }
 
@@ -58,7 +58,7 @@ class VariantRouteFilter implements RouteFilterInterface {
    */
   public function applies(Route $route) {
     $parameters = $route->getOption('parameters');
-    return !empty($parameters['page_manager_page']);
+    return !empty($parameters['page_manager_page_variant']);
   }
 
   /**
@@ -109,7 +109,7 @@ class VariantRouteFilter implements RouteFilterInterface {
    */
   protected function processRoute(Route $route, $name, RouteCollection $collection, &$page_manager_route_found) {
     $defaults = $route->getDefaults();
-    if (!isset($defaults['page_manager_page']) || !isset($defaults['variant_id'])) {
+    if (!isset($defaults['page_manager_page_variant'])) {
       // If this route has no page or variant info, move it to the end of the
       // list.
       $collection->add($name, $route);
@@ -122,12 +122,11 @@ class VariantRouteFilter implements RouteFilterInterface {
       return;
     }
 
-    /** @var \Drupal\page_manager\PageInterface $page */
-    $page = $this->pageStorage->load($defaults['page_manager_page']);
-    $variant = $page->getExecutable()->getRuntimeVariant($defaults['variant_id']);
+    /** @var \Drupal\page_manager\PageVariantInterface $page */
+    $variant = $this->pageVariantStorage->load($defaults['page_manager_page_variant']);
 
     try {
-      $access = $variant->access();
+      $access = $variant && $variant->access('view');
     }
     // Since access checks can throw a context exception, consider that as
     // a disallowed variant.

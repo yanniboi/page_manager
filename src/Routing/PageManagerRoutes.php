@@ -62,12 +62,15 @@ class PageManagerRoutes extends RouteSubscriberBase {
       /** @var \Drupal\page_manager\PageInterface $entity */
 
       // If the page is disabled skip making a route for it.
-      if (!$entity->status() || $entity->isFallbackPage()) {
+      if (!$entity->status() || $entity->isFallbackPage() || !$entity->getVariants()) {
         continue;
       }
 
       // Prepare the values that need to be altered for an existing page.
       $parameters = [
+        'page_manager_page_variant' => [
+          'type' => 'entity:page_variant',
+        ],
         'page_manager_page' => [
           'type' => 'entity:page',
         ],
@@ -90,16 +93,17 @@ class PageManagerRoutes extends RouteSubscriberBase {
         $requirements['_entity_access'] = 'page_manager_page.view';
       }
 
+      $page_id = $entity->id();
       $first = TRUE;
       foreach ($entity->getVariants() as $variant_id => $variant) {
         // Construct and add a new route.
         $route = new Route(
           $path,
           [
-            '_entity_view' => 'page_manager_page',
-            'page_manager_page' => $entity_id,
+            '_entity_view' => 'page_manager_page_variant',
             '_title' => $entity->label(),
-            'variant_id' => $variant_id,
+            'page_manager_page_variant' => $variant_id,
+            'page_manager_page' => $page_id,
             // When adding multiple variants, the variant ID is added to the
             // route name. In order to convey the base route name for this set
             // of variants, add it as a parameter.

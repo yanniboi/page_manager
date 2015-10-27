@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
- * Provides a display variant that returns a response with an HTTP status code.
+ * Provides a variant that returns a response with an HTTP status code.
  *
  * @DisplayVariant(
  *   id = "http_status_code",
@@ -26,7 +26,10 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form = parent::buildConfigurationForm($form, $form_state);
+    // Don't call VariantBase::buildConfigurationForm() on purpose, because it
+    // adds a 'Label' field that we don't actually want to use - we store the
+    // label on the page variant entity.
+    //$form = parent::buildConfigurationForm($form, $form_state);
 
     // Get all possible status codes defined by Symfony.
     $options = Response::$statusTexts;

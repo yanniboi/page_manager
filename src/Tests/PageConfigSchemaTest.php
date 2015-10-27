@@ -9,6 +9,7 @@ namespace Drupal\page_manager\Tests;
 
 use Drupal\config\Tests\SchemaCheckTestTrait;
 use Drupal\page_manager\Entity\Page;
+use Drupal\page_manager\Entity\PageVariant;
 use Drupal\simpletest\KernelTestBase;
 
 /**
@@ -48,17 +49,23 @@ class PageConfigSchemaTest extends KernelTestBase {
         'node' => 'node',
       ],
     ]);
+    $page->save();
 
-    // Add a block display variant.
-    $display_variant_id = $page->addVariant([
-      'id' => 'block_display',
+    $page_variant_id = 'block_page';
+    // Add a block variant.
+    $page_variant = PageVariant::create([
+      'variant' => 'block_display',
+      'id' => $page_variant_id,
       'label' => 'Block page',
+      'page' => $page->id(),
     ]);
-    /** @var \Drupal\page_manager\Plugin\DisplayVariant\PageBlockDisplayVariant $display_variant */
-    $display_variant = $page->getVariant($display_variant_id);
+    $page_variant->save();
+    $page->addVariant($page_variant);
+    /** @var \Drupal\page_manager\Plugin\DisplayVariant\PageBlockDisplayVariant $variant_plugin */
+    $variant_plugin = $page_variant->getVariantPlugin();
 
     // Add a selection condition.
-    $display_variant->addSelectionCondition([
+    $page_variant->addSelectionCondition([
       'id' => 'node_type',
       'bundles' => [
         'page' => 'page',
@@ -69,18 +76,22 @@ class PageConfigSchemaTest extends KernelTestBase {
     ]);
 
     // Add a block.
-    $display_variant->addBlock([
+    $variant_plugin->addBlock([
       'id' => 'entity_view:node',
       'label' => 'View the node',
       'provider' => 'page_manager',
       'label_display' => 'visible',
       'view_mode' => 'default',
     ]);
-    $page->save();
+    $page_variant->save();
 
-    $config = \Drupal::config("page_manager.page.$id");
-    $this->assertEqual($config->get('id'), $id);
-    $this->assertConfigSchema(\Drupal::service('config.typed'), $config->getName(), $config->get());
+    $page_config = \Drupal::config("page_manager.page.$id");
+    $this->assertEqual($page_config->get('id'), $id);
+    $variant_config = \Drupal::config("page_manager.page_variant.$page_variant_id");
+    $this->assertEqual($variant_config->get('id'), $page_variant_id);
+
+    $this->assertConfigSchema(\Drupal::service('config.typed'), $page_config->getName(), $page_config->get());
+    $this->assertConfigSchema(\Drupal::service('config.typed'), $variant_config->getName(), $variant_config->get());
   }
 
 }

@@ -46,15 +46,4 @@ interface PageExecutableInterface {
    */
   public function addContext($name, ContextInterface $value);
 
-  /**
-   * Gets a runtime representation of a variant.
-   *
-   * @param string $variant_id
-   *   The variant ID.
-   *
-   * @return \Drupal\Core\Display\VariantInterface
-   *   The variant object.
-   */
-  public function getRuntimeVariant($variant_id);
-
 }

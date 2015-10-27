@@ -8,7 +8,6 @@
 namespace Drupal\page_manager;
 
 use Drupal\Component\Plugin\Context\ContextInterface;
-use Drupal\Core\Display\ContextAwareVariantInterface;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
 
@@ -63,17 +62,6 @@ class PageExecutable implements PageExecutableInterface {
    */
   public function addContext($name, ContextInterface $value) {
     $this->contexts[$name] = $value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRuntimeVariant($variant_id) {
-    $variant = $this->getPage()->getVariant($variant_id);
-    if ($variant instanceof ContextAwareVariantInterface) {
-      $variant->setContexts($this->getContexts());
-    }
-    return $variant;
   }
 
   /**

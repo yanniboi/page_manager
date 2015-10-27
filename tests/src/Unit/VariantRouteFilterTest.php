@@ -9,12 +9,9 @@ namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Component\Plugin\Exception\ContextException;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
-use Drupal\Core\Display\ContextAwareVariantInterface;
-use Drupal\Core\Display\VariantInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
-use Drupal\page_manager\PageExecutableInterface;
-use Drupal\page_manager\PageInterface;
+use Drupal\page_manager\PageVariantInterface;
 use Drupal\page_manager\Routing\VariantRouteFilter;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Cmf\Component\Routing\Enhancer\RouteEnhancerInterface;
@@ -40,7 +37,7 @@ class VariantRouteFilterTest extends UnitTestCase {
    *
    * @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface|\Prophecy\Prophecy\ProphecyInterface
    */
-  protected $pageStorage;
+  protected $pageVariantStorage;
 
   /**
    * The mocked current path stack.
@@ -60,11 +57,11 @@ class VariantRouteFilterTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp() {
-    $this->pageStorage = $this->prophesize(ConfigEntityStorageInterface::class);
+    $this->pageVariantStorage = $this->prophesize(ConfigEntityStorageInterface::class);
 
     $this->entityManager = $this->prophesize(EntityManagerInterface::class);
-    $this->entityManager->getStorage('page')
-      ->willReturn($this->pageStorage);
+    $this->entityManager->getStorage('page_variant')
+      ->willReturn($this->pageVariantStorage);
     $this->currentPath = $this->prophesize(CurrentPathStack::class);
 
     $this->routeFilter = new VariantRouteFilter($this->entityManager->reveal(), $this->currentPath->reveal());
@@ -84,7 +81,7 @@ class VariantRouteFilterTest extends UnitTestCase {
   public function providerTestApplies() {
     $data = [];
     $data['no_options'] = [[], FALSE];
-    $data['with_options'] = [['parameters' => ['page_manager_page' => TRUE]], TRUE];
+    $data['with_options'] = [['parameters' => ['page_manager_page_variant' => TRUE]], TRUE];
     return $data;
   }
 
@@ -111,20 +108,14 @@ class VariantRouteFilterTest extends UnitTestCase {
     $route_collection = new RouteCollection();
     $request = new Request();
 
-    $route = new Route('/path/with/{slug}', ['page_manager_page' => 'a_page', 'variant_id' => 'a_variant']);
+    $route = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'a_variant']);
     $route_collection->add('a_route', $route);
 
-    $variant = $this->prophesize(VariantInterface::class);
-    $variant->access()->willThrow(new ContextException());
-
-    $executable = $this->prophesize(PageExecutableInterface::class);
-    $executable->getRuntimeVariant('a_variant')->willReturn($variant);
-
-    $page = $this->prophesize(PageInterface::class);
-    $page->getExecutable()->willReturn($executable->reveal());
+    $page_variant = $this->prophesize(PageVariantInterface::class);
+    $page_variant->access('view')->willThrow(new ContextException());
 
     $this->currentPath->getPath($request)->willReturn('');
-    $this->pageStorage->load('a_page')->willReturn($page->reveal());
+    $this->pageVariantStorage->load('a_variant')->willReturn($page_variant->reveal());
 
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = [];
@@ -159,20 +150,14 @@ class VariantRouteFilterTest extends UnitTestCase {
     $route_collection = new RouteCollection();
     $request = new Request();
 
-    $route = new Route('/path/with/{slug}', ['page_manager_page' => 'a_page', 'variant_id' => 'a_variant']);
+    $route = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'a_variant']);
     $route_collection->add('a_route', $route);
 
-    $variant = $this->prophesize(VariantInterface::class);
-    $variant->access()->willReturn(FALSE);
-
-    $executable = $this->prophesize(PageExecutableInterface::class);
-    $executable->getRuntimeVariant('a_variant')->willReturn($variant);
-
-    $page = $this->prophesize(PageInterface::class);
-    $page->getExecutable()->willReturn($executable->reveal());
+    $page_variant = $this->prophesize(PageVariantInterface::class);
+    $page_variant->access('view')->willReturn(FALSE);
 
     $this->currentPath->getPath($request)->willReturn('');
-    $this->pageStorage->load('a_page')->willReturn($page->reveal());
+    $this->pageVariantStorage->load('a_variant')->willReturn($page_variant->reveal());
 
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = [];
@@ -188,20 +173,14 @@ class VariantRouteFilterTest extends UnitTestCase {
     $route_collection = new RouteCollection();
     $request = new Request();
 
-    $route = new Route('/path/with/{slug}', ['page_manager_page' => 'a_page', 'variant_id' => 'a_variant']);
+    $route = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'a_variant']);
     $route_collection->add('a_route', $route);
 
-    $variant = $this->prophesize(ContextAwareVariantInterface::class);
-    $variant->access()->willReturn(TRUE);
-
-    $executable = $this->prophesize(PageExecutableInterface::class);
-    $executable->getRuntimeVariant('a_variant')->willReturn($variant);
-
-    $page = $this->prophesize(PageInterface::class);
-    $page->getExecutable()->willReturn($executable->reveal());
+    $page_variant = $this->prophesize(PageVariantInterface::class);
+    $page_variant->access('view')->willReturn(TRUE);
 
     $this->currentPath->getPath($request)->willReturn('');
-    $this->pageStorage->load('a_page')->willReturn($page->reveal());
+    $this->pageVariantStorage->load('a_variant')->willReturn($page_variant->reveal());
 
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['a_route' => $route];
@@ -217,24 +196,17 @@ class VariantRouteFilterTest extends UnitTestCase {
     $route_collection = new RouteCollection();
     $request = new Request();
 
-    $route1 = new Route('/path/with/{slug}', ['page_manager_page' => 'page_1', 'variant_id' => 'variant_1']);
-    $route2 = new Route('/path/with/{slug}', ['page_manager_page' => 'page_2', 'variant_id' => 'variant_2']);
+    $route1 = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'variant_1']);
+    $route2 = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'variant_2']);
     $route_collection->add('route_1', $route1);
     $route_collection->add('route_2', $route2);
 
-    $variant = $this->prophesize(ContextAwareVariantInterface::class);
-    $variant->access()->willReturn(TRUE);
-
-    $executable = $this->prophesize(PageExecutableInterface::class);
-    $executable->getRuntimeVariant('variant_1')->willReturn($variant);
-    $executable->getRuntimeVariant('variant_2')->shouldNotBeCalled();
-
-    $page = $this->prophesize(PageInterface::class);
-    $page->getExecutable()->willReturn($executable->reveal());
+    $page_variant = $this->prophesize(PageVariantInterface::class);
+    $page_variant->access('view')->willReturn(TRUE);
 
     $this->currentPath->getPath($request)->willReturn('');
-    $this->pageStorage->load('page_1')->willReturn($page->reveal());
-    $this->pageStorage->load('page_2')->shouldNotBeCalled();
+    $this->pageVariantStorage->load('variant_1')->willReturn($page_variant->reveal());
+    $this->pageVariantStorage->load('variant_2')->shouldNotBeCalled();
 
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['route_1' => $route1];
@@ -250,29 +222,19 @@ class VariantRouteFilterTest extends UnitTestCase {
     $route_collection = new RouteCollection();
     $request = new Request();
 
-    $route1 = new Route('/path/with/{slug}', ['page_manager_page' => 'page_1', 'variant_id' => 'variant_1']);
-    $route2 = new Route('/path/with/{slug}', ['page_manager_page' => 'page_2', 'variant_id' => 'variant_2']);
+    $route1 = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'variant_1']);
+    $route2 = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'variant_2']);
     $route_collection->add('route_1', $route1);
     $route_collection->add('route_2', $route2);
 
-    $variant1 = $this->prophesize(VariantInterface::class);
-    $variant1->access()->willReturn(FALSE);
-    $variant2 = $this->prophesize(VariantInterface::class);
-    $variant2->access()->willReturn(TRUE);
-
-    $executable = $this->prophesize(PageExecutableInterface::class);
-    $executable->getRuntimeVariant('variant_1')->willReturn($variant1);
-    $executable->getRuntimeVariant('variant_2')->willReturn($variant2);
-
-    $page1 = $this->prophesize(PageInterface::class);
-    $page1->getExecutable()->willReturn($executable->reveal());
-
-    $page2 = $this->prophesize(PageInterface::class);
-    $page2->getExecutable()->willReturn($executable->reveal());
+    $page_variant1 = $this->prophesize(PageVariantInterface::class);
+    $page_variant1->access('view')->willReturn(FALSE);
+    $page_variant2 = $this->prophesize(PageVariantInterface::class);
+    $page_variant2->access('view')->willReturn(TRUE);
 
     $this->currentPath->getPath($request)->willReturn('');
-    $this->pageStorage->load('page_1')->willReturn($page1->reveal())->shouldBeCalled();
-    $this->pageStorage->load('page_2')->willReturn($page2->reveal())->shouldBeCalled();
+    $this->pageVariantStorage->load('variant_1')->willReturn($page_variant1->reveal())->shouldBeCalled();
+    $this->pageVariantStorage->load('variant_2')->willReturn($page_variant2->reveal())->shouldBeCalled();
 
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['route_2' => $route2];
@@ -292,28 +254,21 @@ class VariantRouteFilterTest extends UnitTestCase {
     $request = new Request();
 
     $route1 = new Route('/path/with/{slug}');
-    $route2 = new Route('/path/with/{slug}', ['page_manager_page' => 'a_page', 'variant_id' => 'variant1']);
-    $route3 = new Route('/path/with/{slug}', ['page_manager_page' => 'a_page', 'variant_id' => 'variant2']);
+    $route2 = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'variant1']);
+    $route3 = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'variant2']);
     $route4 = new Route('/path/with/{slug}');
     $route_collection->add('route_1', $route1);
     $route_collection->add('route_2', $route2);
     $route_collection->add('route_3', $route3);
     $route_collection->add('route_4', $route4);
 
-    $variant1 = $this->prophesize(VariantInterface::class);
-    $variant1->access()->willReturn(TRUE);
-    $variant2 = $this->prophesize(VariantInterface::class);
-    $variant2->access()->willReturn(FALSE);
-
-    $executable = $this->prophesize(PageExecutableInterface::class);
-    $executable->getRuntimeVariant('variant1')->willReturn($variant1);
-    $executable->getRuntimeVariant('variant2')->willReturn($variant2);
-
-    $page = $this->prophesize(PageInterface::class);
-    $page->getExecutable()->willReturn($executable->reveal());
+    $page_variant1 = $this->prophesize(PageVariantInterface::class);
+    $page_variant1->access('view')->willReturn(TRUE);
+    $page_variant2 = $this->prophesize(PageVariantInterface::class);
+    $page_variant2->access('view')->willReturn(FALSE);
 
     $this->currentPath->getPath($request)->willReturn('');
-    $this->pageStorage->load('a_page')->willReturn($page->reveal())->shouldBeCalled();
+    $this->pageVariantStorage->load('variant1')->willReturn($page_variant1->reveal())->shouldBeCalled();
 
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['route_2' => $route2, 'route_1' => $route1, 'route_4' => $route4];
@@ -328,20 +283,14 @@ class VariantRouteFilterTest extends UnitTestCase {
     $route_collection = new RouteCollection();
     $request = new Request([], [], ['foo' => 'bar']);
 
-    $route = new Route('/path/with/{slug}', ['page_manager_page' => 'a_page', 'variant_id' => 'a_variant']);
+    $route = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'a_variant']);
     $route_collection->add('a_route', $route);
 
-    $variant = $this->prophesize(ContextAwareVariantInterface::class);
-    $variant->access()->willReturn(TRUE);
-
-    $executable = $this->prophesize(PageExecutableInterface::class);
-    $executable->getRuntimeVariant('a_variant')->willReturn($variant);
-
-    $page = $this->prophesize(PageInterface::class);
-    $page->getExecutable()->willReturn($executable->reveal());
+    $page_variant = $this->prophesize(PageVariantInterface::class);
+    $page_variant->access('view')->willReturn(TRUE);
 
     $this->currentPath->getPath($request)->willReturn('');
-    $this->pageStorage->load('a_page')->willReturn($page->reveal());
+    $this->pageVariantStorage->load('a_variant')->willReturn($page_variant->reveal());
 
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['a_route' => $route];
