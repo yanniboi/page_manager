@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Routing;
 
 use Drupal\Component\Plugin\Exception\ContextException;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\Core\Routing\RouteFilterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,13 +43,13 @@ class VariantRouteFilter implements RouteFilterInterface {
   /**
    * Constructs a new VariantRouteFilter.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\Core\Path\CurrentPathStack $current_path
    *   The current path stack.
    */
-  public function __construct(EntityManagerInterface $entity_manager, CurrentPathStack $current_path) {
-    $this->pageVariantStorage = $entity_manager->getStorage('page_variant');
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, CurrentPathStack $current_path) {
+    $this->pageVariantStorage = $entity_type_manager->getStorage('page_variant');
     $this->currentPath = $current_path;
   }
 

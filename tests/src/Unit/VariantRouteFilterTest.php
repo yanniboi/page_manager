@@ -9,7 +9,7 @@ namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Component\Plugin\Exception\ContextException;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\page_manager\PageVariantInterface;
 use Drupal\page_manager\Routing\VariantRouteFilter;
@@ -26,11 +26,11 @@ use Symfony\Component\Routing\RouteCollection;
 class VariantRouteFilterTest extends UnitTestCase {
 
   /**
-   * The mocked entity manager.
+   * The mocked entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface|\Prophecy\Prophecy\ProphecyInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\Prophecy\Prophecy\ProphecyInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * The mocked page storage.
@@ -59,12 +59,12 @@ class VariantRouteFilterTest extends UnitTestCase {
   protected function setUp() {
     $this->pageVariantStorage = $this->prophesize(ConfigEntityStorageInterface::class);
 
-    $this->entityManager = $this->prophesize(EntityManagerInterface::class);
-    $this->entityManager->getStorage('page_variant')
+    $this->entityTypeManager = $this->prophesize(EntityTypeManagerInterface::class);
+    $this->entityTypeManager->getStorage('page_variant')
       ->willReturn($this->pageVariantStorage);
     $this->currentPath = $this->prophesize(CurrentPathStack::class);
 
-    $this->routeFilter = new VariantRouteFilter($this->entityManager->reveal(), $this->currentPath->reveal());
+    $this->routeFilter = new VariantRouteFilter($this->entityTypeManager->reveal(), $this->currentPath->reveal());
   }
 
   /**

@@ -9,7 +9,7 @@ namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteBuildEvent;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\Routing\PageManagerRoutes;
@@ -27,11 +27,11 @@ use Symfony\Component\Routing\RouteCollection;
 class PageManagerRoutesTest extends UnitTestCase {
 
   /**
-   * The mocked entity manager.
+   * The mocked entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\PHPUnit_Framework_MockObject_MockObject
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * The mocked page storage.
@@ -62,12 +62,12 @@ class PageManagerRoutesTest extends UnitTestCase {
   protected function setUp() {
     $this->pageStorage = $this->prophesize(ConfigEntityStorageInterface::class);
 
-    $this->entityManager = $this->prophesize(EntityManagerInterface::class);
-    $this->entityManager->getStorage('page')
+    $this->entityTypeManager = $this->prophesize(EntityTypeManagerInterface::class);
+    $this->entityTypeManager->getStorage('page')
       ->willReturn($this->pageStorage);
     $this->cacheTagsInvalidator = $this->prophesize(CacheTagsInvalidatorInterface::class);
 
-    $this->routeSubscriber = new PageManagerRoutes($this->entityManager->reveal(), $this->cacheTagsInvalidator->reveal());
+    $this->routeSubscriber = new PageManagerRoutes($this->entityTypeManager->reveal(), $this->cacheTagsInvalidator->reveal());
   }
 
   /**

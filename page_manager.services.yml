@@ -1,7 +1,7 @@
 services:
   page_manager.current_user_context:
     class: Drupal\page_manager\EventSubscriber\CurrentUserContext
-    arguments: ['@current_user', '@entity.manager']
+    arguments: ['@current_user', '@entity_type.manager']
     tags:
       - { name: 'event_subscriber' }
   page_manager.route_param_context:
@@ -11,17 +11,17 @@ services:
       - { name: 'event_subscriber' }
   page_manager.static_context:
     class: Drupal\page_manager\EventSubscriber\StaticContext
-    arguments: ['@entity.manager']
+    arguments: ['@entity.repository']
     tags:
       - { name: 'event_subscriber' }
   page_manager.page_manager_routes:
     class: Drupal\page_manager\Routing\PageManagerRoutes
-    arguments: ['@entity.manager', '@cache_tags.invalidator']
+    arguments: ['@entity_type.manager', '@cache_tags.invalidator']
     tags:
       - { name: 'event_subscriber' }
   page_manager.variant_route_filter:
     class: Drupal\page_manager\Routing\VariantRouteFilter
-    arguments: ['@entity.manager', '@path.current']
+    arguments: ['@entity_type.manager', '@path.current']
     tags:
       - { name: route_filter }
       - { name: service_collector, tag: non_lazy_route_enhancer, call: addRouteEnhancer }

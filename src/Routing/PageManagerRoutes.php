@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Routing;
 
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteCompiler;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Drupal\Core\Routing\RoutingEvents;
@@ -38,13 +38,13 @@ class PageManagerRoutes extends RouteSubscriberBase {
   /**
    * Constructs a new PageManagerRoutes.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cache_tags_invalidator
    *   The cache tags invalidator.
    */
-  public function __construct(EntityManagerInterface $entity_manager, CacheTagsInvalidatorInterface $cache_tags_invalidator) {
-    $this->entityStorage = $entity_manager->getStorage('page');
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, CacheTagsInvalidatorInterface $cache_tags_invalidator) {
+    $this->entityStorage = $entity_type_manager->getStorage('page');
     $this->cacheTagsInvalidator = $cache_tags_invalidator;
   }
 
