@@ -102,7 +102,7 @@ class VariantRouteFilterTest extends UnitTestCase {
 
   /**
    * @covers ::filter
-   * @covers ::processRoute
+   * @covers ::checkPageVariantAccess
    */
   public function testFilterContextException() {
     $route_collection = new RouteCollection();
@@ -125,7 +125,6 @@ class VariantRouteFilterTest extends UnitTestCase {
 
   /**
    * @covers ::filter
-   * @covers ::processRoute
    */
   public function testFilterNonMatchingRoute() {
     $route_collection = new RouteCollection();
@@ -144,7 +143,7 @@ class VariantRouteFilterTest extends UnitTestCase {
 
   /**
    * @covers ::filter
-   * @covers ::processRoute
+   * @covers ::checkPageVariantAccess
    */
   public function testFilterDeniedAccess() {
     $route_collection = new RouteCollection();
@@ -167,7 +166,7 @@ class VariantRouteFilterTest extends UnitTestCase {
 
   /**
    * @covers ::filter
-   * @covers ::processRoute
+   * @covers ::checkPageVariantAccess
    */
   public function testFilterAllowedAccess() {
     $route_collection = new RouteCollection();
@@ -185,12 +184,16 @@ class VariantRouteFilterTest extends UnitTestCase {
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['a_route' => $route];
     $this->assertSame($expected, $result->all());
-    $this->assertSame([], $request->attributes->all());
+    $expected_attributes = [
+      'page_manager_page_variant' => 'a_variant',
+      '_route_object' => $route,
+      '_route' => 'a_route',
+    ];
+    $this->assertSame($expected_attributes, $request->attributes->all());
   }
 
   /**
    * @covers ::filter
-   * @covers ::processRoute
    */
   public function testFilterAllowedAccessTwoRoutes() {
     $route_collection = new RouteCollection();
@@ -211,12 +214,16 @@ class VariantRouteFilterTest extends UnitTestCase {
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['route_1' => $route1];
     $this->assertSame($expected, $result->all());
-    $this->assertSame([], $request->attributes->all());
+    $expected_attributes = [
+      'page_manager_page_variant' => 'variant_1',
+      '_route_object' => $route1,
+      '_route' => 'route_1',
+    ];
+    $this->assertSame($expected_attributes, $request->attributes->all());
   }
 
   /**
    * @covers ::filter
-   * @covers ::processRoute
    */
   public function testFilterAllowedAccessSecondRoute() {
     $route_collection = new RouteCollection();
@@ -239,12 +246,16 @@ class VariantRouteFilterTest extends UnitTestCase {
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['route_2' => $route2];
     $this->assertSame($expected, $result->all());
-    $this->assertSame([], $request->attributes->all());
+    $expected_attributes = [
+      'page_manager_page_variant' => 'variant_2',
+      '_route_object' => $route2,
+      '_route' => 'route_2',
+    ];
+    $this->assertSame($expected_attributes, $request->attributes->all());
   }
 
   /**
    * @covers ::filter
-   * @covers ::processRoute
    *
    * Tests when the first page_manager route is allowed, but other
    * non-page_manager routes are also present.
@@ -273,7 +284,12 @@ class VariantRouteFilterTest extends UnitTestCase {
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['route_2' => $route2, 'route_1' => $route1, 'route_4' => $route4];
     $this->assertSame($expected, $result->all());
-    $this->assertSame([], $request->attributes->all());
+    $expected_attributes = [
+      'page_manager_page_variant' => 'variant1',
+      '_route_object' => $route2,
+      '_route' => 'route_2',
+    ];
+    $this->assertSame($expected_attributes, $request->attributes->all());
   }
 
   /**
@@ -281,7 +297,7 @@ class VariantRouteFilterTest extends UnitTestCase {
    */
   public function testFilterRequestAttributes() {
     $route_collection = new RouteCollection();
-    $request = new Request([], [], ['foo' => 'bar']);
+    $request = new Request([], [], ['foo' => 'bar', 'slug' => 2]);
 
     $route = new Route('/path/with/{slug}', ['page_manager_page_variant' => 'a_variant']);
     $route_collection->add('a_route', $route);
@@ -289,13 +305,32 @@ class VariantRouteFilterTest extends UnitTestCase {
     $page_variant = $this->prophesize(PageVariantInterface::class);
     $page_variant->access('view')->willReturn(TRUE);
 
-    $this->currentPath->getPath($request)->willReturn('');
+    $this->currentPath->getPath($request)->willReturn('/path/with/1');
     $this->pageVariantStorage->load('a_variant')->willReturn($page_variant->reveal());
+
+    $route_enhancer = $this->prophesize(RouteEnhancerInterface::class);
+    $this->routeFilter->addRouteEnhancer($route_enhancer->reveal());
+    $result_enhance_attributes = $expected_enhance_attributes = [
+      'foo' => 'bar',
+      'slug' => '1',
+      'page_manager_page_variant' => 'a_variant',
+      '_route_object' => $route,
+      '_route' => 'a_route',
+    ];
+    $result_enhance_attributes['slug'] = 'slug 1';
+    $route_enhancer->enhance($expected_enhance_attributes, $request)->willReturn($result_enhance_attributes);
 
     $result = $this->routeFilter->filter($route_collection, $request);
     $expected = ['a_route' => $route];
     $this->assertSame($expected, $result->all());
-    $this->assertSame(['foo' => 'bar'], $request->attributes->all());
+    $expected_attributes = [
+      'foo' => 'bar',
+      'slug' => 'slug 1',
+      'page_manager_page_variant' => 'a_variant',
+      '_route_object' => $route,
+      '_route' => 'a_route',
+    ];
+    $this->assertSame($expected_attributes, $request->attributes->all());
   }
 
   /**

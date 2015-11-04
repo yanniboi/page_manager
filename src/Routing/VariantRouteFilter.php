@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Routing;
 
 use Drupal\Component\Plugin\Exception\ContextException;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\Core\Routing\RouteFilterInterface;
@@ -63,6 +64,11 @@ class VariantRouteFilter implements RouteFilterInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * Invalid page manager routes will be removed. Routes not controlled by page
+   * manager will be moved to the end of the collection. Once a valid page
+   * manager route has been found, all other page manager routes will also be
+   * removed.
    */
   public function filter(RouteCollection $collection, Request $request) {
     // Only proceed if the collection is non-empty.
@@ -80,7 +86,27 @@ class VariantRouteFilter implements RouteFilterInterface {
       // Add the enhanced attributes to the request.
       $request->attributes->add($attributes);
 
-      $this->processRoute($route, $name, $collection, $page_manager_route_found);
+      if ($page_variant_id = $route->getDefault('page_manager_page_variant')) {
+        // If a page manager route was already found, remove this one from the
+        // collection.
+        if ($page_manager_route_found) {
+          $collection->remove($name);
+        }
+        elseif ($this->checkPageVariantAccess($page_variant_id)) {
+          // Mark that a valid page manager route was found.
+          $page_manager_route_found = TRUE;
+          // Replace the original attributes with the newly processed attributes.
+          $original_attributes = $request->attributes->all();
+        }
+        else {
+          // Remove routes for variants that fail access.
+          $collection->remove($name);
+        }
+      }
+      else {
+        // If this route has no page variant, move it to the end of the list.
+        $collection->add($name, $route);
+      }
 
       // Restore the original request attributes.
       $request->attributes->replace($original_attributes);
@@ -90,40 +116,17 @@ class VariantRouteFilter implements RouteFilterInterface {
   }
 
   /**
-   * Processes a single route within a collection.
+   * Checks access of a page variant.
    *
-   * Invalid page manager routes will be removed. Routes not controlled by page
-   * manager will be moved to the end of the collection. Once a valid page
-   * manager route has been found, all other page manager routes will also be
-   * removed.
+   * @param string $page_variant_id
+   *   The page variant ID.
    *
-   * @param \Symfony\Component\Routing\Route $route
-   *   The route object.
-   * @param string $name
-   *   The route name.
-   * @param \Symfony\Component\Routing\RouteCollection $collection
-   *   The route collection being modified.
-   * @param bool $page_manager_route_found
-   *   A flag indicating whether a valid page manager route has yet been found.
-   *   Passed by reference.
+   * @return bool
+   *   TRUE if the route is valid, FALSE otherwise.
    */
-  protected function processRoute(Route $route, $name, RouteCollection $collection, &$page_manager_route_found) {
-    $defaults = $route->getDefaults();
-    if (!isset($defaults['page_manager_page_variant'])) {
-      // If this route has no page or variant info, move it to the end of the
-      // list.
-      $collection->add($name, $route);
-      return;
-    }
-
-    // Once a valid page manager route has been found, remove all others.
-    if ($page_manager_route_found) {
-      $collection->remove($name);
-      return;
-    }
-
+  protected function checkPageVariantAccess($page_variant_id) {
     /** @var \Drupal\page_manager\PageVariantInterface $page */
-    $variant = $this->pageVariantStorage->load($defaults['page_manager_page_variant']);
+    $variant = $this->pageVariantStorage->load($page_variant_id);
 
     try {
       $access = $variant && $variant->access('view');
@@ -134,15 +137,7 @@ class VariantRouteFilter implements RouteFilterInterface {
       $access = FALSE;
     }
 
-    if ($access) {
-      // Mark that a valid page manager route is found, all others will be
-      // removed.
-      $page_manager_route_found = TRUE;
-    }
-    else {
-      // Remove routes for variants that fail access.
-      $collection->remove($name);
-    }
+    return $access;
   }
 
   /**
@@ -165,7 +160,9 @@ class VariantRouteFilter implements RouteFilterInterface {
     // Extract the raw attributes from the current path. This performs the same
     // functionality as \Drupal\Core\Routing\UrlMatcher::finalMatch().
     $path = $this->currentPath->getPath($request);
-    $attributes = RouteAttributes::extractRawAttributes($route, $name, $path);
+    $raw_attributes = RouteAttributes::extractRawAttributes($route, $name, $path);
+    $attributes = $request->attributes->all();
+    $attributes = NestedArray::mergeDeep($attributes, $raw_attributes);
 
     // Run the route enhancers on the raw attributes. This performs the same
     // functionality as \Symfony\Cmf\Component\Routing\DynamicRouter::match().
