@@ -44,6 +44,9 @@ class PageManagerAdminTest extends WebTestBase {
     $this->config('system.theme')->set('admin', 'classy')->save();
 
     $this->drupalLogin($this->drupalCreateUser(['administer pages', 'access administration pages', 'view the administration theme']));
+
+    // Remove the default node_view page to start with a clean UI.
+    Page::load('node_view')->delete();
   }
 
   /**

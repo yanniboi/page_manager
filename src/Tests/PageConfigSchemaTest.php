@@ -27,16 +27,20 @@ class PageConfigSchemaTest extends KernelTestBase {
   public static $modules = ['page_manager', 'block', 'node', 'user'];
 
   /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    $this->installConfig(['page_manager']);
+  }
+
+  /**
    * Tests whether the page entity config schema is valid.
    */
   public function testValidPageConfigSchema() {
-    $id = strtolower($this->randomMachineName());
+    $id = 'node_view';
     /** @var \Drupal\page_manager\PageInterface $page */
-    $page = Page::create([
-      'id' => $id,
-      'label' => $this->randomMachineName(),
-      'path' => '/node/{node}',
-    ]);
+    $page = Page::load($id);
 
     // Add an access condition.
     $page->addAccessCondition([
