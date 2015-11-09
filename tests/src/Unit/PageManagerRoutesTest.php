@@ -71,36 +71,6 @@ class PageManagerRoutesTest extends UnitTestCase {
   }
 
   /**
-   * Tests adding a route for the fallback page.
-   *
-   * @covers ::alterRoutes
-   */
-  public function testAlterRoutesWithFallback() {
-    // Set up the fallback page.
-    $page = $this->prophesize(PageInterface::class);
-    $page->status()
-      ->willReturn(TRUE)
-      ->shouldBeCalled();
-    $page->getPath()->willReturn('/page');
-    $page->id()->willReturn('page1');
-    $page->isFallbackPage()
-      ->willReturn(TRUE)
-      ->shouldBeCalled();
-    $pages['page1'] = $page->reveal();
-
-    $this->pageStorage->loadMultiple()
-      ->willReturn($pages)
-      ->shouldBeCalledTimes(1);
-
-    $collection = new RouteCollection();
-    $route_event = new RouteBuildEvent($collection);
-    $this->routeSubscriber->onAlterRoutes($route_event);
-
-    // The collection should be empty.
-    $this->assertSame(0, $collection->count());
-  }
-
-  /**
    * Tests adding routes for enabled and disabled pages.
    *
    * @covers ::alterRoutes
@@ -115,8 +85,6 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->willReturn('/page1')
       ->shouldBeCalled();
     $page1->id()->willReturn('page1');
-    $page1->isFallbackPage()
-      ->willReturn(FALSE);
     $page1->getVariants()
       ->willReturn(['variant1' => 'variant1']);
     $page1->label()
@@ -135,7 +103,6 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page2->getVariants()
       ->willReturn(['variant2' => 'variant2']);
     $page2->id()->willReturn('page1');
-    $page2->isFallbackPage()->willReturn(FALSE);
     $page2->getPath()->willReturn('/page2');
     $pages['page2'] = $page2->reveal();
 
@@ -196,7 +163,6 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page->getVariants()
       ->willReturn(['variant1' => 'variant1']);
     $page->id()->willReturn('page1');
-    $page->isFallbackPage()->willReturn(FALSE);
     $page->label()->willReturn(NULL);
     $page->usesAdminTheme()->willReturn(FALSE);
 

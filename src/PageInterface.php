@@ -182,14 +182,4 @@ interface PageInterface extends ConfigEntityInterface, EntityWithPluginCollectio
    */
   public function getContexts();
 
-  /**
-   * Returns if this page is the fallback page.
-   *
-   * The fallback page can never be disabled. It must always be available.
-   *
-   * @return bool
-   *   TRUE if this page is the fallback page, FALSE otherwise.
-   */
-  public function isFallbackPage();
-
 }

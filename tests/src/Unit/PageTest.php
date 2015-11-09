@@ -19,36 +19,4 @@ use Drupal\Tests\UnitTestCase;
  */
 class PageTest extends UnitTestCase {
 
-  /**
-   * @covers ::isFallbackPage
-   *
-   * @dataProvider providerTestIsFallbackPage
-   */
-  public function testIsFallbackPage($id, $expected) {
-    $page = $this->getMockBuilder(Page::class)
-      ->setConstructorArgs([['id' => $id], 'page'])
-      ->setMethods(['configFactory'])
-      ->getMock();
-
-    $config_factory = $this->getConfigFactoryStub([
-      'page_manager.settings' => [
-        'fallback_page' => 'fallback',
-      ]]);
-    $page->expects($this->once())
-      ->method('configFactory')
-      ->will($this->returnValue($config_factory));
-
-    $this->assertSame($expected, $page->isFallbackPage());
-  }
-
-  /**
-   * Provides test data for testIsFallbackPage().
-   */
-  public function providerTestIsFallbackPage() {
-    $data = [];
-    $data[] = ['foo', FALSE];
-    $data[] = ['fallback', TRUE];
-    return $data;
-  }
-
 }

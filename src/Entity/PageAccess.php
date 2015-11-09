@@ -83,9 +83,6 @@ class PageAccess extends EntityAccessControlHandler implements EntityHandlerInte
       }
       return AccessResult::allowedIf($this->resolveConditions($conditions, $entity->getAccessLogic()));
     }
-    if ($operation == 'delete' && $entity->isFallbackPage()) {
-      return AccessResult::forbidden()->addCacheableDependency($entity);
-    }
     return parent::checkAccess($entity, $operation, $account);
   }
 

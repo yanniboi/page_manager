@@ -62,7 +62,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
       /** @var \Drupal\page_manager\PageInterface $entity */
 
       // If the page is disabled skip making a route for it.
-      if (!$entity->status() || $entity->isFallbackPage() || !$entity->getVariants()) {
+      if (!$entity->status() || !$entity->getVariants()) {
         continue;
       }
 
