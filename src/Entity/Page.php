@@ -201,7 +201,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @return \Drupal\Core\Entity\EntityStorageInterface
    */
   protected function variantStorage() {
-    return \Drupal::entityManager()->getStorage('page_variant');
+    return \Drupal::service('entity_type.manager')->getStorage('page_variant');
   }
 
   /**
@@ -331,7 +331,8 @@ class Page extends ConfigEntityBase implements PageInterface {
       foreach ($this->variantStorage()->loadByProperties(['page' => $this->id()]) as $variant) {
         $this->variants[$variant->id()] = $variant;
       }
-      uasort($this->variants, [$this, 'variantSortHelper']);
+      // Suppress errors because of https://bugs.php.net/bug.php?id=50688.
+      @uasort($this->variants, [$this, 'variantSortHelper']);
     }
     return $this->variants;
   }
