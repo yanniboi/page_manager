@@ -52,12 +52,6 @@ class PageManagerRoutes extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
-    // @todo Until https://www.drupal.org/node/2600666 is in, alter the
-    //   /node/{node} route to add a requirement for a serial ID.
-    if ($node_view_route = $collection->get('entity.node.canonical')) {
-      $node_view_route->setRequirement('node', '\d+');
-    }
-
     foreach ($this->entityStorage->loadMultiple() as $entity_id => $entity) {
       /** @var \Drupal\page_manager\PageInterface $entity */
 
