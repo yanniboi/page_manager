@@ -45,7 +45,7 @@ abstract class SelectionConditionFormBase extends ConditionFormBase {
     // Save the page entity.
     $this->pageVariant->save();
 
-    $form_state->setRedirectUrl($this->pageVariant->urlInfo('edit-form'));
+    $form_state->setRedirectUrl($this->pageVariant->toUrl('edit-form'));
   }
 
 }

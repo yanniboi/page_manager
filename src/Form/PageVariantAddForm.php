@@ -26,7 +26,7 @@ class PageVariantAddForm extends PageVariantFormBase {
    */
   public function save(array $form, FormStateInterface $form_state) {
     parent::save($form, $form_state);
-    $form_state->setRedirectUrl($this->getEntity()->urlInfo('edit-form'));
+    $form_state->setRedirectUrl($this->getEntity()->toUrl('edit-form'));
   }
 
 }

@@ -196,7 +196,7 @@ abstract class StaticContextFormBase extends FormBase {
     // Set the submission message.
     drupal_set_message($this->submitMessageText());
 
-    $form_state->setRedirectUrl($this->page->urlInfo('edit-form'));
+    $form_state->setRedirectUrl($this->page->toUrl('edit-form'));
   }
 
   /**

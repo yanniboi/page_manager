@@ -158,11 +158,11 @@ class PageEditForm extends PageFormBase {
       $operations = [];
       $operations['edit'] = [
         'title' => $this->t('Edit'),
-        'url' => $page_variant->urlInfo('edit-form'),
+        'url' => $page_variant->toUrl('edit-form'),
       ];
       $operations['delete'] = [
         'title' => $this->t('Delete'),
-        'url' => $page_variant->urlInfo('delete-form'),
+        'url' => $page_variant->toUrl('delete-form'),
       ];
       $row['operations'] = [
         '#type' => 'operations',

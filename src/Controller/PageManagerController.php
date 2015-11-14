@@ -329,7 +329,7 @@ class PageManagerController extends ControllerBase {
    */
   public function addPageVariantEntityForm(PageInterface $page, $variant_plugin_id) {
     // Create a page variant entity.
-    $entity = $this->entityManager()->getStorage('page_variant')->create([
+    $entity = $this->entityTypeManager()->getStorage('page_variant')->create([
       'page' => $page->id(),
       'variant' => $variant_plugin_id,
     ]);

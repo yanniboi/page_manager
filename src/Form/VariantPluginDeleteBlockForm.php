@@ -49,7 +49,7 @@ class VariantPluginDeleteBlockForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return $this->pageVariant->urlInfo('edit-form');
+    return $this->pageVariant->toUrl('edit-form');
   }
 
   /**

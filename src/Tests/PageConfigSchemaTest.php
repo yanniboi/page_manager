@@ -8,9 +8,9 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\config\Tests\SchemaCheckTestTrait;
+use Drupal\KernelTests\KernelTestBase;
 use Drupal\page_manager\Entity\Page;
 use Drupal\page_manager\Entity\PageVariant;
-use Drupal\simpletest\KernelTestBase;
 
 /**
  * Ensures that page entities have valid config schema.
@@ -90,9 +90,9 @@ class PageConfigSchemaTest extends KernelTestBase {
     $page_variant->save();
 
     $page_config = \Drupal::config("page_manager.page.$id");
-    $this->assertEqual($page_config->get('id'), $id);
+    $this->assertSame($page_config->get('id'), $id);
     $variant_config = \Drupal::config("page_manager.page_variant.$page_variant_id");
-    $this->assertEqual($variant_config->get('id'), $page_variant_id);
+    $this->assertSame($variant_config->get('id'), $page_variant_id);
 
     $this->assertConfigSchema(\Drupal::service('config.typed'), $page_config->getName(), $page_config->get());
     $this->assertConfigSchema(\Drupal::service('config.typed'), $variant_config->getName(), $variant_config->get());
