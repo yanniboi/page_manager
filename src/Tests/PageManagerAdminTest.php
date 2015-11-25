@@ -57,6 +57,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestDisablePage();
     $this->doTestAddVariant();
     $this->doTestAddBlock();
+    $this->doTestSecondPage();
     $this->doTestEditBlock();
     $this->doTestEditVariant();
     $this->doTestReorderVariants();
@@ -198,6 +199,40 @@ class PageManagerAdminTest extends WebTestBase {
     //$this->assertRaw('<h2>User account menu</h2>');
     // Check the block label.
     $this->assertRaw('User account menu');
+  }
+
+  /**
+   * Creates a second page with another block display.
+   */
+  protected function doTestSecondPage() {
+    $this->drupalGet('admin/structure/page_manager');
+
+    // Add a new page.
+    $this->clickLink('Add page');
+    $edit = [
+      'id' => 'second',
+      'label' => 'Second',
+      'path' => 'second',
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->assertRaw(new FormattableMarkup('The %label page has been added.', ['%label' => 'Second']));
+
+    // Add a variant.
+    $this->clickLink('Add new variant');
+    $this->clickLink('Block page');
+    $edit = [
+      'label' => 'Second variant',
+      'id' => 'second_block_page',
+      'variant_settings[page_title]' => 'Second title',
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->assertRaw(new FormattableMarkup('Saved the %label variant.', ['%label' => 'Second variant']));
+
+    // Visit both pages, make sure that they do not interfere with each other.
+    $this->drupalGet('admin/foo');
+    $this->assertTitle('Example title | Drupal');
+    $this->drupalGet('second');
+    $this->assertTitle('Second title | Drupal');
   }
 
   /**
