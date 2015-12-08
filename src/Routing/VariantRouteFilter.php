@@ -79,7 +79,8 @@ class VariantRouteFilter implements RouteFilterInterface {
     // Store the unaltered request attributes.
     $original_attributes = $request->attributes->all();
 
-    // First get all routes and sort them by variant weight.
+    // First get all routes and sort them by variant weight. Note that routes
+    // without a weight will have an undefined order, they are ignored here.
     $routes = $collection->all();
     uasort($routes, [$this, 'routeWeightSort']);
 
@@ -104,6 +105,8 @@ class VariantRouteFilter implements RouteFilterInterface {
       $request->attributes->replace($original_attributes);
     }
 
+    // Because the sort order of $routes is unreliable for a route without a
+    // variant weight, rely on the original order of $collection here.
     foreach ($collection as $name => $route) {
       if ($route->getDefault('page_manager_page_variant')) {
         if ($accessible_route_name !== $name) {
