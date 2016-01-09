@@ -8,11 +8,11 @@
 namespace Drupal\page_manager\Entity;
 
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Condition\ConditionPluginCollection;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
-use Drupal\ctools\Plugin\ConditionVariantTrait;
 use Drupal\page_manager\PageVariantInterface;
 
 /**
@@ -58,8 +58,6 @@ use Drupal\page_manager\PageVariantInterface;
  * )
  */
 class PageVariant extends ConfigEntityBase implements PageVariantInterface {
-
-  use ConditionVariantTrait;
 
   /**
    * The ID of the page variant entity.
@@ -137,6 +135,13 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * @var \Drupal\Core\Plugin\DefaultSingleLazyPluginCollection
    */
   protected $variantPluginCollection;
+
+  /**
+   * The plugin collection that holds the selection condition plugins.
+   *
+   * @var \Drupal\Component\Plugin\LazyPluginCollection
+   */
+  protected $selectionConditionCollection;
 
   /**
    * {@inheritdoc}
@@ -277,6 +282,40 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   /**
    * {@inheritdoc}
    */
+  public function getSelectionConditions() {
+    if (!$this->selectionConditionCollection) {
+      $this->selectionConditionCollection = new ConditionPluginCollection($this->getConditionManager(), $this->getSelectionConfiguration());
+    }
+    return $this->selectionConditionCollection;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addSelectionCondition(array $configuration) {
+    $configuration['uuid'] = $this->uuidGenerator()->generate();
+    $this->getSelectionConditions()->addInstanceId($configuration['uuid'], $configuration);
+    return $configuration['uuid'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSelectionCondition($condition_id) {
+    return $this->getSelectionConditions()->get($condition_id);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function removeSelectionCondition($condition_id) {
+    $this->getSelectionConditions()->removeInstanceId($condition_id);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   protected function urlRouteParameters($rel) {
     $parameters = parent::urlRouteParameters($rel);
     $parameters['page'] = $this->get('page');
@@ -310,12 +349,12 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   }
 
   /**
-   * Wraps the context handler.
+   * Wraps the condition plugin manager.
    *
-   * @return \Drupal\Core\Plugin\Context\ContextHandlerInterface
+   * @return \Drupal\Core\Condition\ConditionManager
    */
-  protected function contextHandler() {
-    return \Drupal::service('context.handler');
+  protected function getConditionManager() {
+    return \Drupal::service('plugin.manager.condition');
   }
 
 }
