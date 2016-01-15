@@ -145,16 +145,16 @@ class PageManagerController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\page_manager\PageInterface $page
-   *   The page entity.
+   * @param \Drupal\page_manager\PageVariantInterface $page_variant
+   *   The page variant entity.
    * @param string $name
    *   The static context name.
    *
    * @return string
    *   The title for the static context edit form.
    */
-  public function editStaticContextTitle(PageInterface $page, $name) {
-    $static_context = $page->getStaticContext($name);
+  public function editStaticContextTitle(PageVariantInterface $page_variant, $name) {
+    $static_context = $page_variant->getStaticContext($name);
     return $this->t('Edit @label static context', ['@label' => $static_context['label']]);
   }
 

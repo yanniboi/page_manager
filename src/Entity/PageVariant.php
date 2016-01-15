@@ -46,7 +46,7 @@ use Drupal\page_manager\PageVariantInterface;
  *     "weight",
  *     "selection_criteria",
  *     "selection_logic",
- *     "contexts"
+ *     "static_context",
  *   },
  *   links = {
  *     "edit-form" = "/admin/structure/page_manager/manage/{page}/variant/{page_variant}",
@@ -125,9 +125,18 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   /**
    * An array of collected contexts.
    *
-   * @var \Drupal\Component\Plugin\Context\ContextInterface[]
+   * @var \Drupal\Component\Plugin\Context\ContextInterface[]|null
    */
-  protected $contexts = [];
+  protected $contexts = NULL;
+
+  /**
+   * Static context references.
+   *
+   * A list of arrays with the keys name, label, type and value.
+   *
+   * @var array[]
+   */
+  protected $static_context = [];
 
   /**
    * The plugin collection that holds the single variant plugin instance.
@@ -232,22 +241,35 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   }
 
   /**
-   * Gets the page this variant is on.
-   *
-   * @return \Drupal\page_manager\Entity\Page
+   * {@inheritdoc}
    */
-  protected function getPage() {
+  public function getPage() {
     if (!$this->page) {
       throw new \UnexpectedValueException('The page variant has no associated page');
     }
-    return Page::load($this->page);
+    return $this->getPageStorage()->load($this->page);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getContexts() {
-    return array_merge($this->getPage()->getContexts(), $this->contexts);
+    if (is_null($this->contexts)) {
+      $static_contexts = $this->getContextMapper()->getContextValues($this->getStaticContexts());
+      $page_contexts = $this->getPage()->getContexts();
+      $this->contexts = array_merge($static_contexts, $page_contexts);
+    }
+    return $this->contexts;
+  }
+
+  /**
+   * Resets the collected contexts.
+   *
+   * @return $this
+   */
+  protected function resetCollectedContexts() {
+    $this->contexts = NULL;
+    return $this;
   }
 
   /**
@@ -316,6 +338,41 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   /**
    * {@inheritdoc}
    */
+  public function getStaticContexts() {
+    return $this->static_context;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getStaticContext($name) {
+    if (isset($this->static_context[$name])) {
+      return $this->static_context[$name];
+    }
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setStaticContext($name, $configuration) {
+    $this->static_context[$name] = $configuration;
+    $this->resetCollectedContexts();
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function removeStaticContext($name) {
+    unset($this->static_context[$name]);
+    $this->resetCollectedContexts();
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   protected function urlRouteParameters($rel) {
     $parameters = parent::urlRouteParameters($rel);
     $parameters['page'] = $this->get('page');
@@ -355,6 +412,34 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    */
   protected function getConditionManager() {
     return \Drupal::service('plugin.manager.condition');
+  }
+
+  /**
+   * Wraps the context mapper.
+   *
+   * @return \Drupal\page_manager\ContextMapperInterface
+   */
+  protected function getContextMapper() {
+    return \Drupal::service('page_manager.context_mapper');
+  }
+
+  /**
+   * Wraps the page entity storage.
+   *
+   * @return \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected function getPageStorage() {
+    return \Drupal::entityTypeManager()->getStorage('page');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __sleep() {
+    $vars = parent::__sleep();
+    // Gathered contexts objects should not be serialized.
+    unset($vars[array_search('contexts', $vars)]);
+    return $vars;
   }
 
 }
