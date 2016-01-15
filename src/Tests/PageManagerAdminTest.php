@@ -156,6 +156,8 @@ class PageManagerAdminTest extends WebTestBase {
 
     // Add a new variant.
     $this->clickLink('Add new variant');
+    $this->assertNoText('Page with blocks');
+    $this->assertNoText('Simple page');
     $this->clickLink('Block page');
     $edit = [
       'label' => 'First',

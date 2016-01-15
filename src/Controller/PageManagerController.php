@@ -197,6 +197,14 @@ class PageManagerController extends ControllerBase {
       '#links' => [],
     ];
     foreach ($this->variantManager->getDefinitions() as $variant_plugin_id => $variant_plugin) {
+      // The following two variants are provided by Drupal Core. They are not
+      // configurable and therefore not compatible with Page Manager but have
+      // similar and confusing labels. Skip them so that they are not shown in
+      // the UI.
+      if (in_array($variant_plugin_id, ['simple_page', 'block_page'])) {
+        continue;
+      }
+
       $build['#links'][$variant_plugin_id] = [
         'title' => $variant_plugin['admin_label'],
         'url' => Url::fromRoute('entity.page_variant.add_form', [
