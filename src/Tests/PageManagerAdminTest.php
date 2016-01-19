@@ -60,6 +60,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestAddBlock();
     $this->doTestSecondPage();
     $this->doTestEditBlock();
+    $this->doTestAlterBlock();
     $this->doTestEditVariant();
     $this->doTestReorderVariants();
     $this->doTestAddPageWithDuplicatePath();
@@ -263,6 +264,37 @@ class PageManagerAdminTest extends WebTestBase {
     // @todo Restore the <h2> check once the follow-up to
     //   https://www.drupal.org/node/1869476 is in.
     //$this->assertRaw('<h2>' . $edit['settings[label]'] . '</h2>');
+    $this->assertRaw($edit['settings[label]']);
+  }
+
+  /**
+   * Tests altering a block.
+   */
+  protected function doTestAlterBlock() {
+    // Alter the block label.
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
+    $this->clickLink('Edit');
+    $this->clickLink('Edit');
+    $edit = [
+      'settings[label]' => 'Label to be altered',
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Update block');
+    $this->drupalGet('admin/foo');
+    $this->assertResponse(200);
+    // Check if the block label is altered correctly.
+    $this->assertRaw('Altered label');
+
+    // Re-set the previous block label.
+    $this->drupalGet('admin/structure/page_manager/manage/foo');
+    $this->clickLink('Edit');
+    $this->clickLink('Edit');
+    $edit = [
+      'settings[label]' => 'Updated block label',
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Update block');
+    $this->drupalGet('admin/foo');
+    $this->assertResponse(200);
+    // Check the block label.
     $this->assertRaw($edit['settings[label]']);
   }
 
