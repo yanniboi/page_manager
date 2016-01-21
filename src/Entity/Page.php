@@ -24,12 +24,6 @@ use Drupal\page_manager\PageVariantInterface;
  *   label = @Translation("Page"),
  *   handlers = {
  *     "access" = "Drupal\page_manager\Entity\PageAccess",
- *     "list_builder" = "Drupal\page_manager\Entity\PageListBuilder",
- *     "form" = {
- *       "add" = "Drupal\page_manager\Form\PageAddForm",
- *       "edit" = "Drupal\page_manager\Form\PageEditForm",
- *       "delete" = "Drupal\page_manager\Form\PageDeleteForm",
- *     }
  *   },
  *   admin_permission = "administer pages",
  *   entity_keys = {
@@ -45,14 +39,6 @@ use Drupal\page_manager\PageVariantInterface;
  *     "access_logic",
  *     "access_conditions",
  *   },
- *   links = {
- *     "collection" = "/admin/structure/page_manager",
- *     "add-form" = "/admin/structure/page_manager/add",
- *     "edit-form" = "/admin/structure/page_manager/manage/{page}",
- *     "delete-form" = "/admin/structure/page_manager/manage/{page}/delete",
- *     "enable" = "/admin/structure/page_manager/manage/{page}/enable",
- *     "disable" = "/admin/structure/page_manager/manage/{page}/disable"
- *   }
  * )
  */
 class Page extends ConfigEntityBase implements PageInterface {

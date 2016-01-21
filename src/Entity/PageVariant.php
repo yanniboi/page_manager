@@ -23,12 +23,6 @@ use Drupal\page_manager\PageVariantInterface;
  *   label = @Translation("Variant"),
  *   handlers = {
  *     "access" = "Drupal\page_manager\Entity\PageVariantAccess",
- *     "view_builder" = "Drupal\page_manager\Entity\PageVariantViewBuilder",
- *     "form" = {
- *       "add" = "Drupal\page_manager\Form\PageVariantAddForm",
- *       "edit" = "Drupal\page_manager\Form\PageVariantEditForm",
- *       "delete" = "Drupal\page_manager\Form\PageVariantDeleteForm"
- *     }
  *   },
  *   admin_permission = "administer pages",
  *   entity_keys = {
@@ -47,10 +41,6 @@ use Drupal\page_manager\PageVariantInterface;
  *     "selection_criteria",
  *     "selection_logic",
  *     "static_context",
- *   },
- *   links = {
- *     "edit-form" = "/admin/structure/page_manager/manage/{page}/variant/{page_variant}",
- *     "delete-form" = "/admin/structure/page_manager/manage/{page}/variant/{page_variant}/delete",
  *   },
  *   lookup_keys = {
  *     "page"

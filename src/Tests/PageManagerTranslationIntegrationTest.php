@@ -18,8 +18,10 @@ class PageManagerTranslationIntegrationTest extends ContentTranslationTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Remove dependency on the UI module.
    */
-  public static $modules = ['block', 'page_manager', 'node', 'content_translation'];
+  public static $modules = ['block', 'page_manager', 'page_manager_ui', 'node', 'content_translation'];
 
   /**
    * {@inheritdoc}

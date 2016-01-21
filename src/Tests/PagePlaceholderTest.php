@@ -18,8 +18,10 @@ class PagePlaceholderTest extends WebTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Remove dependency on the UI module.
    */
-  public static $modules = ['page_manager', 'page_manager_test'];
+  public static $modules = ['page_manager', 'page_manager_ui', 'page_manager_test'];
 
   /**
    * {@inheritdoc}
