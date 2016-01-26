@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager_ui\Entity\PageVariantViewBuilder.
+ * Contains \Drupal\page_manager\Entity\PageVariantViewBuilder.
  */
 
-namespace Drupal\page_manager_ui\Entity;
+namespace Drupal\page_manager\Entity;
 
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Display\ContextAwareVariantInterface;

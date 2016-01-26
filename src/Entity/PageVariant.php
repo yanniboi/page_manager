@@ -22,6 +22,7 @@ use Drupal\page_manager\PageVariantInterface;
  *   id = "page_variant",
  *   label = @Translation("Variant"),
  *   handlers = {
+ *     "view_builder" = "Drupal\page_manager\Entity\PageVariantViewBuilder",
  *     "access" = "Drupal\page_manager\Entity\PageVariantAccess",
  *   },
  *   admin_permission = "administer pages",

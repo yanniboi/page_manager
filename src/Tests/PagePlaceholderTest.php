@@ -7,6 +7,8 @@
 
 namespace Drupal\page_manager\Tests;
 
+use Drupal\page_manager\Entity\Page;
+use Drupal\page_manager\Entity\PageVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -21,7 +23,7 @@ class PagePlaceholderTest extends WebTestBase {
    *
    * @todo Remove dependency on the UI module.
    */
-  public static $modules = ['page_manager', 'page_manager_ui', 'page_manager_test'];
+  public static $modules = ['page_manager', 'page_manager_test'];
 
   /**
    * {@inheritdoc}
@@ -43,19 +45,24 @@ class PagePlaceholderTest extends WebTestBase {
     $this->assertText('Hello World! Page ' . $page_string);
 
     // Create a new page entity with the same path as in the test module.
-    $edit = [
+    $page = Page::create([
       'label' => 'Placeholder test',
       'id' => 'placeholder',
       'path' => '/page-manager-test/%',
-    ];
-    $this->drupalPostForm('admin/structure/page_manager/add', $edit, 'Save');
+    ]);
+    $page->save();
 
     // Create a new variant.
-    $edit = [
+    $http_status_variant = PageVariant::create([
+      'variant' => 'http_status_code',
+      'label' => 'HTTP status code',
       'id' => 'http_status_code',
-      'variant_settings[status_code]' => 200,
-    ];
-    $this->drupalPostForm('admin/structure/page_manager/manage/placeholder/add/http_status_code', $edit, 'Save');
+      'page' => 'placeholder',
+    ]);
+    $http_status_variant->getVariantPlugin()->setConfiguration(['status_code' => 200]);
+    $http_status_variant->save();
+    // @todo We shouldn't need to call this!
+    $this->container->get('router.builder')->rebuildIfNeeded();
 
     // Access the page callback again and check that now the text is not there.
     $this->drupalGet('page-manager-test/' . $page_string);

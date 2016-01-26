@@ -6,7 +6,6 @@
  */
 
 use Drupal\page_manager_ui\Entity\PageListBuilder;
-use Drupal\page_manager_ui\Entity\PageVariantViewBuilder;
 use Drupal\page_manager_ui\Form\PageAddForm;
 use Drupal\page_manager_ui\Form\PageDeleteForm;
 use Drupal\page_manager_ui\Form\PageEditForm;
@@ -32,7 +31,6 @@ function page_manager_ui_entity_type_build(array &$entity_types) {
     ->setLinkTemplate('disable', '/admin/structure/page_manager/manage/{page}/disable');
 
   $entity_types['page_variant']
-    ->setViewBuilderClass(PageVariantViewBuilder::class)
     ->setFormClass('add', PageVariantAddForm::class)
     ->setFormClass('edit', PageVariantEditForm::class)
     ->setFormClass('delete', PageVariantDeleteForm::class)

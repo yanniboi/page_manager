@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\content_translation\Tests\ContentTranslationTestBase;
+use Drupal\page_manager\Entity\PageVariant;
 
 /**
  * Tests that overriding the entity page does not affect content translation.
@@ -21,7 +22,7 @@ class PageManagerTranslationIntegrationTest extends ContentTranslationTestBase {
    *
    * @todo Remove dependency on the UI module.
    */
-  public static $modules = ['block', 'page_manager', 'page_manager_ui', 'node', 'content_translation'];
+  public static $modules = ['block', 'page_manager', 'node', 'content_translation'];
 
   /**
    * {@inheritdoc}
@@ -62,20 +63,17 @@ class PageManagerTranslationIntegrationTest extends ContentTranslationTestBase {
     $this->clickLink('Translate');
     $this->assertResponse(200);
 
-    // Create a new page entity to take over node pages.
-    $edit = [
-      'label' => 'Node View',
-      'id' => 'node_view',
-      'path' => 'node/%',
-    ];
-    $this->drupalPostForm('admin/structure/page_manager/add', $edit, 'Save');
-
     // Create a new variant.
-    $edit = [
+    $http_status_variant = PageVariant::create([
+      'variant' => 'http_status_code',
+      'label' => 'HTTP status code',
       'id' => 'http_status_code',
-      'variant_settings[status_code]' => 200,
-    ];
-    $this->drupalPostForm('admin/structure/page_manager/manage/node_view/add/http_status_code', $edit, 'Save');
+      'page' => 'node_view',
+    ]);
+    $http_status_variant->getVariantPlugin()->setConfiguration(['status_code' => 200]);
+    $http_status_variant->save();
+    // @todo We shouldn't need to call this!
+    $this->container->get('router.builder')->rebuildIfNeeded();
 
     $this->drupalGet('node/' . $node->id());
     $this->assertResponse(200);
