@@ -130,7 +130,7 @@ class PageManagerRoutesTest extends UnitTestCase {
       'base_route_name' => 'page_manager.page_view_page1',
     ];
     $expected_requirements = [
-      '_entity_access' => 'page_manager_page.view',
+      '_page_access' => 'page_manager_page.view',
     ];
     $expected_options = [
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
@@ -198,17 +198,17 @@ class PageManagerRoutesTest extends UnitTestCase {
       'page_manager_page_variant_weight' => 0,
       'base_route_name' => $route_name,
     ];
-    $expected_requirements = $requirements;
+    $expected_requirements = $requirements + ['_page_access' => 'page_manager_page.view'];
     $expected_options = [
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
       'parameters' => [
+        'foo' => 'bar',
         'page_manager_page_variant' => [
           'type' => 'entity:page_variant',
         ],
         'page_manager_page' => [
           'type' => 'entity:page',
         ],
-        'foo' => 'bar',
       ],
       '_admin_route' => FALSE,
     ];

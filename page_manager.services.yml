@@ -28,3 +28,7 @@ services:
     tags:
       - { name: event_subscriber }
     arguments: ['@current_route_match']
+  page_manager.page_access_check:
+    class: Drupal\page_manager\Entity\PageAccessCheck
+    tags:
+      - { name: access_check, applies_to: _page_access }
