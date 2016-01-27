@@ -76,6 +76,8 @@ class PageNodeAccessTest extends WebTestBase {
       ],
     ]);
     $this->page->save();
+    // @todo We shouldn't need to call this!
+    $this->container->get('router.builder')->rebuildIfNeeded();
 
     $this->drupalLogout();
     $this->drupalGet('node/' . $node->id());
