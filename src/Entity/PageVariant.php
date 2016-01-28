@@ -20,7 +20,7 @@ use Drupal\page_manager\PageVariantInterface;
  *
  * @ConfigEntityType(
  *   id = "page_variant",
- *   label = @Translation("Variant"),
+ *   label = @Translation("Page Variant"),
  *   handlers = {
  *     "view_builder" = "Drupal\page_manager\Entity\PageVariantViewBuilder",
  *     "access" = "Drupal\page_manager\Entity\PageVariantAccess",
