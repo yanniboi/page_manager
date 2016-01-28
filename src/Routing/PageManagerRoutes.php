@@ -73,6 +73,14 @@ class PageManagerRoutes extends RouteSubscriberBase {
       else {
         $route_name = "page_manager.page_view_$entity_id";
         $path = $entity->getPath();
+        $parameters = [];
+      }
+
+      // Add in configured parameters.
+      foreach ($entity->getParameters() as $parameter_name => $parameter) {
+        if (!empty($parameter['type'])) {
+          $parameters[$parameter_name]['type'] = $parameter['type'];
+        }
       }
 
       $parameters['page_manager_page_variant']['type'] = 'entity:page_variant';

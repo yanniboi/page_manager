@@ -539,6 +539,28 @@ class PageManagerAdminTest extends WebTestBase {
   }
 
   /**
+   * Tests the parameters UI.
+   */
+  public function testParameters() {
+    $this->drupalGet('admin/structure/page_manager');
+    $this->clickLink('Add page');
+    $edit = [
+      'id' => 'foo',
+      'label' => 'Foo',
+      'path' => '/foo/{user}',
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->assertText('No context assigned');
+
+    $this->clickLink('Edit');
+    $this->drupalPostForm(NULL, ['type' => 'entity:user'], 'Update parameter');
+    $this->assertNoText('No context assigned');
+    $this->assertText('entity:user');
+    $parameters = Page::load('foo')->getParameters();
+    $this->assertIdentical(['user' => ['machine_name' => 'user', 'type' => 'entity:user', 'label' => 'User']], $parameters);
+  }
+
+  /**
    * Asserts that a theme was used for the page.
    *
    * @param string $theme_name

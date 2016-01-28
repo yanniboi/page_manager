@@ -159,6 +159,21 @@ class PageManagerController extends ControllerBase {
   }
 
   /**
+   * Route title callback.
+   *
+   * @param \Drupal\page_manager\PageInterface $page
+   *   The page entity.
+   * @param string $name
+   *   The parameter context name.
+   *
+   * @return string
+   *   The title for the parameter edit form.
+   */
+  public function editParameterTitle(PageInterface $page, $name) {
+    return $this->t('Edit @label parameter', ['@label' => $page->getParameter($name)['label']]);
+  }
+
+  /**
    * Enables or disables a Page.
    *
    * @param \Drupal\page_manager\PageInterface $page

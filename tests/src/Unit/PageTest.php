@@ -103,4 +103,40 @@ class PageTest extends UnitTestCase {
     $this->assertSame(['foo' => $context], $contexts);
   }
 
+  /**
+   * @covers ::filterParameters
+   */
+  public function testFilterParameters() {
+    $parameters = [
+      'foo' => [
+        'machine_name' => 'foo',
+        'type' => 'integer',
+        'label' => 'Foo',
+      ],
+      'bar' => [
+        'machine_name' => 'bar',
+        'type' => '',
+        'label' => '',
+      ],
+    ];
+    $page = new Page(['id' => 'the_page', 'parameters' => $parameters], 'page');
+
+    $expected = $parameters;
+    $this->assertEquals($expected, $page->getParameters());
+
+    $method = new \ReflectionMethod($page, 'filterParameters');
+    $method->setAccessible(TRUE);
+    $method->invoke($page);
+
+    $expected = [
+      'foo' => [
+        'machine_name' => 'foo',
+        'type' => 'integer',
+        'label' => 'Foo',
+      ],
+    ];
+    $this->assertEquals($expected, $page->getParameters());
+
+  }
+
 }

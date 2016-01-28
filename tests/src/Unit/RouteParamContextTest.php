@@ -55,9 +55,19 @@ class RouteParamContextTest extends PageContextTestBase {
 
     $this->page->getPath()->willReturn('/test_route');
 
-    $this->page->addContext('foo', Argument::type(Context::class))->shouldBeCalled();
-    $this->page->addContext('baz', Argument::type(Context::class))->shouldBeCalled();
-    $this->page->addContext('page', Argument::type(Context::class))->shouldBeCalled();
+    $this->page->getParameter('foo')->willReturn(['machine_name' => 'foo', 'type' => 'integer', 'label' => 'Foo']);
+    $this->page->getParameter('baz')->willReturn(['machine_name' => 'baz', 'type' => 'integer', 'label' => '']);
+    $this->page->getParameter('page')->willReturn(['machine_name' => 'page', 'type' => 'entity:page', 'label' => '']);
+
+    $this->page->addContext('foo', Argument::that(function ($context) {
+      return $context instanceof Context && $context->getContextDefinition()->getLabel() == 'Foo';
+    }))->shouldBeCalled();
+    $this->page->addContext('baz', Argument::that(function ($context) {
+      return $context instanceof Context && $context->getContextDefinition()->getLabel() == '{baz} from route';
+    }))->shouldBeCalled();
+    $this->page->addContext('page', Argument::that(function ($context) {
+      return $context instanceof Context && $context->getContextDefinition()->getLabel() == '{page} from route';
+    }))->shouldBeCalled();
 
     $collection->add('test_route', new Route('/test_route', [], [], [
       'parameters' => [

@@ -33,6 +33,7 @@ class PageEditForm extends PageFormBase {
     $attributes = $this->getAjaxAttributes();
     $add_button_attributes = $this->getAjaxButtonAttributes();
 
+    $form['parameters_section'] = $this->buildParametersForm();
 
     $form['variant_section'] = [
       '#type' => 'details',
@@ -174,6 +175,58 @@ class PageEditForm extends PageFormBase {
   }
 
   /**
+   * Builds the parameters form for a page entity.
+   *
+   * @return array
+   */
+  protected function buildParametersForm() {
+    $form = [
+      '#type' => 'details',
+      '#title' => $this->t('Parameters'),
+      '#open' => TRUE,
+    ];
+    $form['parameters'] = [
+      '#type' => 'table',
+      '#header' => [
+        $this->t('Machine name'),
+        $this->t('Label'),
+        $this->t('Type'),
+        $this->t('Operations'),
+      ],
+      '#empty' => $this->t('There are no parameters.'),
+    ];
+    foreach ($this->entity->getParameterNames() as $parameter_name) {
+      $parameter = $this->entity->getParameter($parameter_name);
+      $row = [];
+      $row['machine_name'] = $parameter['machine_name'];
+      if ($label = $parameter['label']) {
+        $row['label'] = $label;
+      }
+      else {
+        $row['type']['colspan'] = 2;
+      }
+      $row['type']['data'] = $parameter['type'] ?: $this->t('<em>No context assigned</em>');
+
+      $operations = [];
+      $operations['edit'] = [
+        'title' => $this->t('Edit'),
+        'url' => Url::fromRoute('page_manager.parameter_edit', [
+          'page' => $this->entity->id(),
+          'name' => $parameter['machine_name'],
+        ]),
+        'attributes' => $this->getAjaxAttributes(),
+      ];
+      $row['operations']['data'] = [
+        '#type' => 'operations',
+        '#links' => $operations,
+      ];
+
+      $form['parameters']['#rows'][$parameter['machine_name']] = $row;
+    }
+    return $form;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
@@ -194,10 +247,16 @@ class PageEditForm extends PageFormBase {
    * {@inheritdoc}
    */
   protected function copyFormValuesToEntity(EntityInterface $entity, array $form, FormStateInterface $form_state) {
-    // Variants will be handled independently.
-    $variants = $form_state->getValue('variants');
-    $form_state->unsetValue('variants');
+    $keys_to_ignore = ['variants', 'parameters'];
+    $values_to_restore = [];
+    foreach ($keys_to_ignore as $key) {
+      $values_to_restore[$key] = $form_state->getValue($key);
+      $form_state->unsetValue($key);
+    }
     parent::copyFormValuesToEntity($entity, $form, $form_state);
-    $form_state->setValue('variants', $variants);
+    foreach ($values_to_restore as $key => $value) {
+      $form_state->setValue($key, $value);
+    }
   }
+
 }

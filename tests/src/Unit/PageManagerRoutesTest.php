@@ -78,6 +78,7 @@ class PageManagerRoutesTest extends UnitTestCase {
    */
   public function testAlterRoutesWithStatus() {
     // Set up a valid page.
+    /** @var \Drupal\page_manager\PageInterface|\Prophecy\Prophecy\ProphecyInterface $page1 */
     $page1 = $this->prophesize(PageInterface::class);
     $page1->status()
       ->willReturn(TRUE)
@@ -97,9 +98,13 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page1->usesAdminTheme()
       ->willReturn(TRUE)
       ->shouldBeCalled();
+    $page1->getParameters()
+      ->willReturn([])
+      ->shouldBeCalled();
     $pages['page1'] = $page1->reveal();
 
     // Set up a disabled page.
+    /** @var \Drupal\page_manager\PageInterface|\Prophecy\Prophecy\ProphecyInterface $page2 */
     $page2 = $this->prophesize(PageInterface::class);
     $page2->status()
       ->willReturn(FALSE)
@@ -108,6 +113,8 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->willReturn(['variant2' => 'variant2']);
     $page2->id()->willReturn('page1');
     $page2->getPath()->willReturn('/page2');
+    $page2->getParameters()
+      ->willReturn([]);
     $pages['page2'] = $page2->reveal();
 
     $this->pageStorage->loadMultiple()
@@ -158,12 +165,16 @@ class PageManagerRoutesTest extends UnitTestCase {
   public function testAlterRoutesOverrideExisting($page_path, $existing_route_path, $requirements = []) {
     $route_name = 'test_route';
     // Set up a page with the same path as an existing route.
+    /** @var \Drupal\page_manager\PageInterface|\Prophecy\Prophecy\ProphecyInterface $page */
     $page = $this->prophesize(PageInterface::class);
     $page->status()
       ->willReturn(TRUE)
       ->shouldBeCalled();
     $page->getPath()
       ->willReturn($page_path)
+      ->shouldBeCalled();
+    $page->getParameters()
+      ->willReturn([])
       ->shouldBeCalled();
     $variant1 = $this->prophesize(PageVariantInterface::class);
     $variant1->getWeight()->willReturn(0);
@@ -180,7 +191,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->cacheTagsInvalidator->invalidateTags(["page_manager_route_name:$route_name"])->shouldBeCalledTimes(1);
 
     $collection = new RouteCollection();
-    $collection->add($route_name, new Route($existing_route_path, ['default_exists' => 'default_value'], $requirements, ['parameters' => ['foo' => 'bar']]));
+    $collection->add($route_name, new Route($existing_route_path, ['default_exists' => 'default_value'], $requirements, ['parameters' => ['foo' => ['type' => 'bar']]]));
     $route_event = new RouteBuildEvent($collection);
     $this->routeSubscriber->onAlterRoutes($route_event);
 
@@ -202,7 +213,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $expected_options = [
       'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
       'parameters' => [
-        'foo' => 'bar',
+        'foo' => ['type' => 'bar'],
         'page_manager_page_variant' => [
           'type' => 'entity:page_variant',
         ],
@@ -224,6 +235,65 @@ class PageManagerRoutesTest extends UnitTestCase {
     $data['placeholder_with_default'] = ['/test_route/%', '/test_route/{default_exists}'];
     $data['with_requirement'] = ['/test_route/{foo}', '/test_route/{foo}', ['foo' => '\d+']];
     return $data;
+  }
+
+  /**
+   * Tests overriding an existing route with configured parameters.
+   *
+   * @covers ::alterRoutes
+   * @covers ::findPageRouteName
+   *
+   * @dataProvider providerTestAlterRoutesOverrideExisting
+   */
+  public function testAlterRoutesOverrideExistingWithConfiguredParameters($page_path, $existing_route_path, $requirements = []) {
+    $route_name = 'test_route';
+    // Set up a page with the same path as an existing route.
+    /** @var \Drupal\page_manager\PageInterface|\Prophecy\Prophecy\ProphecyInterface $page */
+    $page = $this->prophesize(PageInterface::class);
+    $page->status()->willReturn(TRUE);
+    $page->getPath()->willReturn($page_path);
+    $page->id()->willReturn('page1');
+    $page->label()->willReturn(NULL);
+    $page->usesAdminTheme()->willReturn(FALSE);
+    $page->getParameters()->willReturn(['foo' => ['machine_name' => 'foo', 'type' => 'integer', 'label' => 'Foo'], 'test_route' => ['machine_name' => 'test_route', 'type' => '', 'label' => '']]);
+
+    $variant1 = $this->prophesize(PageVariantInterface::class);
+    $variant1->getWeight()->willReturn(0);
+    $page->getVariants()->willReturn(['variant1' => $variant1->reveal()]);
+
+    $this->pageStorage->loadMultiple()->willReturn(['page1' => $page->reveal()]);
+
+    $collection = new RouteCollection();
+    $collection->add($route_name, new Route($existing_route_path, ['default_exists' => 'default_value'], $requirements, ['parameters' => ['foo' => ['bar' => 'bar']]]));
+    $route_event = new RouteBuildEvent($collection);
+    $this->routeSubscriber->onAlterRoutes($route_event);
+
+    $expected_defaults = [
+      '_entity_view' => 'page_manager_page_variant',
+      '_title' => NULL,
+      'page_manager_page_variant' => 'variant1',
+      'page_manager_page' => 'page1',
+      'page_manager_page_variant_weight' => 0,
+      'base_route_name' => $route_name,
+    ];
+    $expected_requirements = $requirements + ['_page_access' => 'page_manager_page.view'];
+    $expected_options = [
+      'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
+      'parameters' => [
+        'foo' => [
+          'bar' => 'bar',
+          'type' => 'integer',
+        ],
+        'page_manager_page_variant' => [
+          'type' => 'entity:page_variant',
+        ],
+        'page_manager_page' => [
+          'type' => 'entity:page',
+        ],
+      ],
+      '_admin_route' => FALSE,
+    ];
+    $this->assertMatchingRoute($collection->get($route_name), $existing_route_path, $expected_defaults, $expected_requirements, $expected_options);
   }
 
   /**

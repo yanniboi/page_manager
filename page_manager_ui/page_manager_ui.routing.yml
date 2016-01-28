@@ -82,6 +82,16 @@ page_manager.access_condition_delete:
   requirements:
     _entity_access: page.update
 
+#### Parameters
+
+page_manager.parameter_edit:
+  path: '/admin/structure/page_manager/manage/{page}/parameter/edit/{name}'
+  defaults:
+    _form: '\Drupal\page_manager_ui\Form\ParameterEditForm'
+    _title_callback: '\Drupal\page_manager_ui\Controller\PageManagerController::editParameterTitle'
+  requirements:
+    _entity_access: page.update
+
 #### Static Contexts
 
 page_manager.static_context_add:

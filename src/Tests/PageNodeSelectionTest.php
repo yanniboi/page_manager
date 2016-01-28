@@ -7,7 +7,6 @@
 
 namespace Drupal\page_manager\Tests;
 
-use Drupal\page_manager\Entity\Page;
 use Drupal\page_manager\Entity\PageVariant;
 use Drupal\simpletest\WebTestBase;
 

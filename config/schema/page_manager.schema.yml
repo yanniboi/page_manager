@@ -23,6 +23,22 @@ page_manager.page.*:
       sequence:
         - type: condition.plugin.[id]
           label: 'Access Condition'
+    parameters:
+      type: sequence
+      label: Parameter context list
+      sequence:
+        - type: mapping
+          label: Parameter context
+          mapping:
+            machine_name:
+              type: string
+              label: 'Machine-readable name'
+            label:
+              type: label
+              label: 'Label of the context'
+            type:
+              type: string
+              label: 'Context type'
 
 page_manager.page_variant.*:
   type: config_entity

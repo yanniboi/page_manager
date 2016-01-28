@@ -128,6 +128,56 @@ interface PageInterface extends ConfigEntityInterface, EntityWithPluginCollectio
   public function getAccessLogic();
 
   /**
+   * Returns the parameter context value objects for this page entity.
+   *
+   * @return array[]
+   *   An array of parameter context arrays, keyed by parameter name.
+   */
+  public function getParameters();
+
+  /**
+   * Retrieves a specific parameter context.
+   *
+   * @param string $name
+   *   The parameter context's unique name.
+   *
+   * @return array
+   *   The parameter context array.
+   */
+  public function getParameter($name);
+
+  /**
+   * Adds/updates a given parameter context.
+   *
+   * @param string $name
+   *   The parameter context name.
+   * @param string $type
+   *   The parameter context type.
+   * @param string $label
+   *   (optional) The parameter context label.
+   *
+   * @return $this
+   */
+  public function setParameter($name, $type, $label = '');
+
+  /**
+   * Removes a specific parameter context.
+   *
+   * @param string $name
+   *   The parameter context's unique machine name.
+   *
+   * @return $this
+   */
+  public function removeParameter($name);
+
+  /**
+   * Gets the names of all parameters for this page.
+   *
+   * @return string[]
+   */
+  public function getParameterNames();
+
+  /**
    * Gets the values for all defined contexts.
    *
    * @return \Drupal\Component\Plugin\Context\ContextInterface[]
