@@ -136,7 +136,6 @@ class PageTest extends UnitTestCase {
       ],
     ];
     $this->assertEquals($expected, $page->getParameters());
-
   }
 
 }

@@ -9,7 +9,6 @@ namespace Drupal\page_manager_ui\Form;
 
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 use Drupal\page_manager\PageVariantInterface;
 
 /**

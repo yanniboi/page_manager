@@ -180,7 +180,7 @@ interface PageInterface extends ConfigEntityInterface, EntityWithPluginCollectio
   /**
    * Gets the values for all defined contexts.
    *
-   * @return \Drupal\Component\Plugin\Context\ContextInterface[]
+   * @return \Drupal\Core\Plugin\Context\ContextInterface[]
    *   An array of set context values, keyed by context name.
    */
   public function getContexts();

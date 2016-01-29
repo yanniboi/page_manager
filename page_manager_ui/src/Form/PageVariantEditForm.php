@@ -379,7 +379,6 @@ class PageVariantEditForm extends PageVariantFormBase {
       $form['available_context'][$name] = $row;
     }
     return $form;
-
   }
 
   /**
