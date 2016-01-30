@@ -20,6 +20,8 @@ use Drupal\user\RoleInterface;
  */
 class PageNodeAccessTest extends WebTestBase {
 
+  use PageTestHelperTrait;
+
   /**
    * {@inheritdoc}
    */
@@ -89,8 +91,7 @@ class PageNodeAccessTest extends WebTestBase {
       ],
     ]);
     $this->page->save();
-    // @todo We shouldn't need to call this!
-    $this->container->get('router.builder')->rebuildIfNeeded();
+    $this->triggerRouterRebuild();
 
     $this->drupalLogout();
     $this->drupalGet('node/' . $node1->id());

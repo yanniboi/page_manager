@@ -76,7 +76,6 @@ class RouteParamContext implements EventSubscriberInterface {
           $value = $request->attributes->get($route_context_name);
         }
         else {
-          // @todo Find a way to add in a fake value for configuration.
           $value = NULL;
         }
         $cacheability = new CacheableMetadata();

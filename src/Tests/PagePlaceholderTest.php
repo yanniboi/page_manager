@@ -18,10 +18,10 @@ use Drupal\simpletest\WebTestBase;
  */
 class PagePlaceholderTest extends WebTestBase {
 
+  use PageTestHelperTrait;
+
   /**
    * {@inheritdoc}
-   *
-   * @todo Remove dependency on the UI module.
    */
   public static $modules = ['page_manager', 'page_manager_test'];
 
@@ -61,8 +61,7 @@ class PagePlaceholderTest extends WebTestBase {
     ]);
     $http_status_variant->getVariantPlugin()->setConfiguration(['status_code' => 200]);
     $http_status_variant->save();
-    // @todo We shouldn't need to call this!
-    $this->container->get('router.builder')->rebuildIfNeeded();
+    $this->triggerRouterRebuild();
 
     // Access the page callback again and check that now the text is not there.
     $this->drupalGet('page-manager-test/' . $page_string);

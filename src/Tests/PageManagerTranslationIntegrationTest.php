@@ -17,10 +17,10 @@ use Drupal\page_manager\Entity\PageVariant;
  */
 class PageManagerTranslationIntegrationTest extends ContentTranslationTestBase {
 
+  use PageTestHelperTrait;
+
   /**
    * {@inheritdoc}
-   *
-   * @todo Remove dependency on the UI module.
    */
   public static $modules = ['block', 'page_manager', 'node', 'content_translation'];
 
@@ -72,8 +72,7 @@ class PageManagerTranslationIntegrationTest extends ContentTranslationTestBase {
     ]);
     $http_status_variant->getVariantPlugin()->setConfiguration(['status_code' => 200]);
     $http_status_variant->save();
-    // @todo We shouldn't need to call this!
-    $this->container->get('router.builder')->rebuildIfNeeded();
+    $this->triggerRouterRebuild();
 
     $this->drupalGet('node/' . $node->id());
     $this->assertResponse(200);

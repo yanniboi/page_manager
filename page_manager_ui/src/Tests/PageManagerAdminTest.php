@@ -22,6 +22,8 @@ class PageManagerAdminTest extends WebTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Remove once https://www.drupal.org/node/2392057 is in.
    */
   protected $strictConfigSchema = FALSE;
 
@@ -205,9 +207,6 @@ class PageManagerAdminTest extends WebTestBase {
       $links[] = (string) $element;
     }
     $this->assertEqual($expected, $links);
-    // @todo Restore the <h2> check once the follow-up to
-    //   https://www.drupal.org/node/1869476 is in.
-    //$this->assertRaw('<h2>User account menu</h2>');
     // Check the block label.
     $this->assertRaw('User account menu');
   }
@@ -261,9 +260,6 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     // Check the block label.
-    // @todo Restore the <h2> check once the follow-up to
-    //   https://www.drupal.org/node/1869476 is in.
-    //$this->assertRaw('<h2>' . $edit['settings[label]'] . '</h2>');
     $this->assertRaw($edit['settings[label]']);
   }
 
@@ -442,9 +438,6 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalGet('admin/foo');
     $this->assertResponse(200);
     $this->assertText(t('Example output'));
-    // @todo Restore the <h2> check once the follow-up to
-    //   https://www.drupal.org/node/1869476 is in.
-    //$this->assertRaw('<h2>Page Manager Test Block</h2>');
     // Check the block label.
     $this->assertRaw('Page Manager Test Block');
   }

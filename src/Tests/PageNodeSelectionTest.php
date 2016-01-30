@@ -17,10 +17,10 @@ use Drupal\simpletest\WebTestBase;
  */
 class PageNodeSelectionTest extends WebTestBase {
 
+  use PageTestHelperTrait;
+
   /**
    * {@inheritdoc}
-   *
-   * @todo Remove dependency on the UI module.
    */
   public static $modules = ['page_manager', 'node'];
 
@@ -65,8 +65,7 @@ class PageNodeSelectionTest extends WebTestBase {
     ]);
     $http_status_variant->getVariantPlugin()->setConfiguration(['status_code' => 404]);
     $http_status_variant->save();
-    // @todo We shouldn't need to call this!
-    $this->container->get('router.builder')->rebuildIfNeeded();
+    $this->triggerRouterRebuild();
 
     $this->drupalGet('node/' . $node1->id());
     $this->assertResponse(404);
@@ -108,8 +107,7 @@ class PageNodeSelectionTest extends WebTestBase {
     ]);
     $block_page_variant->setWeight(-10);
     $block_page_variant->save();
-    // @todo We shouldn't need to call this!
-    $this->container->get('router.builder')->rebuildIfNeeded();
+    $this->triggerRouterRebuild();
 
     // The page node will 404, but the article node will display the variant.
     $this->drupalGet('node/' . $node1->id());
