@@ -22,13 +22,6 @@ class PageManagerAdminTest extends WebTestBase {
 
   /**
    * {@inheritdoc}
-   *
-   * @todo Remove once https://www.drupal.org/node/2392057 is in.
-   */
-  protected $strictConfigSchema = FALSE;
-
-  /**
-   * {@inheritdoc}
    */
   public static $modules = ['block', 'page_manager_ui', 'page_manager_test'];
 
