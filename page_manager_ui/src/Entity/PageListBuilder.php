@@ -74,4 +74,5 @@ class PageListBuilder extends ConfigEntityListBuilder {
     $build['table']['#empty'] = $this->t('There are currently no pages. <a href=":url">Add a new page.</a>', [':url' => Url::fromRoute('entity.page.add_form')->toString()]);
     return $build;
   }
+
 }

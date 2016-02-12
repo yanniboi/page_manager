@@ -310,7 +310,7 @@ class PageManagerRoutesTest extends UnitTestCase {
    * @param array $expected_options
    *   The expected options for the route.
    */
-  protected function assertMatchingRoute(Route $route, $expected_path, $expected_defaults, $expected_requirements, $expected_options) {
+  protected function assertMatchingRoute(Route $route, $expected_path, array $expected_defaults, array $expected_requirements, array $expected_options) {
     $this->assertSame($expected_path, $route->getPath());
     $this->assertSame($expected_defaults, $route->getDefaults());
     $this->assertSame($expected_requirements, $route->getRequirements());

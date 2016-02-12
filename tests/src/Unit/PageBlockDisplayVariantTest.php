@@ -56,7 +56,6 @@ class PageBlockDisplayVariantTest extends UnitTestCase {
     $condition_manager = $this->prophesize(ConditionManager::class);
     $module_handler = $this->prophesize(ModuleHandlerInterface::class);
 
-
     $variant_plugin = new PageBlockDisplayVariant([], '', [], $context_handler->reveal(), $account->reveal(), $uuid_generator->reveal(), $token->reveal(), $block_manager->reveal(), $condition_manager->reveal(), $module_handler->reveal());
 
     // Empty block.

@@ -225,7 +225,7 @@ class PageBlockDisplayVariant extends BlockDisplayVariant {
 
     $form['uuid'] = [
       '#type' => 'value',
-      '#value' => $this->configuration['uuid'] ? : $this->uuidGenerator->generate(),
+      '#value' => $this->configuration['uuid'] ?: $this->uuidGenerator->generate(),
     ];
 
     return $form;

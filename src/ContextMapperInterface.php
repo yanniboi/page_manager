@@ -16,7 +16,7 @@ interface ContextMapperInterface {
    * Gathers the static context values.
    *
    * @param array[] $static_context_configurations
-   *   An array of static context configurations
+   *   An array of static context configurations.
    *
    * @return \Drupal\Component\Plugin\Context\ContextInterface[]
    *   An array of set context values, keyed by context name.

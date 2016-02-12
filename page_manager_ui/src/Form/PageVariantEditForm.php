@@ -204,7 +204,7 @@ class PageVariantEditForm extends PageVariantFormBase {
     return $form;
   }
 
-   /**
+  /**
    * Builds the selection form for a variant.
    *
    * @return array

@@ -59,10 +59,10 @@ abstract class StaticContextFormBase extends FormBase {
   /**
    * Construct a new StaticContextFormBase.
    *
-   * @param \Drupal\Core\Entity\EntityTypeRepositoryInterface $entity_type_repository
-   *   The entity type repository.
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
    *   The entity repository.
+   * @param \Drupal\Core\Entity\EntityTypeRepositoryInterface $entity_type_repository
+   *   The entity type repository.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    */
@@ -221,7 +221,7 @@ abstract class StaticContextFormBase extends FormBase {
    * Determines if a context with that name already exists.
    *
    * @param string $name
-   *   The context name
+   *   The context name.
    *
    * @return bool
    *   TRUE if the format exists, FALSE otherwise.
@@ -240,7 +240,7 @@ abstract class StaticContextFormBase extends FormBase {
    *
    * @return $this
    */
-  public function rebuildSubmit($form, FormStateInterface $form_state) {
+  public function rebuildSubmit(array $form, FormStateInterface $form_state) {
     return $form_state->setRebuild();
   }
 
@@ -255,7 +255,7 @@ abstract class StaticContextFormBase extends FormBase {
    * @return array
    *   The updated entity auto complete widget on the form.
    */
-  public function updateEntityType($form, FormStateInterface $form_state) {
+  public function updateEntityType(array $form, FormStateInterface $form_state) {
     return $form['selection'];
   }
 

@@ -61,7 +61,7 @@ interface PageVariantInterface extends ConfigEntityInterface, EntityWithPluginCo
    */
   public function setWeight($weight);
 
-   /**
+  /**
    * Gets the selection condition collection.
    *
    * @return \Drupal\Core\Condition\ConditionInterface[]|\Drupal\Core\Condition\ConditionPluginCollection
