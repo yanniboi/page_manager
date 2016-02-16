@@ -238,6 +238,100 @@ class PageManagerRoutesTest extends UnitTestCase {
   }
 
   /**
+   * @covers ::alterRoutes
+   */
+  public function testAlterRoutesMultipleVariantsDifferentRequirements() {
+    $variant1 = $this->prophesize(PageVariantInterface::class);
+    $variant2 = $this->prophesize(PageVariantInterface::class);
+    $variant1->getWeight()->willReturn(0);
+
+    $page1 = $this->prophesize(PageInterface::class);
+    $page1->status()->willReturn(TRUE);
+    $page1->getVariants()->willReturn(['variant1' => $variant1->reveal()]);
+    $page1->getPath()->willReturn('/test_route1');
+    $page1->getParameters()->willReturn([]);
+    $page1->id()->willReturn('page1');
+    $page1->label()->willReturn('Page 1');
+    $page1->usesAdminTheme()->willReturn(FALSE);
+
+    $page2 = $this->prophesize(PageInterface::class);
+    $page2->status()->willReturn(TRUE);
+    $page2->getVariants()->willReturn(['variant2' => $variant2->reveal()]);
+    $page2->getPath()->willReturn('/test_route2');
+    $page2->getParameters()->willReturn([]);
+    $page2->id()->willReturn('page2');
+    $page2->label()->willReturn('Page 2');
+    $page2->usesAdminTheme()->willReturn(FALSE);
+
+    $this->pageStorage->loadMultiple()->willReturn(['page1' => $page1->reveal(), 'page2' => $page2->reveal()]);
+
+    $collection = new RouteCollection();
+    $collection->add('test_route', new Route('/test_route1', [], ['_access' => 'TRUE'], []));
+    $route_event = new RouteBuildEvent($collection);
+    $this->routeSubscriber->onAlterRoutes($route_event);
+
+    $this->assertSame(2, $collection->count());
+    $expected = [
+      'test_route' => [
+        'path' => '/test_route1',
+        'defaults' => [
+          '_entity_view' => 'page_manager_page_variant',
+          '_title' => 'Page 1',
+          'page_manager_page_variant' => 'variant1',
+          'page_manager_page' => 'page1',
+          'page_manager_page_variant_weight' => 0,
+          'base_route_name' => 'test_route',
+        ],
+        'requirements' => [
+          '_access' => 'TRUE',
+          '_page_access' => 'page_manager_page.view',
+        ],
+        'options' => [
+          'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
+          'parameters' => [
+            'page_manager_page_variant' => [
+              'type' => 'entity:page_variant',
+            ],
+            'page_manager_page' => [
+              'type' => 'entity:page',
+            ],
+          ],
+          '_admin_route' => FALSE,
+        ],
+      ],
+      'page_manager.page_view_page2' => [
+        'path' => '/test_route2',
+        'defaults' => [
+          '_entity_view' => 'page_manager_page_variant',
+          '_title' => 'Page 2',
+          'page_manager_page_variant' => 'variant2',
+          'page_manager_page' => 'page2',
+          'page_manager_page_variant_weight' => 0,
+          'base_route_name' => 'page_manager.page_view_page2',
+        ],
+        'requirements' => [
+          '_page_access' => 'page_manager_page.view',
+        ],
+        'options' => [
+          'compiler_class' => 'Symfony\Component\Routing\RouteCompiler',
+          'parameters' => [
+            'page_manager_page_variant' => [
+              'type' => 'entity:page_variant',
+            ],
+            'page_manager_page' => [
+              'type' => 'entity:page',
+            ],
+          ],
+          '_admin_route' => FALSE,
+        ],
+      ],
+    ];
+    foreach ($collection as $route_name => $route) {
+      $this->assertMatchingRoute($route, $expected[$route_name]['path'], $expected[$route_name]['defaults'], $expected[$route_name]['requirements'], $expected[$route_name]['options']);
+    }
+  }
+
+  /**
    * Tests overriding an existing route with configured parameters.
    *
    * @covers ::alterRoutes
@@ -311,10 +405,10 @@ class PageManagerRoutesTest extends UnitTestCase {
    *   The expected options for the route.
    */
   protected function assertMatchingRoute(Route $route, $expected_path, array $expected_defaults, array $expected_requirements, array $expected_options) {
-    $this->assertSame($expected_path, $route->getPath());
-    $this->assertSame($expected_defaults, $route->getDefaults());
-    $this->assertSame($expected_requirements, $route->getRequirements());
-    $this->assertSame($expected_options, $route->getOptions());
+    $this->assertEquals($expected_path, $route->getPath());
+    $this->assertEquals($expected_defaults, $route->getDefaults());
+    $this->assertEquals($expected_requirements, $route->getRequirements());
+    $this->assertEquals($expected_options, $route->getOptions());
   }
 
 }

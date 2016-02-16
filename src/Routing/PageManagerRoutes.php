@@ -60,6 +60,8 @@ class PageManagerRoutes extends RouteSubscriberBase {
         continue;
       }
 
+      $parameters = [];
+      $requirements = [];
       if ($route_name = $this->findPageRouteName($entity, $collection)) {
         $this->cacheTagsInvalidator->invalidateTags(["page_manager_route_name:$route_name"]);
 
@@ -73,7 +75,6 @@ class PageManagerRoutes extends RouteSubscriberBase {
       else {
         $route_name = "page_manager.page_view_$entity_id";
         $path = $entity->getPath();
-        $parameters = [];
       }
 
       // Add in configured parameters.
