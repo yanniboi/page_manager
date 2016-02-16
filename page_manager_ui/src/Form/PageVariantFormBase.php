@@ -7,12 +7,10 @@
 
 namespace Drupal\page_manager_ui\Form;
 
-use Drupal\Core\Display\VariantInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\panels\Plugin\DisplayVariant\PanelsDisplayVariant;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -158,23 +156,10 @@ abstract class PageVariantFormBase extends EntityForm {
     // Allow the variant to submit the form.
     $variant_plugin_values = (new FormState())->setValues($form_state->getValue('variant_settings'));
     $this->getVariantPlugin()->submitConfigurationForm($form, $variant_plugin_values);
-    // Make sure the Panels storage is set correctly before saving.
-    $this->setPanelsStorage($this->getVariantPlugin());
     // Update the original form values.
     $form_state->setValue('variant_settings', $variant_plugin_values->getValues());
 
     parent::submitForm($form, $form_state);
-  }
-
-  /**
-   * Set Panels storage information on the variant, if it's a Panels variant.
-   *
-   * @param \Drupal\Core\Display\VariantInterface $variant_plugin
-   */
-  protected function setPanelsStorage(VariantInterface $variant_plugin) {
-    if ($variant_plugin instanceof PanelsDisplayVariant) {
-      $variant_plugin->setStorage('page_manager', $this->entity->id());
-    }
   }
 
   /**

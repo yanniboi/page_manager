@@ -6,5 +6,3 @@ core: 8.x
 dependencies:
   - block
   - ctools
-test_dependencies:
-  - panels
