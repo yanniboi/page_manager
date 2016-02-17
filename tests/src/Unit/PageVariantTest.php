@@ -8,6 +8,7 @@
 namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\page_manager\ContextMapperInterface;
@@ -84,12 +85,12 @@ class PageVariantTest extends UnitTestCase {
     $data['additive'] = [
       ['static' => 'static'],
       ['page' => 'page'],
-      ['static' => 'static', 'page' => 'page'],
+      ['page' => 'page', 'static' => 'static'],
     ];
     $data['conflicting'] = [
       ['foo' => 'static'],
       ['foo' => 'page'],
-      ['foo' => 'page'],
+      ['foo' => 'static'],
     ];
     return $data;
   }
