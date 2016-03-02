@@ -7,6 +7,8 @@
 
 namespace Drupal\page_manager\Entity;
 
+use Drupal\page_manager\Event\PageManagerContextEvent;
+use Drupal\page_manager\Event\PageManagerEvents;
 use Drupal\page_manager\PageInterface;
 use Drupal\panels\Entity\DisplayBase;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -51,6 +53,32 @@ class Page extends DisplayBase implements PageInterface {
    */
   public function getPath() {
     return $this->path;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+    static::routeBuilder()->setRebuildNeeded();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function postDelete(EntityStorageInterface $storage, array $entities) {
+    parent::postDelete($storage, $entities);
+    static::routeBuilder()->setRebuildNeeded();
+  }
+
+  /**
+   * Wraps the route builder.
+   *
+   * @return \Drupal\Core\Routing\RouteBuilderInterface
+   *   An object for state storage.
+   */
+  protected static function routeBuilder() {
+    return \Drupal::service('router.builder');
   }
 
   /**
@@ -128,6 +156,16 @@ class Page extends DisplayBase implements PageInterface {
       }
     }
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getContexts() {
+    if (!$this->contexts) {
+      $this->eventDispatcher()->dispatch(PageManagerEvents::PAGE_CONTEXT, new PageManagerContextEvent($this));
+    }
+    return $this->contexts;
   }
 
   /**
