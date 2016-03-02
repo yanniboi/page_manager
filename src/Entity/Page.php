@@ -58,6 +58,13 @@ class Page extends DisplayBase implements PageInterface {
   /**
    * {@inheritdoc}
    */
+  public function usesAdminTheme() {
+    return isset($this->use_admin_theme) ? $this->use_admin_theme : strpos($this->getPath(), '/admin/') === 0;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
     static::routeBuilder()->setRebuildNeeded();
@@ -79,13 +86,6 @@ class Page extends DisplayBase implements PageInterface {
    */
   protected static function routeBuilder() {
     return \Drupal::service('router.builder');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function usesAdminTheme() {
-    return isset($this->use_admin_theme) ? $this->use_admin_theme : strpos($this->getPath(), '/admin/') === 0;
   }
 
   /**
