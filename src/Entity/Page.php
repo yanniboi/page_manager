@@ -40,6 +40,12 @@ use Drupal\Core\Entity\EntityStorageInterface;
  * )
  */
 class Page extends DisplayBase implements PageInterface {
+  /**
+   * The path of the page entity.
+   *
+   * @var string
+   */
+  protected $path;
 
   /**
    * Indicates if this page should be displayed in the admin theme.
@@ -86,43 +92,6 @@ class Page extends DisplayBase implements PageInterface {
    */
   protected static function routeBuilder() {
     return \Drupal::service('router.builder');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getParameters() {
-    return $this->parameters;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getParameter($name) {
-    if (!isset($this->parameters[$name])) {
-      $this->setParameter($name, '');
-    }
-    return $this->parameters[$name];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setParameter($name, $type, $label = '') {
-    $this->parameters[$name] = [
-      'machine_name' => $name,
-      'type' => $type,
-      'label' => $label,
-    ];
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function removeParameter($name) {
-    unset($this->parameters[$name]);
-    return $this;
   }
 
   /**
