@@ -12,7 +12,7 @@ use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteBuildEvent;
 use Drupal\page_manager\PageInterface;
-use Drupal\page_manager\PageVariantInterface;
+use Drupal\panels\Entity\DisplayVariantInterface;
 use Drupal\page_manager\Routing\PageManagerRoutes;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\Routing\Route;
@@ -88,7 +88,7 @@ class PageManagerRoutesTest extends UnitTestCase {
       ->shouldBeCalled();
     $page1->id()->willReturn('page1');
 
-    $variant1 = $this->prophesize(PageVariantInterface::class);
+    $variant1 = $this->prophesize(DisplayVariantInterface::class);
     $variant1->getWeight()->willReturn(0);
     $page1->getVariants()
       ->willReturn(['variant1' => $variant1->reveal()]);
@@ -176,7 +176,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page->getParameters()
       ->willReturn([])
       ->shouldBeCalled();
-    $variant1 = $this->prophesize(PageVariantInterface::class);
+    $variant1 = $this->prophesize(DisplayVariantInterface::class);
     $variant1->getWeight()->willReturn(0);
     $page->getVariants()
       ->willReturn(['variant1' => $variant1->reveal()]);
@@ -241,8 +241,8 @@ class PageManagerRoutesTest extends UnitTestCase {
    * @covers ::alterRoutes
    */
   public function testAlterRoutesMultipleVariantsDifferentRequirements() {
-    $variant1 = $this->prophesize(PageVariantInterface::class);
-    $variant2 = $this->prophesize(PageVariantInterface::class);
+    $variant1 = $this->prophesize(DisplayVariantInterface::class);
+    $variant2 = $this->prophesize(DisplayVariantInterface::class);
     $variant1->getWeight()->willReturn(0);
 
     $page1 = $this->prophesize(PageInterface::class);
@@ -351,7 +351,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $page->usesAdminTheme()->willReturn(FALSE);
     $page->getParameters()->willReturn(['foo' => ['machine_name' => 'foo', 'type' => 'integer', 'label' => 'Foo'], 'test_route' => ['machine_name' => 'test_route', 'type' => '', 'label' => '']]);
 
-    $variant1 = $this->prophesize(PageVariantInterface::class);
+    $variant1 = $this->prophesize(DisplayVariantInterface::class);
     $variant1->getWeight()->willReturn(0);
     $page->getVariants()->willReturn(['variant1' => $variant1->reveal()]);
 
