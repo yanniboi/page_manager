@@ -50,7 +50,7 @@ class VariantRouteFilter implements RouteFilterInterface {
    *   The current path stack.
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager, CurrentPathStack $current_path) {
-    $this->pageVariantStorage = $entity_type_manager->getStorage('page_variant');
+    $this->pageVariantStorage = $entity_type_manager->getStorage('display_variant');
     $this->currentPath = $current_path;
   }
 
@@ -59,7 +59,7 @@ class VariantRouteFilter implements RouteFilterInterface {
    */
   public function applies(Route $route) {
     $parameters = $route->getOption('parameters');
-    return !empty($parameters['page_manager_page_variant']);
+    return !empty($parameters['page_manager_display_variant']);
   }
 
   /**
@@ -90,8 +90,8 @@ class VariantRouteFilter implements RouteFilterInterface {
       $attributes = $this->getRequestAttributes($route, $name, $request);
       // Add the enhanced attributes to the request.
       $request->attributes->add($attributes);
-      if ($page_variant_id = $route->getDefault('page_manager_page_variant')) {
-        if ($this->checkPageVariantAccess($page_variant_id)) {
+      if ($display_variant_id = $route->getDefault('page_manager_display_variant')) {
+        if ($this->checkDisplayVariantAccess($display_variant_id)) {
           // Access granted, use this route. Do not restore request attributes
           // but keep those from this route by breaking out.
           $accessible_route_name = $name;
@@ -108,7 +108,8 @@ class VariantRouteFilter implements RouteFilterInterface {
     // Because the sort order of $routes is unreliable for a route without a
     // variant weight, rely on the original order of $collection here.
     foreach ($collection as $name => $route) {
-      if ($route->getDefault('page_manager_page_variant')) {
+      /* @var \Symfony\Component\Routing\Route $route */
+      if ($route->getDefault('page_manager_display_variant')) {
         if ($accessible_route_name !== $name) {
           // Remove all other page manager routes.
           $collection->remove($name);
@@ -128,8 +129,8 @@ class VariantRouteFilter implements RouteFilterInterface {
    * Sort callback for routes based on the variant weight.
    */
   protected function routeWeightSort(Route $a, Route $b) {
-    $a_weight = $a->getDefault('page_manager_page_variant_weight');
-    $b_weight = $b->getDefault('page_manager_page_variant_weight');
+    $a_weight = $a->getDefault('page_manager_display_variant_weight');
+    $b_weight = $b->getDefault('page_manager_display_variant_weight');
     if ($a_weight === $b_weight) {
       return 0;
     }
@@ -146,15 +147,15 @@ class VariantRouteFilter implements RouteFilterInterface {
   /**
    * Checks access of a page variant.
    *
-   * @param string $page_variant_id
+   * @param string $display_variant_id
    *   The page variant ID.
    *
    * @return bool
    *   TRUE if the route is valid, FALSE otherwise.
    */
-  protected function checkPageVariantAccess($page_variant_id) {
-    /** @var \Drupal\page_manager\PageVariantInterface $variant */
-    $variant = $this->pageVariantStorage->load($page_variant_id);
+  protected function checkDisplayVariantAccess($display_variant_id) {
+    /** @var \Drupal\panels\Entity\DisplayVariantInterface $variant */
+    $variant = $this->pageVariantStorage->load($display_variant_id);
 
     try {
       $access = $variant && $variant->access('view');

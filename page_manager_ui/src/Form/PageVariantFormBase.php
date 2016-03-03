@@ -113,7 +113,7 @@ abstract class PageVariantFormBase extends EntityForm {
    *   TRUE if the entity exists, FALSE otherwise.
    */
   public function exists($id) {
-    return (bool) $this->entityQuery->get('page_variant')
+    return (bool) $this->entityQuery->get('display_variant')
       ->condition('id', $id)
       ->execute();
   }
