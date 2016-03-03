@@ -20,7 +20,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *   id = "page",
  *   label = @Translation("Page"),
  *   handlers = {
- *     "access" = "Drupal\page_manager\Entity\PageAccess",
+ *     "access" = "Drupal\panels\Entity\DisplayAccess",
  *   },
  *   admin_permission = "administer pages",
  *   entity_keys = {
