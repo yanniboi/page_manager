@@ -53,21 +53,9 @@ class PageEditForm extends DisplayEditForm {
    * @return array
    */
   protected function buildParametersForm($add_button_attributes) {
-    $form = [
-      '#type' => 'details',
-      '#title' => $this->t('Parameters'),
-      '#open' => TRUE,
-    ];
-    $form['parameters'] = [
-      '#type' => 'table',
-      '#header' => [
-        $this->t('Machine name'),
-        $this->t('Label'),
-        $this->t('Type'),
-        $this->t('Operations'),
-      ],
-      '#empty' => $this->t('There are no parameters.'),
-    ];
+    $form = parent::buildParametersForm($add_button_attributes);
+    unset($form['add_new_parameter']);
+
     foreach ($this->entity->getParameterNames() as $parameter_name) {
       $parameter = $this->entity->getParameter($parameter_name);
       $row = [];
@@ -83,7 +71,7 @@ class PageEditForm extends DisplayEditForm {
       $operations = [];
       $operations['edit'] = [
         'title' => $this->t('Edit'),
-        'url' => Url::fromRoute('page_manager.parameter_edit', [
+        'url' => Url::fromRoute('entity.page.parameter_edit', [
           'page' => $this->entity->id(),
           'name' => $parameter['machine_name'],
         ]),
