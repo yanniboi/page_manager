@@ -54,8 +54,8 @@ class PageVariantEditForm extends PageVariantFormBase {
       return [];
     }
 
-    /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
-    $page_variant = $this->getEntity();
+    /** @var \Drupal\page_manager\PageVariantInterface $display_variant */
+    $display_variant = $this->getEntity();
 
     // Set up the attributes used by a modal to prevent duplication later.
     $attributes = $this->getAjaxAttributes();
@@ -73,8 +73,8 @@ class PageVariantEditForm extends PageVariantFormBase {
         '#type' => 'link',
         '#title' => $this->t('Add new block'),
         '#url' => Url::fromRoute('page_manager.variant_select_block', [
-          'page' => $page_variant->get('page'),
-          'page_variant' => $page_variant->id(),
+          'page' => $display_variant->get('page'),
+          'display_variant' => $display_variant->id(),
         ]),
         '#attributes' => $add_button_attributes,
         '#attached' => [
@@ -177,8 +177,8 @@ class PageVariantEditForm extends PageVariantFormBase {
           $operations['edit'] = [
             'title' => $this->t('Edit'),
             'url' => Url::fromRoute('page_manager.variant_edit_block', [
-              'page' => $page_variant->get('page'),
-              'page_variant' => $page_variant->id(),
+              'page' => $display_variant->get('page'),
+              'display_variant' => $display_variant->id(),
               'block_id' => $block_id,
             ]),
             'attributes' => $attributes,
@@ -186,8 +186,8 @@ class PageVariantEditForm extends PageVariantFormBase {
           $operations['delete'] = [
             'title' => $this->t('Delete'),
             'url' => Url::fromRoute('page_manager.variant_delete_block', [
-              'page' => $page_variant->get('page'),
-              'page_variant' => $page_variant->id(),
+              'page' => $display_variant->get('page'),
+              'display_variant' => $display_variant->id(),
               'block_id' => $block_id,
             ]),
             'attributes' => $attributes,
@@ -214,8 +214,8 @@ class PageVariantEditForm extends PageVariantFormBase {
     $attributes = $this->getAjaxAttributes();
     $add_button_attributes = $this->getAjaxButtonAttributes();
 
-    /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
-    $page_variant = $this->getEntity();
+    /** @var \Drupal\page_manager\PageVariantInterface $display_variant */
+    $display_variant = $this->getEntity();
 
     // Selection conditions.
     $form = [
@@ -227,8 +227,8 @@ class PageVariantEditForm extends PageVariantFormBase {
       '#type' => 'link',
       '#title' => $this->t('Add new selection condition'),
       '#url' => Url::fromRoute('page_manager.selection_condition_select', [
-        'page' => $page_variant->get('page'),
-        'page_variant' => $page_variant->id(),
+        'page' => $display_variant->get('page'),
+        'display_variant' => $display_variant->id(),
       ]),
       '#attributes' => $add_button_attributes,
       '#attached' => [
@@ -253,13 +253,13 @@ class PageVariantEditForm extends PageVariantFormBase {
         'and' => $this->t('All conditions must pass'),
         'or' => $this->t('Only one condition must pass'),
       ],
-      '#default_value' => $page_variant->getSelectionLogic(),
+      '#default_value' => $display_variant->getSelectionLogic(),
     ];
 
     $form['selection'] = [
       '#tree' => TRUE,
     ];
-    foreach ($page_variant->getSelectionConditions() as $selection_id => $selection_condition) {
+    foreach ($display_variant->getSelectionConditions() as $selection_id => $selection_condition) {
       $row = [];
       $row['label']['#markup'] = $selection_condition->getPluginDefinition()['label'];
       $row['description']['#markup'] = $selection_condition->summary();
@@ -267,8 +267,8 @@ class PageVariantEditForm extends PageVariantFormBase {
       $operations['edit'] = [
         'title' => $this->t('Edit'),
         'url' => Url::fromRoute('page_manager.selection_condition_edit', [
-          'page' => $page_variant->get('page'),
-          'page_variant' => $page_variant->id(),
+          'page' => $display_variant->get('page'),
+          'display_variant' => $display_variant->id(),
           'condition_id' => $selection_id,
         ]),
         'attributes' => $attributes,
@@ -276,8 +276,8 @@ class PageVariantEditForm extends PageVariantFormBase {
       $operations['delete'] = [
         'title' => $this->t('Delete'),
         'url' => Url::fromRoute('page_manager.selection_condition_delete', [
-          'page' => $page_variant->get('page'),
-          'page_variant' => $page_variant->id(),
+          'page' => $display_variant->get('page'),
+          'display_variant' => $display_variant->id(),
           'condition_id' => $selection_id,
         ]),
         'attributes' => $attributes,
@@ -298,8 +298,8 @@ class PageVariantEditForm extends PageVariantFormBase {
    * @return array
    */
   protected function buildContextForm() {
-    /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
-    $page_variant = $this->getEntity();
+    /** @var \Drupal\page_manager\PageVariantInterface $display_variant */
+    $display_variant = $this->getEntity();
 
     // Set up the attributes used by a modal to prevent duplication later.
     $attributes = $this->getAjaxAttributes();
@@ -314,8 +314,8 @@ class PageVariantEditForm extends PageVariantFormBase {
       '#type' => 'link',
       '#title' => $this->t('Add new static context'),
       '#url' => Url::fromRoute('page_manager.static_context_add', [
-        'page' => $page_variant->get('page'),
-        'page_variant' => $page_variant->id(),
+        'page' => $display_variant->get('page'),
+        'display_variant' => $display_variant->id(),
       ]),
       '#attributes' => $add_button_attributes,
       '#attached' => [
@@ -334,7 +334,7 @@ class PageVariantEditForm extends PageVariantFormBase {
       ],
       '#empty' => $this->t('There is no available context.'),
     ];
-    $contexts = $page_variant->getContexts();
+    $contexts = $display_variant->getContexts();
     foreach ($contexts as $name => $context) {
       $context_definition = $context->getContextDefinition();
 
@@ -351,12 +351,12 @@ class PageVariantEditForm extends PageVariantFormBase {
 
       // Add operation links if the context is a static context.
       $operations = [];
-      if ($page_variant->getStaticContext($name)) {
+      if ($display_variant->getStaticContext($name)) {
         $operations['edit'] = [
           'title' => $this->t('Edit'),
           'url' => Url::fromRoute('page_manager.static_context_edit', [
-            'page' => $page_variant->get('page'),
-            'page_variant' => $page_variant->id(),
+            'page' => $display_variant->get('page'),
+            'display_variant' => $display_variant->id(),
             'name' => $name,
           ]),
           'attributes' => $attributes,
@@ -364,8 +364,8 @@ class PageVariantEditForm extends PageVariantFormBase {
         $operations['delete'] = [
           'title' => $this->t('Delete'),
           'url' => Url::fromRoute('page_manager.static_context_delete', [
-            'page' => $page_variant->get('page'),
-            'page_variant' => $page_variant->id(),
+            'page' => $display_variant->get('page'),
+            'display_variant' => $display_variant->id(),
             'name' => $name,
           ]),
           'attributes' => $attributes,

@@ -60,7 +60,7 @@ abstract class VariantPluginConfigureBlockFormBase extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, PageVariantInterface $page_variant = NULL, $block_id = NULL) {
     $this->pageVariant = $page_variant;
     $this->block = $this->prepareBlock($block_id);
-    $form_state->set('page_variant_id', $page_variant->id());
+    $form_state->set('display_variant_id', $page_variant->id());
     $form_state->set('block_id', $this->block->getConfiguration()['uuid']);
 
     $form['#tree'] = TRUE;
