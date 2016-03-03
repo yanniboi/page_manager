@@ -10,12 +10,14 @@ namespace Drupal\page_manager_ui\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\panels\Form\DisplayEditForm;
+use Drupal\panels\Form\DisplayFormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a base form for editing and adding a page entity.
  */
-abstract class PageFormBase extends EntityForm {
+abstract class PageFormBase extends DisplayFormBase {
 
   /**
    * {@inheritdoc}
@@ -71,14 +73,6 @@ abstract class PageFormBase extends EntityForm {
       '#machine_name' => [
         'exists' => [$this, 'exists'],
       ],
-    ];
-    $form['path'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Path'),
-      '#maxlength' => 255,
-      '#default_value' => $this->entity->getPath(),
-      '#required' => TRUE,
-      '#element_validate' => [[$this, 'validatePath']],
     ];
 
     return parent::form($form, $form_state);
