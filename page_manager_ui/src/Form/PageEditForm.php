@@ -40,10 +40,6 @@ class PageEditForm extends DisplayEditForm {
       '#weight' => 0,
     ];
 
-    $form['variant_section']['add_new_page']['#url'] = Url::fromRoute('entity.page.variant_select', [
-      'page' => $this->entity->id(),
-    ]);
-
     return $form;
   }
 
@@ -117,6 +113,24 @@ class PageEditForm extends DisplayEditForm {
     parent::copyFormValuesToEntity($entity, $form, $form_state);
     foreach ($values_to_restore as $key => $value) {
       $form_state->setValue($key, $value);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validatePath(&$element, FormStateInterface $form_state) {
+    // Ensure the path has a leading slash.
+    $value = '/' . trim($element['#value'], '/');
+    $form_state->setValueForElement($element, $value);
+
+    // Ensure each path is unique.
+    $path = $this->entityQuery->get('page')
+      ->condition('path', $value)
+      ->condition('id', $form_state->getValue('id'), '<>')
+      ->execute();
+    if ($path) {
+      $form_state->setErrorByName('path', $this->t('The page path must be unique.'));
     }
   }
 

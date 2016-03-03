@@ -10,7 +10,7 @@ namespace Drupal\page_manager_ui\Tests;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Url;
 use Drupal\page_manager\Entity\Page;
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\panels\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -39,7 +39,7 @@ class PageManagerAdminTest extends WebTestBase {
     \Drupal::service('theme_handler')->install(['bartik', 'classy']);
     $this->config('system.theme')->set('admin', 'classy')->save();
 
-    $this->drupalLogin($this->drupalCreateUser(['administer pages', 'access administration pages', 'view the administration theme']));
+    $this->drupalLogin($this->drupalCreateUser(['administer pages', 'access administration pages', 'view the administration theme'], NULL, TRUE));
 
     // Remove the default node_view page to start with a clean UI.
     Page::load('node_view')->delete();
@@ -570,7 +570,7 @@ class PageManagerAdminTest extends WebTestBase {
    *   Either a block plugin, or NULL.
    */
   protected function findBlockByLabel($page_variant_id, $block_label) {
-    if ($page_variant = PageVariant::load($page_variant_id)) {
+    if ($page_variant = DisplayVariant::load($page_variant_id)) {
       /** @var \Drupal\ctools\Plugin\BlockVariantInterface $variant_plugin */
       $variant_plugin = $page_variant->getVariantPlugin();
       foreach ($variant_plugin->getRegionAssignments() as $blocks) {

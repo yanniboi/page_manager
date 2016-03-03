@@ -56,6 +56,7 @@ abstract class PageFormBase extends DisplayFormBase {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
+    $form = parent::form($form, $form_state);
     $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
@@ -75,7 +76,24 @@ abstract class PageFormBase extends DisplayFormBase {
       ],
     ];
 
-    return parent::form($form, $form_state);
+    $form['use_admin_theme'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use admin theme'),
+      '#default_value' => $this->entity->usesAdminTheme(),
+      '#weight' => 0,
+    ];
+
+    $form['path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Path'),
+      '#maxlength' => 255,
+      '#default_value' => $this->entity->getPath(),
+      '#required' => TRUE,
+      '#element_validate' => [[$this, 'validatePath']],
+      '#weight' => 0,
+    ];
+
+    return $form;
   }
 
   /**

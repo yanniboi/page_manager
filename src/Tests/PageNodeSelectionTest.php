@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Tests;
 
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\panels\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -57,11 +57,12 @@ class PageNodeSelectionTest extends WebTestBase {
 
     // Create a new variant to always return 404, the node_view page exists by
     // default.
-    $http_status_variant = PageVariant::create([
+    $http_status_variant = DisplayVariant::create([
       'variant' => 'http_status_code',
       'label' => 'HTTP status code',
       'id' => 'http_status_code',
-      'page' => 'node_view',
+      'display_entity_id' => 'node_view',
+      'display_entity_type' => 'page',
     ]);
     $http_status_variant->getVariantPlugin()->setConfiguration(['status_code' => 404]);
     $http_status_variant->save();
@@ -76,12 +77,13 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->assertNoText($node2->label());
 
     // Add a new variant.
-    /** @var \Drupal\page_manager\PageVariantInterface $block_page_variant */
-    $block_page_variant = PageVariant::create([
+    /** @var \Drupal\panels\Entity\DisplayVariantInterface $block_page_variant */
+    $block_page_variant = DisplayVariant::create([
       'variant' => 'block_display',
       'id' => 'block_page_first',
       'label' => 'First',
-      'page' => 'node_view',
+      'display_entity_id' => 'node_view',
+      'display_entity_type' => 'page',
     ]);
     $block_page_plugin = $block_page_variant->getVariantPlugin();
     $block_page_plugin->setConfiguration(['page_title' => '[node:title]']);

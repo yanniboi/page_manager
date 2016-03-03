@@ -15,18 +15,6 @@ use Drupal\Core\Form\FormStateInterface;
 class PageAddForm extends PageFormBase {
 
   /**
-   * @param array $form
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   * @return array
-   */
-  public function form(array $form, FormStateInterface $form_state) {
-    $form = parent::form($form, $form_state);
-    $form['label']['#description'] = $this->t('The label for this mini panel.');
-
-    return $form;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
