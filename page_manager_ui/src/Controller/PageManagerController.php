@@ -251,7 +251,7 @@ class PageManagerController extends ControllerBase {
     foreach ($available_plugins as $access_id => $access_condition) {
       $build['#links'][$access_id] = [
         'title' => $access_condition['label'],
-        'url' => Url::fromRoute('page_manager.access_condition_add', [
+        'url' => Url::fromRoute('entity.page.access_condition_add', [
           'page' => $page->id(),
           'condition_id' => $access_id,
         ]),
