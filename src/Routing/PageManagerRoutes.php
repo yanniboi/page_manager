@@ -84,7 +84,7 @@ class PageManagerRoutes extends RouteSubscriberBase {
         }
       }
 
-      $parameters['page_manager_page_variant']['type'] = 'entity:page_variant';
+      $parameters['page_manager_display_variant']['type'] = 'entity:display_variant';
       $parameters['page_manager_page']['type'] = 'entity:page';
       $requirements['_page_access'] = 'page_manager_page.view';
 
@@ -95,11 +95,11 @@ class PageManagerRoutes extends RouteSubscriberBase {
         $route = new Route(
           $path,
           [
-            '_entity_view' => 'page_manager_page_variant',
+            '_entity_view' => 'display_variant',
             '_title' => $entity->label(),
-            'page_manager_page_variant' => $variant_id,
+            'page_manager_display_variant' => $variant_id,
             'page_manager_page' => $page_id,
-            'page_manager_page_variant_weight' => $variant->getWeight(),
+            'page_manager_display_variant_weight' => $variant->getWeight(),
             // When adding multiple variants, the variant ID is added to the
             // route name. In order to convey the base route name for this set
             // of variants, add it as a parameter.
