@@ -77,15 +77,15 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->assertNoText($node2->label());
 
     // Add a new variant.
-    /** @var \Drupal\panels\Entity\DisplayVariantInterface $block_page_variant */
-    $block_page_variant = DisplayVariant::create([
+    /** @var \Drupal\panels\Entity\DisplayVariantInterface $block_display_variant */
+    $block_display_variant = DisplayVariant::create([
       'variant' => 'block_display',
       'id' => 'block_page_first',
       'label' => 'First',
       'display_entity_id' => 'node_view',
       'display_entity_type' => 'page',
     ]);
-    $block_page_plugin = $block_page_variant->getVariantPlugin();
+    $block_page_plugin = $block_display_variant->getVariantPlugin();
     $block_page_plugin->setConfiguration(['page_title' => '[node:title]']);
     /** @var \Drupal\page_manager\Plugin\DisplayVariant\PageBlockDisplayVariant $block_page_plugin */
     $block_page_plugin->addBlock([
@@ -98,7 +98,7 @@ class PageNodeSelectionTest extends WebTestBase {
         'entity' => 'node',
       ],
     ]);
-    $block_page_variant->addSelectionCondition([
+    $block_display_variant->addSelectionCondition([
       'id' => 'node_type',
       'bundles' => [
         'article' => 'article',
@@ -107,8 +107,8 @@ class PageNodeSelectionTest extends WebTestBase {
         'node' => 'node',
       ],
     ]);
-    $block_page_variant->setWeight(-10);
-    $block_page_variant->save();
+    $block_display_variant->setWeight(-10);
+    $block_display_variant->save();
     $this->triggerRouterRebuild();
 
     // The page node will 404, but the article node will display the variant.
