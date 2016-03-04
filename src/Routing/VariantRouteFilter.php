@@ -28,11 +28,11 @@ class VariantRouteFilter implements RouteFilterInterface {
   use RouteEnhancerCollectorTrait;
 
   /**
-   * The page variant storage.
+   * The display variant storage.
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  protected $pageVariantStorage;
+  protected $displayVariantStorage;
 
   /**
    * The current path stack.
@@ -50,7 +50,7 @@ class VariantRouteFilter implements RouteFilterInterface {
    *   The current path stack.
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager, CurrentPathStack $current_path) {
-    $this->pageVariantStorage = $entity_type_manager->getStorage('display_variant');
+    $this->displayVariantStorage = $entity_type_manager->getStorage('display_variant');
     $this->currentPath = $current_path;
   }
 
@@ -155,7 +155,7 @@ class VariantRouteFilter implements RouteFilterInterface {
    */
   protected function checkDisplayVariantAccess($display_variant_id) {
     /** @var \Drupal\panels\Entity\DisplayVariantInterface $variant */
-    $variant = $this->pageVariantStorage->load($display_variant_id);
+    $variant = $this->displayVariantStorage->load($display_variant_id);
 
     try {
       $access = $variant && $variant->access('view');
