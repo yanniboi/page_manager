@@ -1,44 +1,13 @@
 page_manager.page.*:
-  type: config_entity
+  type: panels.display_base
   label: 'Page'
   mapping:
-    id:
-      type: string
-      label: 'Machine-readable name'
-    label:
-      type: label
-      label: 'Label'
     use_admin_theme:
       type: boolean
       label: 'Whether the page is displayed using the admin theme or not'
     path:
       type: string
       label: 'Page path'
-    access_logic:
-      type: string
-      label: 'Access logic'
-    access_conditions:
-      type: sequence
-      label: 'Access Conditions'
-      sequence:
-        - type: condition.plugin.[id]
-          label: 'Access Condition'
-    parameters:
-      type: sequence
-      label: Parameter context list
-      sequence:
-        - type: mapping
-          label: Parameter context
-          mapping:
-            machine_name:
-              type: string
-              label: 'Machine-readable name'
-            label:
-              type: label
-              label: 'Label of the context'
-            type:
-              type: string
-              label: 'Context type'
 
 page_manager.block_plugin.*:
   type: block.settings.[id]
