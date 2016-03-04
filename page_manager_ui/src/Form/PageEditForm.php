@@ -11,33 +11,26 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Form\AjaxFormTrait;
-use Drupal\panels\Form\DisplayEditForm;
+use Drupal\panels\Form\DisplayEditFormBase;
 
 /**
  * Provides a form for editing a page entity.
  */
-class PageEditForm extends DisplayEditForm {
+class PageEditForm extends DisplayEditFormBase {
 
   use AjaxFormTrait;
+  use PageFormTrait {
+    PageFormTrait::form as page_form;
+  }
 
   public function form(array $form, FormStateInterface $form_state) {
-    $form = parent::form($form, $form_state);
+    $form = self::page_form($form, $form_state);
 
     $form['use_admin_theme'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use admin theme'),
       '#default_value' => $this->entity->usesAdminTheme(),
-      '#weight' => 0,
-    ];
-
-    $form['path'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Path'),
-      '#maxlength' => 255,
-      '#default_value' => $this->entity->getPath(),
-      '#required' => TRUE,
-      '#element_validate' => [[$this, 'validatePath']],
-      '#weight' => 0,
+      '#weight' => -1,
     ];
 
     return $form;
