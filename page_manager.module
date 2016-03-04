@@ -13,6 +13,7 @@ use Drupal\page_manager\Entity\PageVariantConfigMapper;
  * @todo Remove once https://www.drupal.org/node/2670712 is in.
  */
 function page_manager_config_translation_info_alter(&$info) {
+  // @todo: Update this for the switch to generic display variants.
   if (isset($info['page_variant'])) {
     $info['page_variant']['class'] = PageVariantConfigMapper::class;
   }
