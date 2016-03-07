@@ -14,7 +14,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\page_manager\Entity\PageAccess;
+use Drupal\panels\Entity\DisplayAccess;
 use Drupal\page_manager\PageInterface;
 use Drupal\Tests\UnitTestCase;
 use Prophecy\Argument;
@@ -22,7 +22,7 @@ use Prophecy\Argument;
 /**
  * Tests access for Page entities.
  *
- * @coversDefaultClass \Drupal\page_manager\Entity\PageAccess
+ * @coversDefaultClass \Drupal\panels\Entity\DisplayAccess
  *
  * @group PageManager
  */
@@ -61,7 +61,7 @@ class PageAccessTest extends UnitTestCase {
     $module_handler = $this->prophesize(ModuleHandlerInterface::class);
     $module_handler->invokeAll(Argument::cetera())->willReturn([]);
 
-    $this->pageAccess = new PageAccess($this->entityType->reveal(), $this->contextHandler->reveal());
+    $this->pageAccess = new DisplayAccess($this->entityType->reveal(), $this->contextHandler->reveal());
     $this->pageAccess->setModuleHandler($module_handler->reveal());
 
     $this->cacheContextsManager = $this->prophesize(CacheContextsManager::class);
