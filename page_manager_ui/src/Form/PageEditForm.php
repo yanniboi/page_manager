@@ -11,12 +11,12 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Form\AjaxFormTrait;
-use Drupal\panels\Form\DisplayEditFormBase;
+use Drupal\ctools\Form\DisplayEditFormBase;
 
 /**
  * Provides a form for editing a page entity.
  */
-class PageEditForm extends DisplayEditFormBase {
+class PageEditForm extends \Drupal\ctools\Form\DisplayEditFormBase {
 
   use AjaxFormTrait;
   use PageFormTrait {

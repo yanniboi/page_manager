@@ -1,5 +1,5 @@
 page_manager.page.*:
-  type: panels.display_base
+  type: ctools.display_base
   label: 'Page'
   mapping:
     use_admin_theme:

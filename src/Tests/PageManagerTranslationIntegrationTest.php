@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\content_translation\Tests\ContentTranslationTestBase;
-use Drupal\panels\Entity\DisplayVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 
 /**
  * Tests that overriding the entity page does not affect content translation.

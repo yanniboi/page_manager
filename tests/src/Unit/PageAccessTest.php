@@ -14,7 +14,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Plugin\Context\ContextHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\panels\Entity\DisplayAccess;
+use Drupal\ctools\Entity\DisplayAccess;
 use Drupal\page_manager\PageInterface;
 use Drupal\Tests\UnitTestCase;
 use Prophecy\Argument;
@@ -22,7 +22,7 @@ use Prophecy\Argument;
 /**
  * Tests access for Page entities.
  *
- * @coversDefaultClass \Drupal\panels\Entity\DisplayAccess
+ * @coversDefaultClass \Drupal\ctools\Entity\DisplayAccess
  *
  * @group PageManager
  */

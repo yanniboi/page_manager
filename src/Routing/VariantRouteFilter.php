@@ -154,7 +154,7 @@ class VariantRouteFilter implements RouteFilterInterface {
    *   TRUE if the route is valid, FALSE otherwise.
    */
   protected function checkDisplayVariantAccess($display_variant_id) {
-    /** @var \Drupal\panels\Entity\DisplayVariantInterface $variant */
+    /** @var \Drupal\ctools\Entity\DisplayVariantInterface $variant */
     $variant = $this->displayVariantStorage->load($display_variant_id);
 
     try {

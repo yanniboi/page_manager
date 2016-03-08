@@ -11,19 +11,19 @@ use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\page_manager\ContextMapperInterface;
-use Drupal\panels\Entity\DisplayVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\page_manager\PageInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * @coversDefaultClass \Drupal\panels\Entity\DisplayVariant
+ * @coversDefaultClass \Drupal\ctools\Entity\DisplayVariant
  *
  * @group PageManager
  */
 class DisplayVariantTest extends UnitTestCase {
 
   /**
-   * @var \Drupal\panels\Entity\DisplayVariant
+   * @var \Drupal\ctools\Entity\DisplayVariant
    */
   protected $displayVariant;
 

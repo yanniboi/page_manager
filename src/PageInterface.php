@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager;
 
-use Drupal\panels\Entity\DisplayInterface;
+use Drupal\ctools\Entity\DisplayInterface;
 
 /**
  * Provides an interface for page entities.

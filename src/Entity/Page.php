@@ -10,7 +10,7 @@ namespace Drupal\page_manager\Entity;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
 use Drupal\page_manager\PageInterface;
-use Drupal\panels\Entity\DisplayBase;
+use Drupal\ctools\Entity\DisplayBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
@@ -20,7 +20,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *   id = "page",
  *   label = @Translation("Page"),
  *   handlers = {
- *     "access" = "Drupal\panels\Entity\DisplayAccess",
+ *     "access" = "Drupal\ctools\Entity\DisplayAccess",
  *   },
  *   admin_permission = "administer pages",
  *   entity_keys = {

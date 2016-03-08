@@ -12,7 +12,7 @@ use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteBuildEvent;
 use Drupal\page_manager\PageInterface;
-use Drupal\panels\Entity\DisplayVariantInterface;
+use Drupal\ctools\Entity\DisplayVariantInterface;
 use Drupal\page_manager\Routing\PageManagerRoutes;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\Routing\Route;
@@ -129,7 +129,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->assertSame(1, $collection->count());
     $route = $collection->get('page_manager.page_view_page1');
     $expected_defaults = [
-      '_entity_view' => 'page_manager_display_variant',
+      '_entity_view' => 'display_variant',
       '_title' => 'Page label',
       'page_manager_display_variant' => 'variant1',
       'page_manager_page' => 'page1',
@@ -202,7 +202,7 @@ class PageManagerRoutesTest extends UnitTestCase {
 
     $route = $collection->get($route_name);
     $expected_defaults = [
-      '_entity_view' => 'page_manager_display_variant',
+      '_entity_view' => 'display_variant',
       '_title' => NULL,
       'page_manager_display_variant' => 'variant1',
       'page_manager_page' => 'page1',
@@ -275,7 +275,7 @@ class PageManagerRoutesTest extends UnitTestCase {
       'test_route' => [
         'path' => '/test_route1',
         'defaults' => [
-          '_entity_view' => 'page_manager_display_variant',
+          '_entity_view' => 'display_variant',
           '_title' => 'Page 1',
           'page_manager_display_variant' => 'variant1',
           'page_manager_page' => 'page1',
@@ -302,7 +302,7 @@ class PageManagerRoutesTest extends UnitTestCase {
       'page_manager.page_view_page2' => [
         'path' => '/test_route2',
         'defaults' => [
-          '_entity_view' => 'page_manager_display_variant',
+          '_entity_view' => 'display_variant',
           '_title' => 'Page 2',
           'page_manager_display_variant' => 'variant2',
           'page_manager_page' => 'page2',
@@ -363,7 +363,7 @@ class PageManagerRoutesTest extends UnitTestCase {
     $this->routeSubscriber->onAlterRoutes($route_event);
 
     $expected_defaults = [
-      '_entity_view' => 'page_manager_display_variant',
+      '_entity_view' => 'display_variant',
       '_title' => NULL,
       'page_manager_display_variant' => 'variant1',
       'page_manager_page' => 'page1',

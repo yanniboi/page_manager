@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\panels\Entity\DisplayVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**

@@ -12,14 +12,14 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Trait to add additional Page related functionality to entity forms.
  *
- * Designed for use on forms extending \Drupal\panels\Form\DisplayFormBase.
+ * Designed for use on forms extending \Drupal\ctools\Form\DisplayFormBase.
  */
 trait PageFormTrait {
 
   /**
    * Add page specific items to the form.
    *
-   * @see \Drupal\panels\Form\DisplayFormBase::form()
+   * @see \Drupal\ctools\Form\DisplayFormBase::form()
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);

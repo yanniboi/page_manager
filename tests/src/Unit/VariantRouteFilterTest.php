@@ -11,7 +11,7 @@ use Drupal\Component\Plugin\Exception\ContextException;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
-use Drupal\panels\Entity\DisplayVariantInterface;
+use Drupal\ctools\Entity\DisplayVariantInterface;
 use Drupal\page_manager\Routing\VariantRouteFilter;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Cmf\Component\Routing\Enhancer\RouteEnhancerInterface;

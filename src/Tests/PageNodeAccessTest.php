@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\page_manager\Entity\Page;
-use Drupal\panels\Entity\DisplayVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;
@@ -62,7 +62,7 @@ class PageNodeAccessTest extends WebTestBase {
     $this->assertTitle($node1->label() . ' | Drupal');
 
     // Add a variant and an access condition.
-    /** @var \Drupal\panels\Entity\DisplayVariant $display_variant */
+    /** @var \Drupal\ctools\Entity\DisplayVariant $display_variant */
     $display_variant = DisplayVariant::create([
       'variant' => 'block_display',
       'id' => 'block_page',

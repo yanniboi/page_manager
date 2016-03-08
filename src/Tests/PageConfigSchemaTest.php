@@ -10,7 +10,7 @@ namespace Drupal\page_manager\Tests;
 use Drupal\config\Tests\SchemaCheckTestTrait;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\page_manager\Entity\Page;
-use Drupal\panels\Entity\DisplayVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 
 /**
  * Ensures that page entities have valid config schema.
@@ -40,7 +40,7 @@ class PageConfigSchemaTest extends KernelTestBase {
    */
   public function testValidPageConfigSchema() {
     $id = 'node_view';
-    /** @var \Drupal\panels\Entity\DisplayInterface $page */
+    /** @var \Drupal\ctools\Entity\DisplayInterface $page */
     $page = Page::load($id);
 
     // Add an access condition.
@@ -93,7 +93,7 @@ class PageConfigSchemaTest extends KernelTestBase {
 
     $page_config = \Drupal::config("page_manager.page.$id");
     $this->assertSame($page_config->get('id'), $id);
-    $variant_config = \Drupal::config("panels.display_variant.$display_variant_id");
+    $variant_config = \Drupal::config("ctools.display_variant.$display_variant_id");
     $this->assertSame($variant_config->get('id'), $display_variant_id);
 
     $this->assertConfigSchema(\Drupal::service('config.typed'), $page_config->getName(), $page_config->get());

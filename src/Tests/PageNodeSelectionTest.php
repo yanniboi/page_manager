@@ -7,7 +7,7 @@
 
 namespace Drupal\page_manager\Tests;
 
-use Drupal\panels\Entity\DisplayVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -77,7 +77,7 @@ class PageNodeSelectionTest extends WebTestBase {
     $this->assertNoText($node2->label());
 
     // Add a new variant.
-    /** @var \Drupal\panels\Entity\DisplayVariantInterface $block_display_variant */
+    /** @var \Drupal\ctools\Entity\DisplayVariantInterface $block_display_variant */
     $block_display_variant = DisplayVariant::create([
       'variant' => 'block_display',
       'id' => 'block_page_first',
