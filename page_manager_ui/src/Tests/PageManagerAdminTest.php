@@ -10,7 +10,7 @@ namespace Drupal\page_manager_ui\Tests;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Url;
 use Drupal\page_manager\Entity\Page;
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -39,7 +39,7 @@ class PageManagerAdminTest extends WebTestBase {
     \Drupal::service('theme_handler')->install(['bartik', 'classy']);
     $this->config('system.theme')->set('admin', 'classy')->save();
 
-    $this->drupalLogin($this->drupalCreateUser(['administer pages', 'access administration pages', 'view the administration theme']));
+    $this->drupalLogin($this->drupalCreateUser(['administer pages', 'access administration pages', 'view the administration theme'], NULL, TRUE));
 
     // Remove the default node_view page to start with a clean UI.
     Page::load('node_view')->delete();
@@ -561,18 +561,18 @@ class PageManagerAdminTest extends WebTestBase {
   /**
    * Finds a block based on its variant and block label.
    *
-   * @param string $page_variant_id
-   *   The ID of the page variant entity.
+   * @param string $display_variant_id
+   *   The ID of the display variant entity.
    * @param string $block_label
    *   The label of the block.
    *
    * @return \Drupal\Core\Block\BlockPluginInterface|null
    *   Either a block plugin, or NULL.
    */
-  protected function findBlockByLabel($page_variant_id, $block_label) {
-    if ($page_variant = PageVariant::load($page_variant_id)) {
+  protected function findBlockByLabel($display_variant_id, $block_label) {
+    if ($display_variant = DisplayVariant::load($display_variant_id)) {
       /** @var \Drupal\ctools\Plugin\BlockVariantInterface $variant_plugin */
-      $variant_plugin = $page_variant->getVariantPlugin();
+      $variant_plugin = $display_variant->getVariantPlugin();
       foreach ($variant_plugin->getRegionAssignments() as $blocks) {
         /** @var \Drupal\Core\Block\BlockPluginInterface[] $blocks */
         foreach ($blocks as $block) {

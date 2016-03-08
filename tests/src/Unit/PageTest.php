@@ -15,7 +15,8 @@ use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\page_manager\Entity\Page;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
-use Drupal\page_manager\PageVariantInterface;
+use Drupal\ctools\Entity\DisplayVariantInterface;
+use Drupal\ctools\Entity\DisplayInterface;
 use Drupal\Tests\UnitTestCase;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -47,21 +48,23 @@ class PageTest extends UnitTestCase {
    * @covers ::getVariants
    */
   public function testGetVariants() {
-    $variant1 = $this->prophesize(PageVariantInterface::class);
+    $variant1 = $this->prophesize(DisplayVariantInterface::class);
     $variant1->id()->willReturn('variant1');
     $variant1->getWeight()->willReturn(0);
-    $variant2 = $this->prophesize(PageVariantInterface::class);
+    $variant1->setDisplayEntity($this->page)->willReturn($this->page);
+    $variant2 = $this->prophesize(DisplayVariantInterface::class);
     $variant2->id()->willReturn('variant2');
     $variant2->getWeight()->willReturn(-10);
+    $variant2->setDisplayEntity($this->page)->willReturn($this->page);
 
     $entity_storage = $this->prophesize(EntityStorageInterface::class);
     $entity_storage
-      ->loadByProperties(['page' => 'the_page'])
+      ->loadByProperties(['display_entity_id' => 'the_page'])
       ->willReturn(['variant1' => $variant1->reveal(), 'variant2' => $variant2->reveal()])
       ->shouldBeCalledTimes(1);
 
     $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
-    $entity_type_manager->getStorage('page_variant')->willReturn($entity_storage);
+    $entity_type_manager->getStorage('display_variant')->willReturn($entity_storage);
 
     $container = new ContainerBuilder();
     $container->set('entity_type.manager', $entity_type_manager->reveal());

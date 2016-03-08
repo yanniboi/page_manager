@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\page_manager\Entity\Page;
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -53,11 +53,12 @@ class PagePlaceholderTest extends WebTestBase {
     $page->save();
 
     // Create a new variant.
-    $http_status_variant = PageVariant::create([
+    $http_status_variant = DisplayVariant::create([
       'variant' => 'http_status_code',
       'label' => 'HTTP status code',
       'id' => 'http_status_code',
-      'page' => 'placeholder',
+      'display_entity_id' => 'placeholder',
+      'display_entity_type' => 'page',
     ]);
     $http_status_variant->getVariantPlugin()->setConfiguration(['status_code' => 200]);
     $http_status_variant->save();

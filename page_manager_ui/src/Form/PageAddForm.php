@@ -8,11 +8,14 @@
 namespace Drupal\page_manager_ui\Form;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\ctools\Form\DisplayFormBase;
 
 /**
  * Provides a form for adding a new page entity.
  */
-class PageAddForm extends PageFormBase {
+class PageAddForm extends \Drupal\ctools\Form\DisplayFormBase {
+
+  use PageFormTrait;
 
   /**
    * {@inheritdoc}

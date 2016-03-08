@@ -9,9 +9,6 @@ use Drupal\page_manager_ui\Entity\PageListBuilder;
 use Drupal\page_manager_ui\Form\PageAddForm;
 use Drupal\page_manager_ui\Form\PageDeleteForm;
 use Drupal\page_manager_ui\Form\PageEditForm;
-use Drupal\page_manager_ui\Form\PageVariantAddForm;
-use Drupal\page_manager_ui\Form\PageVariantDeleteForm;
-use Drupal\page_manager_ui\Form\PageVariantEditForm;
 
 /**
  * Implements hook_entity_type_build().
@@ -29,11 +26,4 @@ function page_manager_ui_entity_type_build(array &$entity_types) {
     ->setLinkTemplate('delete-form', '/admin/structure/page_manager/manage/{page}/delete')
     ->setLinkTemplate('enable', '/admin/structure/page_manager/manage/{page}/enable')
     ->setLinkTemplate('disable', '/admin/structure/page_manager/manage/{page}/disable');
-
-  $entity_types['page_variant']
-    ->setFormClass('add', PageVariantAddForm::class)
-    ->setFormClass('edit', PageVariantEditForm::class)
-    ->setFormClass('delete', PageVariantDeleteForm::class)
-    ->setLinkTemplate('edit-form', '/admin/structure/page_manager/manage/{page}/variant/{page_variant}')
-    ->setLinkTemplate('delete-form', '/admin/structure/page_manager/manage/{page}/variant/{page_variant}/delete');
 }

@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 
 /**
@@ -36,11 +36,12 @@ class PageManagerConfigTranslationTest extends WebTestBase {
 
     $this->drupalLogin($this->drupalCreateUser(['administer site configuration', 'translate configuration']));
 
-    PageVariant::create([
+    DisplayVariant::create([
       'variant' => 'http_status_code',
       'label' => 'HTTP status code',
       'id' => 'http_status_code',
-      'page' => 'node_view',
+      'display_entity_id' => 'node_view',
+      'display_entity_type' => 'page',
     ])->save();
   }
 
@@ -50,7 +51,7 @@ class PageManagerConfigTranslationTest extends WebTestBase {
   public function testTranslation() {
     $this->drupalGet('admin/config/regional/config-translation');
     $this->assertLinkByHref('admin/config/regional/config-translation/page');
-    $this->assertLinkByHref('admin/config/regional/config-translation/page_variant');
+    $this->assertLinkByHref('admin/config/regional/config-translation/display_variant');
 
     $this->drupalGet('admin/config/regional/config-translation/page');
     $this->assertText('Node view');
@@ -58,7 +59,7 @@ class PageManagerConfigTranslationTest extends WebTestBase {
     $this->clickLink('Add');
     $this->assertField('translation[config_names][page_manager.page.node_view][label]');
 
-    $this->drupalGet('admin/config/regional/config-translation/page_variant');
+    $this->drupalGet('admin/config/regional/config-translation/display_variant');
     $this->assertText('HTTP status code');
     $this->clickLink('Translate');
     $this->clickLink('Add');

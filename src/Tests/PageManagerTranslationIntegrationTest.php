@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\content_translation\Tests\ContentTranslationTestBase;
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 
 /**
  * Tests that overriding the entity page does not affect content translation.
@@ -64,11 +64,12 @@ class PageManagerTranslationIntegrationTest extends ContentTranslationTestBase {
     $this->assertResponse(200);
 
     // Create a new variant.
-    $http_status_variant = PageVariant::create([
+    $http_status_variant = DisplayVariant::create([
       'variant' => 'http_status_code',
       'label' => 'HTTP status code',
       'id' => 'http_status_code',
-      'page' => 'node_view',
+      'display_entity_type' => 'page',
+      'display_entity_id' => 'node_view',
     ]);
     $http_status_variant->getVariantPlugin()->setConfiguration(['status_code' => 200]);
     $http_status_variant->save();

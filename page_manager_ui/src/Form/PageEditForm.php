@@ -11,166 +11,28 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Form\AjaxFormTrait;
+use Drupal\ctools\Form\DisplayEditFormBase;
 
 /**
  * Provides a form for editing a page entity.
  */
-class PageEditForm extends PageFormBase {
+class PageEditForm extends \Drupal\ctools\Form\DisplayEditFormBase {
 
   use AjaxFormTrait;
+  use PageFormTrait {
+    PageFormTrait::form as page_form;
+  }
 
-  /**
-   * {@inheritdoc}
-   */
   public function form(array $form, FormStateInterface $form_state) {
-    $form = parent::form($form, $form_state);
+    $form = self::page_form($form, $form_state);
 
     $form['use_admin_theme'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use admin theme'),
       '#default_value' => $this->entity->usesAdminTheme(),
+      '#weight' => -1,
     ];
-    $attributes = $this->getAjaxAttributes();
-    $add_button_attributes = $this->getAjaxButtonAttributes();
 
-    $form['parameters_section'] = $this->buildParametersForm();
-
-    $form['variant_section'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Variants'),
-      '#open' => TRUE,
-    ];
-    $form['variant_section']['add_new_page'] = [
-      '#type' => 'link',
-      '#title' => $this->t('Add new variant'),
-      '#url' => Url::fromRoute('page_manager.variant_select', [
-        'page' => $this->entity->id(),
-      ]),
-      '#attributes' => $add_button_attributes,
-      '#attached' => [
-        'library' => [
-          'core/drupal.ajax',
-        ],
-      ],
-    ];
-    $form['variant_section']['variants'] = [
-      '#type' => 'table',
-      '#header' => [
-        $this->t('Label'),
-        $this->t('Plugin'),
-        $this->t('Weight'),
-        $this->t('Operations'),
-      ],
-      '#empty' => $this->t('There are no variants.'),
-      '#tabledrag' => [[
-        'action' => 'order',
-        'relationship' => 'sibling',
-        'group' => 'variant-weight',
-      ]],
-    ];
-    /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
-    foreach ($this->entity->getVariants() as $page_variant) {
-      $row = [
-        '#attributes' => [
-          'class' => ['draggable'],
-        ],
-      ];
-      $row['label']['#markup'] = $page_variant->label();
-      $row['id']['#markup'] = $page_variant->getVariantPlugin()->adminLabel();
-      $row['weight'] = [
-        '#type' => 'weight',
-        '#default_value' => $page_variant->getWeight(),
-        '#title' => $this->t('Weight for @page_variant variant', ['@page_variant' => $page_variant->label()]),
-        '#title_display' => 'invisible',
-        '#attributes' => [
-          'class' => ['variant-weight'],
-        ],
-      ];
-      $operations = [];
-      $operations['edit'] = [
-        'title' => $this->t('Edit'),
-        'url' => $page_variant->toUrl('edit-form'),
-      ];
-      $operations['delete'] = [
-        'title' => $this->t('Delete'),
-        'url' => $page_variant->toUrl('delete-form'),
-      ];
-      $row['operations'] = [
-        '#type' => 'operations',
-        '#links' => $operations,
-      ];
-      $form['variant_section']['variants'][$page_variant->id()] = $row;
-    }
-
-    if ($access_conditions = $this->entity->getAccessConditions()) {
-      $form['access_section_section'] = [
-        '#type' => 'details',
-        '#title' => $this->t('Access Conditions'),
-        '#open' => TRUE,
-      ];
-      $form['access_section_section']['add'] = [
-        '#type' => 'link',
-        '#title' => $this->t('Add new access condition'),
-        '#url' => Url::fromRoute('page_manager.access_condition_select', [
-          'page' => $this->entity->id(),
-        ]),
-        '#attributes' => $add_button_attributes,
-        '#attached' => [
-          'library' => [
-            'core/drupal.ajax',
-          ],
-        ],
-      ];
-      $form['access_section_section']['access_section'] = [
-        '#type' => 'table',
-        '#header' => [
-          $this->t('Label'),
-          $this->t('Description'),
-          $this->t('Operations'),
-        ],
-        '#empty' => $this->t('There are no access conditions.'),
-      ];
-
-      $form['access_section_section']['access_logic'] = [
-        '#type' => 'radios',
-        '#options' => [
-          'and' => $this->t('All conditions must pass'),
-          'or' => $this->t('Only one condition must pass'),
-        ],
-        '#default_value' => $this->entity->getAccessLogic(),
-      ];
-
-      $form['access_section_section']['access'] = [
-        '#tree' => TRUE,
-      ];
-      foreach ($access_conditions as $access_id => $access_condition) {
-        $row = [];
-        $row['label']['#markup'] = $access_condition->getPluginDefinition()['label'];
-        $row['description']['#markup'] = $access_condition->summary();
-        $operations = [];
-        $operations['edit'] = [
-          'title' => $this->t('Edit'),
-          'url' => Url::fromRoute('page_manager.access_condition_edit', [
-            'page' => $this->entity->id(),
-            'condition_id' => $access_id,
-          ]),
-          'attributes' => $attributes,
-        ];
-        $operations['delete'] = [
-          'title' => $this->t('Delete'),
-          'url' => Url::fromRoute('page_manager.access_condition_delete', [
-            'page' => $this->entity->id(),
-            'condition_id' => $access_id,
-          ]),
-          'attributes' => $attributes,
-        ];
-        $row['operations'] = [
-          '#type' => 'operations',
-          '#links' => $operations,
-        ];
-        $form['access_section_section']['access_section'][$access_id] = $row;
-      }
-    }
     return $form;
   }
 
@@ -179,22 +41,10 @@ class PageEditForm extends PageFormBase {
    *
    * @return array
    */
-  protected function buildParametersForm() {
-    $form = [
-      '#type' => 'details',
-      '#title' => $this->t('Parameters'),
-      '#open' => TRUE,
-    ];
-    $form['parameters'] = [
-      '#type' => 'table',
-      '#header' => [
-        $this->t('Machine name'),
-        $this->t('Label'),
-        $this->t('Type'),
-        $this->t('Operations'),
-      ],
-      '#empty' => $this->t('There are no parameters.'),
-    ];
+  protected function buildParametersForm($add_button_attributes) {
+    $form = parent::buildParametersForm($add_button_attributes);
+    unset($form['add_new_parameter']);
+
     foreach ($this->entity->getParameterNames() as $parameter_name) {
       $parameter = $this->entity->getParameter($parameter_name);
       $row = [];
@@ -210,7 +60,7 @@ class PageEditForm extends PageFormBase {
       $operations = [];
       $operations['edit'] = [
         'title' => $this->t('Edit'),
-        'url' => Url::fromRoute('page_manager.parameter_edit', [
+        'url' => Url::fromRoute('entity.page.parameter_edit', [
           'page' => $this->entity->id(),
           'name' => $parameter['machine_name'],
         ]),
@@ -256,6 +106,24 @@ class PageEditForm extends PageFormBase {
     parent::copyFormValuesToEntity($entity, $form, $form_state);
     foreach ($values_to_restore as $key => $value) {
       $form_state->setValue($key, $value);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validatePath(&$element, FormStateInterface $form_state) {
+    // Ensure the path has a leading slash.
+    $value = '/' . trim($element['#value'], '/');
+    $form_state->setValueForElement($element, $value);
+
+    // Ensure each path is unique.
+    $path = $this->entityQuery->get('page')
+      ->condition('path', $value)
+      ->condition('id', $form_state->getValue('id'), '<>')
+      ->execute();
+    if ($path) {
+      $form_state->setErrorByName('path', $this->t('The page path must be unique.'));
     }
   }
 

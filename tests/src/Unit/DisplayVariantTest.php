@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\Tests\page_manager\Unit\PageVariantTest.
+ * Contains \Drupal\Tests\page_manager\Unit\DisplayVariantTest.
  */
 
 namespace Drupal\Tests\page_manager\Unit;
@@ -11,21 +11,21 @@ use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\page_manager\ContextMapperInterface;
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\page_manager\PageInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * @coversDefaultClass \Drupal\page_manager\Entity\PageVariant
+ * @coversDefaultClass \Drupal\ctools\Entity\DisplayVariant
  *
  * @group PageManager
  */
-class PageVariantTest extends UnitTestCase {
+class DisplayVariantTest extends UnitTestCase {
 
   /**
-   * @var \Drupal\page_manager\Entity\PageVariant
+   * @var \Drupal\ctools\Entity\DisplayVariant
    */
-  protected $pageVariant;
+  protected $displayVariant;
 
   /**
    * @var \Drupal\page_manager\PageInterface|\Prophecy\Prophecy\ProphecyInterface
@@ -43,7 +43,7 @@ class PageVariantTest extends UnitTestCase {
   protected function setUp() {
     parent::setUp();
 
-    $this->pageVariant = new PageVariant(['id' => 'the_page_variant', 'page' => 'the_page'], 'page_variant');
+    $this->displayVariant = new DisplayVariant(['id' => 'the_display_variant', 'display_entity_type' => 'page', 'display_entity_id' => 'the_page'], 'display_variant');
     $this->page = $this->prophesize(PageInterface::class);
 
     $entity_storage = $this->prophesize(EntityStorageInterface::class);
@@ -68,9 +68,9 @@ class PageVariantTest extends UnitTestCase {
     $this->contextMapper->getContextValues([])->willReturn($static_contexts)->shouldBeCalledTimes(1);
     $this->page->getContexts()->willReturn($page_contexts)->shouldBeCalledTimes(1);
 
-    $contexts = $this->pageVariant->getContexts();
+    $contexts = $this->displayVariant->getContexts();
     $this->assertSame($expected, $contexts);
-    $contexts = $this->pageVariant->getContexts();
+    $contexts = $this->displayVariant->getContexts();
     $this->assertSame($expected, $contexts);
   }
 
@@ -103,10 +103,10 @@ class PageVariantTest extends UnitTestCase {
     $this->page->getContexts()->willReturn([])->shouldBeCalledTimes(2);
 
     $expected = [];
-    $contexts = $this->pageVariant->getContexts();
+    $contexts = $this->displayVariant->getContexts();
     $this->assertSame($expected, $contexts);
-    $this->pageVariant->removeStaticContext('anything');
-    $contexts = $this->pageVariant->getContexts();
+    $this->displayVariant->removeStaticContext('anything');
+    $contexts = $this->displayVariant->getContexts();
     $this->assertSame($expected, $contexts);
   }
 

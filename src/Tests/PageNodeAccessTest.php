@@ -8,7 +8,7 @@
 namespace Drupal\page_manager\Tests;
 
 use Drupal\page_manager\Entity\Page;
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 use Drupal\simpletest\WebTestBase;
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;
@@ -62,15 +62,16 @@ class PageNodeAccessTest extends WebTestBase {
     $this->assertTitle($node1->label() . ' | Drupal');
 
     // Add a variant and an access condition.
-    /** @var \Drupal\page_manager\Entity\PageVariant $page_variant */
-    $page_variant = PageVariant::create([
+    /** @var \Drupal\ctools\Entity\DisplayVariant $display_variant */
+    $display_variant = DisplayVariant::create([
       'variant' => 'block_display',
       'id' => 'block_page',
       'label' => 'Block page',
-      'page' => $this->page->id(),
+      'display_entity_id' => $this->page->id(),
+      'display_entity_type' => 'page',
     ]);
-    $page_variant->getVariantPlugin()->setConfiguration(['page_title' => 'The overridden page']);
-    $page_variant->save();
+    $display_variant->getVariantPlugin()->setConfiguration(['page_title' => 'The overridden page']);
+    $display_variant->save();
 
     $this->page->addAccessCondition([
       'id' => 'user_role',

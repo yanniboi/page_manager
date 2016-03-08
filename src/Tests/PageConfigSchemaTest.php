@@ -10,7 +10,7 @@ namespace Drupal\page_manager\Tests;
 use Drupal\config\Tests\SchemaCheckTestTrait;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\page_manager\Entity\Page;
-use Drupal\page_manager\Entity\PageVariant;
+use Drupal\ctools\Entity\DisplayVariant;
 
 /**
  * Ensures that page entities have valid config schema.
@@ -24,7 +24,7 @@ class PageConfigSchemaTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['page_manager', 'block', 'node', 'user'];
+  public static $modules = ['page_manager', 'panels', 'block', 'node', 'user'];
 
   /**
    * {@inheritdoc}
@@ -32,6 +32,7 @@ class PageConfigSchemaTest extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
     $this->installConfig(['page_manager']);
+    $this->installConfig(['panels']);
   }
 
   /**
@@ -39,7 +40,7 @@ class PageConfigSchemaTest extends KernelTestBase {
    */
   public function testValidPageConfigSchema() {
     $id = 'node_view';
-    /** @var \Drupal\page_manager\PageInterface $page */
+    /** @var \Drupal\ctools\Entity\DisplayInterface $page */
     $page = Page::load($id);
 
     // Add an access condition.
@@ -55,21 +56,22 @@ class PageConfigSchemaTest extends KernelTestBase {
     ]);
     $page->save();
 
-    $page_variant_id = 'block_page';
+    $display_variant_id = 'block_page';
     // Add a block variant.
-    $page_variant = PageVariant::create([
+    $display_variant = DisplayVariant::create([
       'variant' => 'block_display',
-      'id' => $page_variant_id,
+      'id' => $display_variant_id,
       'label' => 'Block page',
-      'page' => $page->id(),
+      'display_entity_id' => $page->id(),
+      'display_entity_type' => 'page',
     ]);
-    $page_variant->save();
-    $page->addVariant($page_variant);
+    $display_variant->save();
+    $page->addVariant($display_variant);
     /** @var \Drupal\page_manager\Plugin\DisplayVariant\PageBlockDisplayVariant $variant_plugin */
-    $variant_plugin = $page_variant->getVariantPlugin();
+    $variant_plugin = $display_variant->getVariantPlugin();
 
     // Add a selection condition.
-    $page_variant->addSelectionCondition([
+    $display_variant->addSelectionCondition([
       'id' => 'node_type',
       'bundles' => [
         'page' => 'page',
@@ -87,12 +89,12 @@ class PageConfigSchemaTest extends KernelTestBase {
       'label_display' => 'visible',
       'view_mode' => 'default',
     ]);
-    $page_variant->save();
+    $display_variant->save();
 
     $page_config = \Drupal::config("page_manager.page.$id");
     $this->assertSame($page_config->get('id'), $id);
-    $variant_config = \Drupal::config("page_manager.page_variant.$page_variant_id");
-    $this->assertSame($variant_config->get('id'), $page_variant_id);
+    $variant_config = \Drupal::config("ctools.display_variant.$display_variant_id");
+    $this->assertSame($variant_config->get('id'), $display_variant_id);
 
     $this->assertConfigSchema(\Drupal::service('config.typed'), $page_config->getName(), $page_config->get());
     $this->assertConfigSchema(\Drupal::service('config.typed'), $variant_config->getName(), $variant_config->get());
