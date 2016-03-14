@@ -20,20 +20,77 @@ function page_manager_ui_entity_type_build(array &$entity_types) {
   /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
   $entity_types['page']
     ->setListBuilderClass(PageListBuilder::class)
-    ->setFormClass('add', PageAddForm::class)
-    ->setFormClass('edit', PageEditForm::class)
     ->setFormClass('delete', PageDeleteForm::class)
     ->setLinkTemplate('collection', '/admin/structure/page_manager')
     ->setLinkTemplate('add-form', '/admin/structure/page_manager/add')
-    ->setLinkTemplate('edit-form', '/admin/structure/page_manager/manage/{page}')
+    ->setLinkTemplate('edit-form', '/admin/structure/page_manager/manage/{machine_name}/{step}')
     ->setLinkTemplate('delete-form', '/admin/structure/page_manager/manage/{page}/delete')
     ->setLinkTemplate('enable', '/admin/structure/page_manager/manage/{page}/enable')
-    ->setLinkTemplate('disable', '/admin/structure/page_manager/manage/{page}/disable');
+    ->setLinkTemplate('disable', '/admin/structure/page_manager/manage/{page}/disable')
+    ->setHandlerClass('wizard', [
+      'add' => 'Drupal\page_manager_ui\Wizard\PageAddWizard',
+      'edit' => 'Drupal\page_manager_ui\Wizard\PageEditWizard',
+    ]);
 
-  $entity_types['page_variant']
-    ->setFormClass('add', PageVariantAddForm::class)
-    ->setFormClass('edit', PageVariantEditForm::class)
-    ->setFormClass('delete', PageVariantDeleteForm::class)
-    ->setLinkTemplate('edit-form', '/admin/structure/page_manager/manage/{page}/variant/{page_variant}')
-    ->setLinkTemplate('delete-form', '/admin/structure/page_manager/manage/{page}/variant/{page_variant}/delete');
+  // $entity_types['page_variant']
+}
+
+/**
+ * Implements hook_theme().
+ */
+function page_manager_ui_theme() {
+  return [
+    'page_manager_wizard_form' => [
+      'render element' => 'form',
+    ],
+    'page_manager_wizard_tree' => [
+      'variables' => [
+        'wizard' => NULL,
+        'cached_values' => [],
+        'tree' => [],
+        'divider' => ' » ',
+        'step' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Preprocess function for page-manager-wizard-tree.html.twig.
+ */
+function template_preprocess_page_manager_wizard_tree(&$variables) {
+  /** @var $wizard \Drupal\ctools\Wizard\FormWizardInterface|\Drupal\ctools\Wizard\EntityFormWizardInterface */
+  $wizard = $variables['wizard'];
+  $cached_values = $variables['cached_values'];
+  $tree = $variables['tree'];
+  $variables['step'] = $wizard->getStep($cached_values);
+
+  foreach ($wizard->getOperations($cached_values) as $step => $operation) {
+    $parameters = $wizard->getNextParameters($cached_values);
+    // Override step to be the step we want.
+    $parameters['step'] = $step;
+
+    // Fill in parents if there are breadcrumbs.
+    $parent =& $tree;
+    if (isset($operation['breadcrumbs'])) {
+      foreach ($operation['breadcrumbs'] as $breadcrumb) {
+        $breadcrumb_string = (string) $breadcrumb;
+        if (!isset($parent[$breadcrumb_string])) {
+          $parent[$breadcrumb_string] = [
+            'title' => $breadcrumb,
+            'children' => [],
+          ];
+        }
+        $parent =& $parent[$breadcrumb_string]['children'];
+      }
+    }
+
+    $parent[$step] = [
+      'title' => !empty($operation['title']) ? $operation['title'] : '',
+      'url' => new \Drupal\Core\Url($wizard->getRouteName(), $parameters),
+      'step' => $step,
+    ];
+  }
+
+  $variables['tree'] = $tree;
 }

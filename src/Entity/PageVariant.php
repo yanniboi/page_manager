@@ -13,6 +13,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
+use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\PageVariantInterface;
 
 /**
@@ -116,9 +117,9 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   /**
    * An array of collected contexts.
    *
-   * @var \Drupal\Component\Plugin\Context\ContextInterface[]|null
+   * @var \Drupal\Component\Plugin\Context\ContextInterface[]
    */
-  protected $contexts = NULL;
+  protected $contexts = [];
 
   /**
    * Static context references.
@@ -128,6 +129,13 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * @var array[]
    */
   protected $static_context = [];
+
+  /**
+   * The page object for the parent page.
+   *
+   * @var \Drupal\page_manager\PageInterface
+   */
+  protected $parentPage;
 
   /**
    * The plugin collection that holds the single variant plugin instance.
@@ -212,6 +220,9 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    */
   protected function getVariantPluginCollection() {
     if (!$this->variantPluginCollection) {
+      if (empty($this->variant_settings['uuid'])) {
+        $this->variant_settings['uuid'] = $this->uuidGenerator()->generate();
+      }
       $this->variantPluginCollection = new DefaultSingleLazyPluginCollection(\Drupal::service('plugin.manager.display_variant'), $this->variant, $this->variant_settings);
     }
     return $this->variantPluginCollection;
@@ -235,22 +246,29 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * {@inheritdoc}
    */
   public function getPage() {
-    if (!$this->page) {
+    $page = Page::load($this->page);
+    if (!$page) {
       throw new \UnexpectedValueException('The page variant has no associated page');
     }
-    return $this->getPageStorage()->load($this->page);
+    return $page;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getContexts() {
-    if (is_null($this->contexts)) {
-      $static_contexts = $this->getContextMapper()->getContextValues($this->getStaticContexts());
-      $page_contexts = $this->getPage()->getContexts();
-      $this->contexts = array_merge($static_contexts, $page_contexts);
+    try {
+      $page = $this->getPage();
     }
-    return $this->contexts;
+    catch (\UnexpectedValueException $e) {
+      // This can happen adding a new page - it may only exist in the tempstore.
+      // @todo Remove once contexts are stored only on the variant!
+      $cached_values = $this->getTempstoreFactory()->get('page_manager.page')->get($this->page);
+      if (!empty($cached_values) && !empty($cached_values['page'])) {
+        $page = $cached_values['page'];
+      }
+    }
+    return array_merge($page->getContexts(), $this->contexts);
   }
 
   /**
@@ -259,7 +277,7 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * @return $this
    */
   protected function resetCollectedContexts() {
-    $this->contexts = NULL;
+    $this->contexts = [];
     return $this;
   }
 
@@ -429,8 +447,20 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   public function __sleep() {
     $vars = parent::__sleep();
     // Gathered contexts objects should not be serialized.
-    unset($vars[array_search('contexts', $vars)]);
+    $key = array_search('contexts', $vars);
+    if ($key !== FALSE) {
+      unset($vars[$key]);
+    }
     return $vars;
+  }
+
+  /**
+   * Wraps the shared tempstore factory.
+   *
+   * @return \Drupal\user\SharedTempStoreFactory
+   */
+  protected function getTempstoreFactory() {
+    return \Drupal::service('user.shared_tempstore');
   }
 
 }

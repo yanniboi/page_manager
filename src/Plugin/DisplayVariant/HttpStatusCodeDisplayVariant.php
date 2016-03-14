@@ -84,4 +84,13 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
     }
   }
 
+  public function __sleep() {
+    $vars = parent::__sleep();
+    $key = array_search('stringTranslation', $vars);
+    if ($key !== FALSE) {
+      unset($vars[$key]);
+    }
+    return $vars;
+  }
+
 }

@@ -21,6 +21,7 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\ctools\Plugin\DisplayVariant\BlockDisplayVariant;
+use Drupal\ctools\Plugin\PluginWizardInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -31,7 +32,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   admin_label = @Translation("Block page")
  * )
  */
-class PageBlockDisplayVariant extends BlockDisplayVariant {
+class PageBlockDisplayVariant extends BlockDisplayVariant implements PluginWizardInterface {
 
   /**
    * The module handler.
@@ -248,6 +249,18 @@ class PageBlockDisplayVariant extends BlockDisplayVariant {
   /**
    * {@inheritdoc}
    */
+  public function getWizardOperations($cached_values) {
+    return [
+      'content' => [
+        'title' => $this->t('Content'),
+        'form' => '\Drupal\page_manager_ui\Form\VariantPluginContentForm',
+      ],
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function defaultConfiguration() {
     return parent::defaultConfiguration() + [
       'page_title' => '',
@@ -298,6 +311,15 @@ class PageBlockDisplayVariant extends BlockDisplayVariant {
       'top' => 'Top',
       'bottom' => 'Bottom',
     ];
+  }
+
+  public function __sleep() {
+    $vars = parent::__sleep();
+    $key = array_search('stringTranslation', $vars);
+    if ($key !== FALSE) {
+      unset($vars[$key]);
+    }
+    return $vars;
   }
 
 }

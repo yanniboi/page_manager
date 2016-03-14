@@ -17,6 +17,14 @@ use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 interface PageInterface extends ConfigEntityInterface, EntityWithPluginCollectionInterface {
 
   /**
+   * Returns the administrative description of the page.
+   *
+   * @return string
+   *   The description of this page.
+   */
+  public function getDescription();
+
+  /**
    * Returns whether the page entity is enabled.
    *
    * @return bool
