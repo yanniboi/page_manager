@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\page_manager_ui\Form\PageContextsForm.
+ * Contains \Drupal\page_manager_ui\Form\PageVariantContextsForm.
  */
 
 namespace Drupal\page_manager_ui\Form;
@@ -19,7 +19,7 @@ use Drupal\Core\TypedData\ComplexDataDefinitionInterface;
 use Drupal\Core\TypedData\ListDataDefinitionInterface;
 use Drupal\Core\Url;
 
-class PageContextsForm extends FormBase {
+class PageVariantContextsForm extends FormBase {
 
   /**
    * @var string
@@ -55,6 +55,7 @@ class PageContextsForm extends FormBase {
     if (isset($types['entity'])) {
       unset($types['entity']);
     }
+    asort($types);
     $form['types'] = [
       '#type' => 'select',
       '#options' => $types,
@@ -103,12 +104,12 @@ class PageContextsForm extends FormBase {
   protected function renderRows($cached_values) {
     $contexts = [];
     /** @var $page \Drupal\page_manager\Entity\Page */
-    $page = $cached_values['page'];
+    $page_variant = $cached_values['page_variant'];
     /**
      * @var string $parameter
      * @var \Drupal\Core\Plugin\Context\ContextInterface $context
      */
-    foreach ($page->getContexts() as $parameter => $context) {
+    foreach ($page_variant->getContexts() as $parameter => $context) {
       // @todo this list should be replaced with some sort of context type check.
       if (!in_array($parameter, ['current_user'])) {
         list($route_partial, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $cached_values['id'], $parameter);

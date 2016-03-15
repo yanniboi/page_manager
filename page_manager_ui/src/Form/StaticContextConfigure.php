@@ -63,9 +63,9 @@ class StaticContextConfigure extends FormBase {
     $this->machine_name = $machine_name;
     $cached_values = $this->getTempstore();
     /** @var \Drupal\page_manager\PageInterface $page */
-    $page = $cached_values['page'];
+    $page_variant = $cached_values['page_variant'];
     if ($op == 'edit') {
-      $context = $page->getStaticContext($data_type);
+      $context = $page_variant->getStaticContext($data_type);
       $form['type'] = [
         '#type' => 'value',
         '#value' => $context['type'],
@@ -133,7 +133,7 @@ class StaticContextConfigure extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cache_values = $this->getTempstore();
     /** @var \Drupal\page_manager\PageInterface $page */
-    $page = $cache_values['page'];
+    $page_variant = $cache_values['page_variant'];
     $value = $form_state->getValue('value');
     $type = $form_state->getValue('type');
     if (substr($type, 0, 7) == 'entity:') {
@@ -145,7 +145,7 @@ class StaticContextConfigure extends FormBase {
       'type' => $form_state->getValue('type'),
       'value' => $value,
     ];
-    $page->setStaticContext($form_state->getValue('id'), $config);
+    $page_variant->setStaticContext($form_state->getValue('id'), $config);
     $this->setTempstore($cache_values);
     list($route_name, $route_parameters) = $this->getParentRouteInfo($cache_values);
     $form_state->setRedirect($route_name, $route_parameters);

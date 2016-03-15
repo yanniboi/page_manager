@@ -69,6 +69,10 @@ class PageEditWizard extends PageWizardBase {
       'title' => $this->t('General'),
       'form' => '\Drupal\page_manager_ui\Form\PageVariantConfigureForm',
     ];
+    $operations['contexts'] = [
+      'title' => $this->t('Contexts'),
+      'form' => '\Drupal\page_manager_ui\Form\PageVariantContextsForm',
+    ];
     $operations['selection'] = [
       'title' => $this->t('Selection Criteria'),
       'form' => '\Drupal\page_manager_ui\Form\PageVariantSelectionForm',

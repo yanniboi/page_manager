@@ -82,6 +82,14 @@ class PageVariantAddForm extends FormBase {
 
     $variant_plugin_options = [];
     foreach ($this->variantManager->getDefinitions() as $plugin_id => $definition) {
+      // The following two variants are provided by Drupal Core. They are not
+      // configurable and therefore not compatible with Page Manager but have
+      // similar and confusing labels. Skip them so that they are not shown in
+      // the UI.
+      if (in_array($plugin_id, ['simple_page', 'block_page'])) {
+        continue;
+      }
+
       $variant_plugin_options[$plugin_id] = $definition['admin_label'];
     }
     $form['variant_plugin_id'] = [

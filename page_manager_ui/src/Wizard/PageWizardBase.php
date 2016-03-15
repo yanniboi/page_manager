@@ -61,9 +61,9 @@ class PageWizardBase extends EntityFormWizardBase {
       'title' => $this->t('Page Access'),
       'form' => '\Drupal\page_manager_ui\Form\PageAccessForm',
     ];
-    $operations['contexts'] = [
-      'title' => $this->t('Configure Contexts'),
-      'form' => '\Drupal\page_manager_ui\Form\PageContextsForm',
+    $operations['parameters'] = [
+      'title' => $this->t('Page Parameters'),
+      'form' => '\Drupal\page_manager_ui\Form\PageParametersForm',
     ];
 
     return $operations;
