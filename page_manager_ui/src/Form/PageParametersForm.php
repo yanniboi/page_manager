@@ -90,11 +90,11 @@ class PageParametersForm extends FormBase {
     $cached_values = $form_state->getTemporaryValue('wizard');
 
     /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $add */
-    $add = $form_state->getValue('add');
+    /*$add = $form_state->getValue('add');
     if ($add->getUntranslatedString() == 'Add new context') {
       list(, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $this->machine_name, $form_state->getValue('types'));
       $form_state->setRedirect($this->getAddRoute($cached_values), $route_parameters);
-    }
+    }*/
   }
 
   protected function getOperations($route_name_base, array $route_parameters = array()) {
