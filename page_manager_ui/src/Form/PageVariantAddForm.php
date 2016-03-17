@@ -56,15 +56,6 @@ class PageVariantAddForm extends FormBase {
   }
 
   /**
-   * Get the tempstore id.
-   *
-   * @return string
-   */
-  protected function getTempstoreId() {
-    return 'page_manager.page';
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getFormId() {
@@ -75,10 +66,7 @@ class PageVariantAddForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $machine_name = '') {
-    $cached_values = $this->tempstore->get($this->getTempstoreId())->get($machine_name);
-    $form_state->setTemporaryValue('wizard', $cached_values);
-    /** @var $page \Drupal\page_manager\Entity\Page */
-    $page = $cached_values['page'];
+    $cached_values = $form_state->getTemporaryValue('wizard');
 
     $variant_plugin_options = [];
     foreach ($this->variantManager->getDefinitions() as $plugin_id => $definition) {
@@ -98,29 +86,15 @@ class PageVariantAddForm extends FormBase {
       '#options' => $variant_plugin_options,
       '#default_value' => !empty($cached_values['variant_plugin_id']) ? $cached_values['variant_plugin_id'] : '',
     ];
-
-    $form['label'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Label'),
-      '#required' => TRUE,
-      '#size' => 32,
-      '#maxlength' => 255,
-    ];
-    $form['id'] = [
-      '#type' => 'machine_name',
-      '#maxlength' => 128,
-      '#machine_name' => [
-        'source' => array('label'),
-        'exists' => function ($id) use ($page) {
-          return $this->variantExists($page, $id);
-        },
+    $form['wizard_options'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Optional features'),
+      '#description' => $this->t('Check any optional features you need to be presented with forms for configuring them. If you do not check them here you will still be able to utilize these features once the new variant is created.'),
+      '#options' => [
+        'selection' => $this->t('Selection Criteria'),
+        'contexts' => $this->t('Contexts'),
       ],
-      '#description' => $this->t('A unique machine-readable name for this variant.'),
-    ];
-
-    $form['submit'] = [
-      '#type' => 'submit',
-      '#value' => $this->t('Create variant'),
+      '#default_value' => !empty($cached_values['wizard_options']) ? $cached_values['wizard_options'] : [],
     ];
 
     return $form;
@@ -146,25 +120,27 @@ class PageVariantAddForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
-    /** @var \Drupal\page_manager\Entity\Page $page */
+    /** @var $page \Drupal\page_manager\Entity\Page */
     $page = $cached_values['page'];
+    $variant_plugin_id = $cached_values['variant_plugin_id'] = $form_state->getValue('variant_plugin_id');
 
-    $cached_values['page_variant'] = \Drupal::entityManager()
-      ->getStorage('page_variant')
-      ->create([
-        'variant' => $form_state->getValue('variant_plugin_id'),
-        'page' => $page->id(),
-        'id' => $form_state->getValue('id'),
-        'label' => $form_state->getValue('label'),
-      ]);
-    $page->addVariant($cached_values['page_variant']);
+    /** @var $page_variant \Drupal\page_manager\Entity\PageVariant */
+    $page_variant = $cached_values['page_variant'];
+    $page_variant->setVariantPluginId($variant_plugin_id);
+    $page_variant->set('label', $form_state->getValue('label'));
+    $page_variant->set('page', $page->id());
 
-    $form_state->setRedirect('entity.page.edit_form', [
-      'machine_name' => $page->id(),
-      'step' => 'page_variant__' . $cached_values['page_variant']->id() . '__overview',
-    ]);
+    // Loop over variant ids until one is available.
+    $variant_id_base = "{$page->id()}-{$variant_plugin_id}";
+    $key = 0;
+    while ($this->variantExists($page, "{$variant_id_base}-{$key}")) {
+      $key++;
+    }
 
-    $this->tempstore->get($this->getTempstoreId())->set($page->id(), $cached_values);
+    $cached_values['id'] = "{$variant_id_base}-{$key}";
+    $page_variant->set('id', $cached_values['id']);
+    $cached_values['wizard_options'] = $form_state->getValue('wizard_options');
+    $form_state->setTemporaryValue('wizard', $cached_values);
   }
 
 }

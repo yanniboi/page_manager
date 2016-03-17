@@ -88,20 +88,18 @@ class PageWizardBase extends EntityFormWizardBase {
 
   public function finish(array &$form, FormStateInterface $form_state) {
     /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $op */
-    $op = $form_state->getValue('op');
-    $finish = in_array($op->getUntranslatedString(), ["Update and save", "Finish"]);
-    if ($finish) {
-      $cached_values = $form_state->getTemporaryValue('wizard');
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    /** @var \Drupal\page_manager\Entity\Page $page */
+    $page = $cached_values['page'];
+    foreach($page->getVariants() as $variant) {
+      $variant_plugin = $variant->getVariantPlugin();
+      $this->getTempstore()->delete($variant_plugin->id());
     }
     parent::finish($form, $form_state);
-    if ($finish) {
-      $form_state->setRedirectUrl(new Url('entity.page.edit_form', [
-        'machine_name' => $this->machine_name,
-        'step' => $this->step
-      ]));
-
-      $this->getTempstore()->set($this->machine_name, $cached_values);
-    }
+    $form_state->setRedirectUrl(new Url('entity.page.edit_form', [
+      'machine_name' => $this->machine_name,
+      'step' => $this->step
+    ]));
   }
 
 }

@@ -128,10 +128,20 @@ page_manager.variant_select:
     _permission: 'administer pages'
 
 entity.page_variant.add_form:
-  path: '/admin/structure/page_manager/manage/{machine_name}/add_variant'
+  path: '/admin/structure/page_manager/manage/{page}/add_variant'
   defaults:
+    _entity_wizard: 'page_variant.add_variant'
     _title: 'Add page variant'
-    _form: '\Drupal\page_manager_ui\Form\PageVariantAddForm'
+    tempstore_id: page_manager.page_variant
+  requirements:
+    _permission: 'administer pages'
+
+entity.page_variant.add_step_form:
+  path: '/admin/structure/page_manager/manage/{page}/add_variant/{machine_name}/{step}'
+  defaults:
+    _entity_wizard: 'page_variant.add_variant'
+    _title: 'Add page variant'
+    tempstore_id: page_manager.page_variant
   requirements:
     _permission: 'administer pages'
 
