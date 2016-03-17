@@ -11,8 +11,6 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Form\AjaxFormTrait;
-use Drupal\user\SharedTempStoreFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a form for editing a variant.
@@ -20,50 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class VariantPluginContentForm extends FormBase {
 
   use AjaxFormTrait;
-
-  /**
-   * Tempstore factory.
-   *
-   * @var \Drupal\user\SharedTempStoreFactory
-   */
-  protected $tempstore;
-
-  /**
-   * Constructs a new VariantPluginContentForm.
-   *
-   * @param \Drupal\user\SharedTempStoreFactory $tempstore
-   *   The tempstore factory.
-   */
-  public function __construct(SharedTempStoreFactory $tempstore) {
-    $this->tempstore = $tempstore;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('user.shared_tempstore')
-    );
-  }
-
-  /**
-   * Get the tempstore ID.
-   *
-   * @return string
-   */
-  protected function getTempstoreId() {
-    return 'page_manager.block_display';
-  }
-
-  /**
-   * Get the tempstore.
-   *
-   * @return \Drupal\user\SharedTempStore
-   */
-  protected function getTempstore() {
-    return $this->tempstore->get($this->getTempstoreId());
-  }
 
   /**
    * {@inheritdoc}
@@ -80,20 +34,10 @@ class VariantPluginContentForm extends FormBase {
     /** @var \Drupal\page_manager\Plugin\DisplayVariant\PageBlockDisplayVariant $variant_plugin */
     $variant_plugin = $cached_values['plugin'];
 
-    // Store the block display plugin so we can get it in our dialogs.
-    if (!empty($this->getTempstore()->get($variant_plugin->id())['plugin'])) {
-      $variant_plugin->setConfiguration($this->getTempstore()->get($variant_plugin->id())['plugin']->getConfiguration());
-      $form_state->setTemporaryValue('wizard', $cached_values);
-    }
     $context_definitions = [];
     foreach ($variant_plugin->getContexts() as $context_name => $context) {
       $context_definitions[$context_name] = $context->getContextDefinition();
     }
-    $this->getTempstore()->set($variant_plugin->id(), [
-      'plugin' => $variant_plugin,
-      'access' => $cached_values['access'],
-      'contexts' => $context_definitions,
-    ]);
 
     // Set up the attributes used by a modal to prevent duplication later.
     $attributes = $this->getAjaxAttributes();
@@ -248,10 +192,6 @@ class VariantPluginContentForm extends FormBase {
         $variant_plugin->updateBlock($block_id, $block_values);
       }
     }
-
-    // Remove from the tempstore so we refresh from the database the next time
-    // we come here.
-    $this->getTempstore()->delete($variant_plugin->id());
   }
 
 }
