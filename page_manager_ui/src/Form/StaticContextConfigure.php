@@ -96,20 +96,16 @@ class StaticContextConfigure extends FormBase {
       '#disabled' => ($op == 'edit'),
     ];
     $type = ($op == 'edit' && isset($context)) ? $context['type'] : $data_type;
-    if (isset($context)) {
-      $entities = \Drupal::entityTypeManager()->getStorage(substr($type, 7))->loadByProperties(['uuid' => $context['value']]);
-      $value = array_shift($entities);
-    }
-    else {
-      $value = NULL;
-    }
     if (substr($type, 0, 7) == 'entity:') {
+      if (isset($context) && ($context['value'] !== NULL)) {
+        $value_entity = \Drupal::entityManager()->loadEntityByUuid(substr($type, 7), $context['value']);
+      }
       $form['value'] = [
         '#type' => 'entity_autocomplete',
         '#title' => $this->t('Choose an entity to reference'),
         '#target_type' => substr($type, 7),
         '#maxlength' => 1024,
-        '#default_value' => $value,
+        '#default_value' => isset($value_entity) ? $value_entity : NULL,
       ];
     }
     else {
@@ -136,7 +132,7 @@ class StaticContextConfigure extends FormBase {
     $page_variant = $cache_values['page_variant'];
     $value = $form_state->getValue('value');
     $type = $form_state->getValue('type');
-    if (substr($type, 0, 7) == 'entity:') {
+    if ((substr($type, 0, 7) == 'entity:') && ($value !== NULL))  {
       $entity = \Drupal::entityTypeManager()->getStorage(substr($type, 7))->load($value);
       $value = $entity->uuid();
     }
@@ -172,11 +168,19 @@ class StaticContextConfigure extends FormBase {
     /** @var $page \Drupal\page_manager\PageInterface */
     $page = $cached_values['page'];
 
-    $route_name = $page->isNew() ? 'entity.page.add_step_form' : 'entity.page.edit_form';
-    return [$route_name, [
-      'machine_name' => $this->machine_name,
-      'step' => 'contexts',
-    ]];
+    if ($page->isNew()) {
+      return ['entity.page.add_step_form', [
+        'machine_name' => $this->machine_name,
+        'step' => 'selection',
+      ]];
+    }
+    else {
+      $page_variant = $cached_values['page_variant'];
+      return ['entity.page.edit_form', [
+        'machine_name' => $this->machine_name,
+        'step' => 'page_variant__' . $page_variant->id() . '__contexts',
+      ]];
+    }
   }
 
 }

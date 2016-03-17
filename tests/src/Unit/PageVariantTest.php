@@ -8,6 +8,7 @@
 namespace Drupal\Tests\page_manager\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
+use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\page_manager\ContextMapperInterface;
@@ -49,12 +50,17 @@ class PageVariantTest extends UnitTestCase {
     $entity_storage = $this->prophesize(EntityStorageInterface::class);
     $entity_storage->load('the_page')->willReturn($this->page->reveal());
 
+    $entity_manager = $this->prophesize(EntityManagerInterface::class);
+    $entity_manager->getEntityTypeFromClass('Drupal\page_manager\Entity\Page')->willReturn('page');
+    $entity_manager->getStorage('page')->willReturn($entity_storage);
+
     $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
     $entity_type_manager->getStorage('page')->willReturn($entity_storage);
 
     $this->contextMapper = $this->prophesize(ContextMapperInterface::class);
 
     $container = new ContainerBuilder();
+    $container->set('entity.manager', $entity_manager->reveal());
     $container->set('entity_type.manager', $entity_type_manager->reveal());
     $container->set('page_manager.context_mapper', $this->contextMapper->reveal());
     \Drupal::setContainer($container);
@@ -70,8 +76,6 @@ class PageVariantTest extends UnitTestCase {
 
     $contexts = $this->pageVariant->getContexts();
     $this->assertSame($expected, $contexts);
-    $contexts = $this->pageVariant->getContexts();
-    $this->assertSame($expected, $contexts);
   }
 
   public function providerTestGetContexts() {
@@ -84,12 +88,12 @@ class PageVariantTest extends UnitTestCase {
     $data['additive'] = [
       ['static' => 'static'],
       ['page' => 'page'],
-      ['static' => 'static', 'page' => 'page'],
+      ['page' => 'page', 'static' => 'static'],
     ];
     $data['conflicting'] = [
       ['foo' => 'static'],
       ['foo' => 'page'],
-      ['foo' => 'page'],
+      ['foo' => 'static'],
     ];
     return $data;
   }

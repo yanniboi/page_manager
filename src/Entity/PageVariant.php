@@ -267,8 +267,24 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
       if (!empty($cached_values) && !empty($cached_values['page'])) {
         $page = $cached_values['page'];
       }
+
     }
-    return array_merge($page->getContexts(), $this->contexts);
+    return array_merge($page->getContexts(), $this->loadContexts());
+  }
+
+  /**
+   * Loads static contexts into objects.
+   *
+   * @return \Drupal\Component\Plugin\Context\ContextInterface[]
+   */
+  protected function loadContexts() {
+    if (!empty($this->contexts)) {
+      return $this->contexts;
+    }
+
+    $context_mapper = $this->getContextMapper();
+    $this->contexts = $context_mapper->getContextValues($this->static_context);
+    return $this->contexts;
   }
 
   /**

@@ -34,6 +34,13 @@ class StaticContextDeleteForm extends ConfirmFormBase {
   protected $machine_name;
 
   /**
+   * The machine-name of the variant.
+   *
+   * @var string
+   */
+  protected $variantMachineName;
+
+  /**
    * The static context's machine name.
    *
    * @var array
@@ -61,8 +68,8 @@ class StaticContextDeleteForm extends ConfirmFormBase {
   public function getQuestion() {
     $cached_values = $this->getTempstore();
     /** @var $page \Drupal\page_manager\PageInterface */
-    $page = $cached_values['page'];
-    return $this->t('Are you sure you want to delete the static context %label?', ['%label' => $page->getStaticContext($this->data_type)['label']]);
+    $page_variant = $cached_values['page_variant'];
+    return $this->t('Are you sure you want to delete the static context %label?', ['%label' => $page_variant->getStaticContext($this->data_type)['label']]);
   }
 
   /**
@@ -73,11 +80,19 @@ class StaticContextDeleteForm extends ConfirmFormBase {
     /** @var $page \Drupal\page_manager\PageInterface */
     $page = $cached_values['page'];
 
-    $route_name = $page->isNew() ? 'entity.page.add_step_form' : 'entity.page.edit_form';
-    return new Url($route_name, [
-      'machine_name' => $this->machine_name,
-      'step' => 'contexts',
-    ]);
+    if ($page->isNew()) {
+      return new Url('entity.page.add_step_form', [
+        'machine_name' => $this->machine_name,
+        'step' => 'selection',
+      ]);
+    }
+    else {
+      $page_variant = $cached_values['page_variant'];
+      return new Url('entity.page.edit_form', [
+        'machine_name' => $this->machine_name,
+        'step' => 'page_variant__' . $page_variant->id() . '__contexts',
+      ]);
+    }
   }
 
   /**
@@ -90,9 +105,10 @@ class StaticContextDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $tempstore_id = NULL, $machine_name = NULL, $data_type = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $tempstore_id = NULL, $machine_name = NULL, $variant_machine_name = NULL, $data_type = NULL) {
     $this->tempstore_id = $tempstore_id;
     $this->machine_name = $machine_name;
+    $this->variantMachineName = $variant_machine_name;
     $this->data_type = $data_type;
     return parent::buildForm($form, $form_state);
   }
@@ -103,9 +119,9 @@ class StaticContextDeleteForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $this->getTempstore();
     /** @var $page \Drupal\page_manager\PageInterface */
-    $page = $cached_values['page'];
-    drupal_set_message($this->t('The static context %label has been removed.', ['%label' => $page->getStaticContext($this->data_type)['label']]));
-    $page->removeStaticContext($this->data_type);
+    $page_variant = $this->getPageVariant($cached_values);
+    drupal_set_message($this->t('The static context %label has been removed.', ['%label' => $page_variant->getStaticContext($this->data_type)['label']]));
+    $page_variant->removeStaticContext($this->data_type);
     $this->setTempstore($cached_values);
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
@@ -116,6 +132,24 @@ class StaticContextDeleteForm extends ConfirmFormBase {
 
   protected function setTempstore($cached_values) {
     $this->tempstore->get($this->tempstore_id)->set($this->machine_name, $cached_values);
+  }
+
+  /**
+   * Get the page variant.
+   *
+   * @param array $cached_values
+   *   The cached values from the wizard.
+   *
+   * @return \Drupal\page_manager\PageVariantInterface
+   */
+  protected function getPageVariant($cached_values) {
+    if (isset($cached_values['page_variant'])) {
+      return $cached_values['page_variant'];
+    }
+
+    /** @var $page \Drupal\page_manager\PageInterface */
+    $page = $cached_values['page'];
+    return $page->getVariant($this->variantMachineName);
   }
 
 }

@@ -213,6 +213,14 @@ class PageEditWizard extends PageWizardBase {
       ],
     ];
 
+    $actions['cancel'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Cancel'),
+      '#submit' => [
+        '::clearTempstore'
+      ],
+    ];
+
     // Add any submit or validate functions for the step and the global ones.
     foreach (['submit', 'update_and_save', 'finish'] as $button) {
       if (isset($operation['validate'])) {
@@ -275,6 +283,16 @@ class PageEditWizard extends PageWizardBase {
         $page_variant->delete();
       }
     }
+  }
+
+  /**
+   * Clears the temporary store.
+   *
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   */
+  public function clearTempstore(array &$form, FormStateInterface $form_state) {
+    $this->getTempstore()->delete($this->getMachineName());
   }
 
 }

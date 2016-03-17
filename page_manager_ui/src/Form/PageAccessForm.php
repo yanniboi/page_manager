@@ -6,7 +6,7 @@
 
 namespace Drupal\page_manager_ui\Form;
 
-
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\ctools\Form\ManageConditions;
 
 class PageAccessForm extends ManageConditions {
@@ -64,6 +64,18 @@ class PageAccessForm extends ManageConditions {
    */
   protected function getAddRoute($cached_values) {
     return 'entity.page.condition.add';
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $triggering_element = $form_state->getTriggeringElement();
+    if ($triggering_element['#value']->getUntranslatedString() == 'Update') {
+      return;
+    }
+    parent::submitForm($form, $form_state);
   }
 
 }

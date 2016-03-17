@@ -418,4 +418,17 @@ class Page extends ConfigEntityBase implements PageInterface {
     return $vars;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function urlRouteParameters($rel) {
+    if ($rel == 'edit-form') {
+      $uri_route_parameters = [];
+      $uri_route_parameters['machine_name'] = $this->id();
+      $uri_route_parameters['step'] = 'general';
+      return $uri_route_parameters;
+    }
+
+    return parent::urlRouteParameters($rel);
+  }
 }
