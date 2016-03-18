@@ -95,6 +95,11 @@ class PageWizardBase extends EntityFormWizardBase {
     foreach($page->getVariants() as $variant) {
       $variant->save();
     }
+
+    $form_state->setRedirectUrl(new Url('entity.page.edit_form', [
+      'machine_name' => $this->machine_name,
+      'step' => $this->step
+    ]));
   }
 
 }

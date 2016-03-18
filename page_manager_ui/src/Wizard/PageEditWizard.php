@@ -116,7 +116,7 @@ class PageEditWizard extends PageWizardBase {
     $links[] = [
       'title' => $this->t('Add variant'),
       'url' => new Url('entity.page_variant.add_form', [
-        'machine_name' => $this->getMachineName(),
+        'page' => $this->getMachineName(),
       ]),
     ];
 

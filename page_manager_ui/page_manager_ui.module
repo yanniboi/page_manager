@@ -32,7 +32,10 @@ function page_manager_ui_entity_type_build(array &$entity_types) {
       'edit' => 'Drupal\page_manager_ui\Wizard\PageEditWizard',
     ]);
 
-  // $entity_types['page_variant']
+   $entity_types['page_variant']
+     ->setHandlerClass('wizard', [
+       'add_variant' => 'Drupal\page_manager_ui\Wizard\PageVariantAddWizard',
+     ]);
 }
 
 /**

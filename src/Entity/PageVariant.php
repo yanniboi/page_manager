@@ -245,6 +245,14 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   /**
    * {@inheritdoc}
    */
+  public function setVariantPluginId($variant) {
+    $this->variant = $variant;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getPage() {
     if (!$this->page) {
       throw new \UnexpectedValueException('The page variant has no associated page');
