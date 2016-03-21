@@ -34,6 +34,7 @@ use Drupal\page_manager\PageVariantInterface;
  *   config_export = {
  *     "id",
  *     "label",
+ *     "description",
  *     "use_admin_theme",
  *     "path",
  *     "access_logic",
@@ -57,6 +58,13 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @var string
    */
   protected $label;
+
+  /**
+   * The description of the page entity.
+   *
+   * @var string
+   */
+  protected $description;
 
   /**
    * The path of the page entity.
@@ -119,6 +127,13 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @var array[]
    */
   protected $parameters = [];
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDescription() {
+    return $this->description;
+  }
 
   /**
    * {@inheritdoc}
@@ -310,7 +325,13 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function addVariant(PageVariantInterface $variant) {
+    // If variants hasn't been initialized, we initialize it before adding the
+    // new variant.
+    if ($this->variants === NULL) {
+      $this->getVariants();
+    }
     $this->variants[$variant->id()] = $variant;
+    $this->sortVariants();
     return $this;
   }
 
@@ -330,6 +351,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function removeVariant($variant_id) {
     $this->getVariant($variant_id)->delete();
+    unset($this->variants[$variant_id]);
     return $this;
   }
 
@@ -343,23 +365,19 @@ class Page extends ConfigEntityBase implements PageInterface {
       foreach ($this->variantStorage()->loadByProperties(['page' => $this->id()]) as $variant) {
         $this->variants[$variant->id()] = $variant;
       }
-      // Suppress errors because of https://bugs.php.net/bug.php?id=50688.
-      @uasort($this->variants, [$this, 'variantSortHelper']);
+      $this->sortVariants();
     }
     return $this->variants;
   }
 
   /**
-   * {@inheritdoc}
+   * Sort variants.
    */
-  public function variantSortHelper($a, $b) {
-    $a_weight = $a->getWeight();
-    $b_weight = $b->getWeight();
-    if ($a_weight == $b_weight) {
-      return 0;
+  protected function sortVariants() {
+    if (isset($this->variants)) {
+      // Suppress errors because of https://bugs.php.net/bug.php?id=50688.
+      @uasort($this->variants, '\Drupal\page_manager\Entity\PageVariant::sort');
     }
-
-    return ($a_weight < $b_weight) ? -1 : 1;
   }
 
   /**
@@ -378,25 +396,26 @@ class Page extends ConfigEntityBase implements PageInterface {
   public function __sleep() {
     $vars = parent::__sleep();
 
-    // Ensure any plugin collections are stored correctly before serializing.
-    // @todo Let https://www.drupal.org/node/2650588 handle this instead.
-    foreach ($this->getPluginCollections() as $plugin_config_key => $plugin_collection) {
-      $this->set($plugin_config_key, $plugin_collection->getConfiguration());
-    }
-
-    // Avoid serializing plugin collections and entities as they might contain
-    // references to a lot of objects including the container.
-    $unset_vars = [
-      'variants',
-      'accessConditionCollection',
-    ];
-    foreach ($unset_vars as $unset_var) {
-      if (!empty($this->{$unset_var})) {
-        unset($vars[array_search($unset_var, $vars)]);
-      }
+    // Avoid serializing the page executable as it represents runtime state.
+    $key = array_search('executable', $vars);
+    if ($key !== FALSE) {
+      unset($vars[$key]);
     }
 
     return $vars;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function urlRouteParameters($rel) {
+    if ($rel == 'edit-form') {
+      $uri_route_parameters = [];
+      $uri_route_parameters['machine_name'] = $this->id();
+      $uri_route_parameters['step'] = 'general';
+      return $uri_route_parameters;
+    }
+
+    return parent::urlRouteParameters($rel);
+  }
 }
