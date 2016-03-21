@@ -6,6 +6,7 @@
 
 namespace Drupal\page_manager_ui\Form;
 
+
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
@@ -79,6 +80,8 @@ class PageVariantConfigureForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
+    /** @var $page \Drupal\page_manager\Entity\Page */
+    $page = $cached_values['page'];
     /** @var $page_variant \Drupal\page_manager\Entity\PageVariant */
     $page_variant = $cached_values['page_variant'];
     $variant_plugin = $page_variant->getVariantPlugin();

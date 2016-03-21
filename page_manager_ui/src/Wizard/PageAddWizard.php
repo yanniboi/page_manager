@@ -25,17 +25,21 @@ class PageAddWizard extends PageWizardBase {
     $operations = parent::getOperations($cached_values);
 
     // Add steps for selection and creating the first variant.
+    $operations['contexts'] = [
+      'title' => $this->t('Contexts'),
+      'form' => '\Drupal\page_manager_ui\Form\PageVariantContextsForm',
+    ];
     $operations['selection'] = [
-      'title' => $this->t('Selection Criteria'),
+      'title' => $this->t('Selection criteria'),
       'form' => '\Drupal\page_manager_ui\Form\PageVariantSelectionForm',
     ];
     $operations['display_variant'] = [
-      'title' => $this->t('Configure Variant'),
+      'title' => $this->t('Configure variant'),
       'form' => '\Drupal\page_manager_ui\Form\PageVariantConfigureForm',
     ];
 
     // Hide any optional steps that aren't selected.
-    $optional_steps = ['access', 'contexts', 'selection'];
+    $optional_steps = ['parameters', 'access', 'contexts', 'selection'];
     foreach ($optional_steps as $step_name) {
       if (empty($cached_values['wizard_options'][$step_name])) {
         unset($operations[$step_name]);

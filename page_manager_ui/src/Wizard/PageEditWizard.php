@@ -74,7 +74,7 @@ class PageEditWizard extends PageWizardBase {
       'form' => '\Drupal\page_manager_ui\Form\PageVariantContextsForm',
     ];
     $operations['selection'] = [
-      'title' => $this->t('Selection Criteria'),
+      'title' => $this->t('Selection criteria'),
       'form' => '\Drupal\page_manager_ui\Form\PageVariantSelectionForm',
     ];
 
@@ -273,16 +273,17 @@ class PageEditWizard extends PageWizardBase {
    * @inheritDoc
    */
   public function finish(array &$form, FormStateInterface $form_state) {
-    parent::finish($form, $form_state);
-
-    $cached_values = $form_state->getTemporaryValue('wizard');
-
     // Delete any of the variants marked for deletion.
+    $cached_values = $form_state->getTemporaryValue('wizard');
+    /** @var \Drupal\page_manager\Entity\Page $page */
+    $page = $cached_values['page'];
     if (!empty($cached_values['deleted_variants'])) {
       foreach ($cached_values['deleted_variants'] as $page_variant) {
-        $page_variant->delete();
+        $page->removeVariant($page_variant->id());
       }
     }
+
+    parent::finish($form, $form_state);
   }
 
   /**

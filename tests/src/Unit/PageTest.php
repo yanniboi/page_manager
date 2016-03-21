@@ -49,12 +49,12 @@ class PageTest extends UnitTestCase {
   public function testGetVariants() {
     $variant1 = $this->prophesize(PageVariantInterface::class);
     $variant1->id()->willReturn('variant1');
-    $variant1->label()->willReturn('Variant 1');;
-    $variant1->weight = 0;
+    $variant1->label()->willReturn('Variant 1');
+    $variant1->getWeight()->willReturn(0);
     $variant2 = $this->prophesize(PageVariantInterface::class);
     $variant2->id()->willReturn('variant2');
-    $variant2->label()->willReturn('Variant 2');;
-    $variant2->weight = -10;
+    $variant2->label()->willReturn('Variant 2');
+    $variant2->getWeight()->willReturn(-10);
 
     $entity_storage = $this->prophesize(EntityStorageInterface::class);
     $entity_storage

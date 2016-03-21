@@ -27,6 +27,11 @@ class PageVariantContextsForm extends FormBase {
   protected $machine_name;
 
   /**
+   * @var string
+   */
+  protected $variant_machine_name;
+
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
@@ -39,6 +44,7 @@ class PageVariantContextsForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $this->machine_name = $cached_values['id'];
+    $this->variant_machine_name = $cached_values['page_variant']->id();
     $form['items'] = [
       '#type' => 'markup',
       '#prefix' => '<div id="available-contexts">',
@@ -77,11 +83,10 @@ class PageVariantContextsForm extends FormBase {
 
   public function add(array &$form, FormStateInterface $form_state) {
     $type = $form_state->getValue('types');
-    $content = \Drupal::formBuilder()->getForm('\Drupal\page_manager_ui\Form\StaticContextConfigure', 'add', $type, $this->getTempstoreId(), $this->machine_name);
+    $content = \Drupal::formBuilder()->getForm('\Drupal\page_manager_ui\Form\StaticContextConfigure', 'add', $type, $this->getTempstoreId(), $this->machine_name, $this->variant_machine_name);
     $content['#attached']['library'][] = 'core/drupal.dialog.ajax';
     $cached_values = $form_state->getTemporaryValue('wizard');
-    $page_variant = $cached_values['page_variant'];
-    list(, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $this->machine_name, $page_variant->id(), $type);
+    list(, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $this->machine_name, $this->variant_machine_name, $type);
     $content['submit']['#attached']['drupalSettings']['ajax'][$content['submit']['#id']]['url'] = $this->url($this->getAddRoute($cached_values), $route_parameters, ['query' => [FormBuilderInterface::AJAX_FORM_REQUEST => TRUE]]);
     $response = new AjaxResponse();
     $response->addCommand(new OpenModalDialogCommand($this->t('Add new context'), $content, array('width' => '700')));
@@ -93,12 +98,11 @@ class PageVariantContextsForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cached_values = $form_state->getTemporaryValue('wizard');
-    $page_variant = $cached_values['page_variant'];
 
     /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $add */
     $add = $form_state->getValue('add');
     if ($add->getUntranslatedString() == 'Add new context') {
-      list(, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $this->machine_name, $page_variant->id(), $form_state->getValue('types'));
+      list(, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $this->machine_name, $this->variant_machine_name, $form_state->getValue('types'));
       $form_state->setRedirect($this->getAddRoute($cached_values), $route_parameters);
     }
   }
@@ -116,7 +120,7 @@ class PageVariantContextsForm extends FormBase {
     foreach ($page_variant->getContexts() as $parameter => $context) {
       // @todo this list should be replaced with some sort of context type check.
       if (!in_array($parameter, ['current_user']) && (array_key_exists($parameter, $static_contexts))) {
-        list($route_partial, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $cached_values['id'], $page_variant->id(), $parameter);
+        list($route_partial, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $cached_values['id'], $this->variant_machine_name, $parameter);
         $build = [
           '#type' => 'operations',
           '#links' => $this->getOperations($route_partial, $route_parameters),

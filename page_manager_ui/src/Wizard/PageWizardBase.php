@@ -54,16 +54,16 @@ class PageWizardBase extends EntityFormWizardBase {
   public function getOperations($cached_values) {
     $operations = [];
     $operations['general'] = [
-      'title' => $this->t('Page Information'),
+      'title' => $this->t('Page information'),
       'form' => '\Drupal\page_manager_ui\Form\PageGeneralForm',
     ];
-    $operations['access'] = [
-      'title' => $this->t('Page Access'),
-      'form' => '\Drupal\page_manager_ui\Form\PageAccessForm',
-    ];
     $operations['parameters'] = [
-      'title' => $this->t('Page Parameters'),
+      'title' => $this->t('Page parameters'),
       'form' => '\Drupal\page_manager_ui\Form\PageParametersForm',
+    ];
+    $operations['access'] = [
+      'title' => $this->t('Page access'),
+      'form' => '\Drupal\page_manager_ui\Form\PageAccessForm',
     ];
 
     return $operations;
@@ -87,15 +87,15 @@ class PageWizardBase extends EntityFormWizardBase {
   }
 
   public function finish(array &$form, FormStateInterface $form_state) {
-    /** @var \Drupal\Core\StringTranslation\TranslatableMarkup $op */
+    parent::finish($form, $form_state);
+
     $cached_values = $form_state->getTemporaryValue('wizard');
     /** @var \Drupal\page_manager\Entity\Page $page */
     $page = $cached_values['page'];
     foreach($page->getVariants() as $variant) {
-      $variant_plugin = $variant->getVariantPlugin();
-      $this->getTempstore()->delete($variant_plugin->id());
+      $variant->save();
     }
-    parent::finish($form, $form_state);
+
     $form_state->setRedirectUrl(new Url('entity.page.edit_form', [
       'machine_name' => $this->machine_name,
       'step' => $this->step

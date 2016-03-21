@@ -96,15 +96,19 @@ class PageManagerAdminTest extends WebTestBase {
     $edit += ['label' => 'Foo'];
     $this->drupalPostForm(NULL, $edit, 'Next');
 
-    // Test the 'Page Access' step.
-    $this->assertTitle('Page Access | Drupal');
+    // Parameters step
+    // @FIXME remove once parameters step is contextual.
+    $this->drupalPostForm(NULL, [], 'Next');
+
+    // Test the 'Page access' step.
+    $this->assertTitle('Page access | Drupal');
     $access_path = 'admin/structure/page_manager/add/foo/access';
     $this->assertUrl($access_path . '?js=nojs');
     $this->doTestAccessConditions($access_path, FALSE);
     $this->drupalPostForm(NULL, [], 'Next');
 
-    // Test the 'Selection Criteria' step.
-    $this->assertTitle('Selection Criteria | Drupal');
+    // Test the 'Selection criteria' step.
+    $this->assertTitle('Selection criteria | Drupal');
     $selection_path = 'admin/structure/page_manager/add/foo/selection';
     $this->assertUrl($selection_path . '?js=nojs');
     $this->doTestSelectionCriteria($selection_path, FALSE);
@@ -264,16 +268,20 @@ class PageManagerAdminTest extends WebTestBase {
     $edit = [
       'variant_plugin_id' => 'block_display',
       'label' => 'First',
-      'id' => 'block_page',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Create variant');
+    $this->drupalPostForm(NULL, $edit, 'Next');
 
     // Set the page title.
-    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__block_page__general');
     $edit = [
       'variant_settings[page_title]' => 'Example title',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Update and save');
+    $this->drupalPostForm(NULL, $edit, 'Next');
+
+    // Finish variant wizard without adding blocks.
+    $this->drupalPostForm(NULL, [], 'Finish');
+
+    // Save page to apply variant changes.
+    $this->drupalPostForm(NULL, [], 'Update and save');
 
     // Test that the variant is still used but empty.
     $this->drupalGet('admin/foo');
@@ -287,7 +295,7 @@ class PageManagerAdminTest extends WebTestBase {
    * Tests adding a block to a variant.
    */
   protected function doTestAddBlock() {
-    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__block_page__content');
+    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__content');
     // Add a block to the variant.
     $this->clickLink('Add new block');
 
@@ -332,6 +340,10 @@ class PageManagerAdminTest extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Next');
 
+    // Parameters step
+    // @FIXME remove once parameters step is contextual.
+    $this->drupalPostForm(NULL, [], 'Next');
+
     // Configure the variant.
     $edit = [
       'page_variant_label' => 'Second variant',
@@ -354,7 +366,7 @@ class PageManagerAdminTest extends WebTestBase {
    * Tests editing a block.
    */
   protected function doTestEditBlock() {
-    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__block_page__general');
+    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__general');
     $edit = [
       'variant_settings[page_title]' => 'Updated block label',
       'page_variant_label' => 'Updated block label',
@@ -371,13 +383,13 @@ class PageManagerAdminTest extends WebTestBase {
    * Tests editing a variant.
    */
   protected function doTestEditVariant() {
-    if (!$block = $this->findBlockByLabel('block_page', 'User account menu')) {
+    if (!$block = $this->findBlockByLabel('foo-block_display-0', 'User account menu')) {
       $this->fail('Block not found');
       return;
     }
 
     $block_config = $block->getConfiguration();
-    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__block_page__content');
+    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__content');
 
     $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-region', 'top');
     $this->assertOptionSelected('edit-blocks-' . $block_config['uuid'] . '-weight', 0);
@@ -482,7 +494,7 @@ class PageManagerAdminTest extends WebTestBase {
     }
     $this->assertEqual($expected, $links);
 
-    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__block_page__content');
+    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__content');
     $this->clickLink('Delete');
     $this->assertRaw(new FormattableMarkup('Are you sure you want to delete the block %label?', ['%label' => 'User account menu']));
     $this->drupalPostForm(NULL, [], 'Delete');
@@ -500,7 +512,7 @@ class PageManagerAdminTest extends WebTestBase {
    * Tests adding a block with #ajax to a variant.
    */
   protected function doTestAddBlockWithAjax() {
-    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__block_page__content');
+    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__content');
     // Add a block to the variant.
     $this->clickLink('Add new block');
     $this->clickLink('Page Manager Test Block');
@@ -536,6 +548,10 @@ class PageManagerAdminTest extends WebTestBase {
       'variant_plugin_id' => 'http_status_code',
     ];
     $this->drupalPostForm(NULL, $edit, 'Next');
+
+    // Parameters step
+    // @FIXME remove once parameters step is contextual.
+    $this->drupalPostForm(NULL, [], 'Next');
 
     // Configure the variant.
     $edit = [
@@ -583,6 +599,11 @@ class PageManagerAdminTest extends WebTestBase {
       'variant_plugin_id' => 'http_status_code',
     ];
     $this->drupalPostForm(NULL, $edit, 'Next');
+
+    // Parameters step
+    // @FIXME remove once parameters step is contextual.
+    $this->drupalPostForm(NULL, [], 'Next');
+
     $edit = [
       'variant_settings[status_code]' => 418,
     ];
@@ -628,6 +649,7 @@ class PageManagerAdminTest extends WebTestBase {
    *   Either a block plugin, or NULL.
    */
   protected function findBlockByLabel($page_variant_id, $block_label) {
+    /** @var \Drupal\page_manager\Entity\PageVariant $page_variant */
     if ($page_variant = PageVariant::load($page_variant_id)) {
       /** @var \Drupal\ctools\Plugin\BlockVariantInterface $variant_plugin */
       $variant_plugin = $page_variant->getVariantPlugin();

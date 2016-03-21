@@ -22,6 +22,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\ctools\Plugin\DisplayVariant\BlockDisplayVariant;
 use Drupal\ctools\Plugin\PluginWizardInterface;
+use Drupal\page_manager_ui\Form\VariantPluginContentForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -253,7 +254,7 @@ class PageBlockDisplayVariant extends BlockDisplayVariant implements PluginWizar
     return [
       'content' => [
         'title' => $this->t('Content'),
-        'form' => '\Drupal\page_manager_ui\Form\VariantPluginContentForm',
+        'form' => VariantPluginContentForm::class,
       ],
     ];
   }
@@ -315,10 +316,7 @@ class PageBlockDisplayVariant extends BlockDisplayVariant implements PluginWizar
 
   public function __sleep() {
     $vars = parent::__sleep();
-    $key = array_search('stringTranslation', $vars);
-    if ($key !== FALSE) {
-      unset($vars[$key]);
-    }
+    unset($vars[array_search('stringTranslation', $vars)]);
     return $vars;
   }
 

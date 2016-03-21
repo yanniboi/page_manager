@@ -11,6 +11,7 @@ use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Display\VariantManager;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\page_manager\PageVariantInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PageGeneralForm extends FormBase {
@@ -88,6 +89,14 @@ class PageGeneralForm extends FormBase {
     if ($page->isNew()) {
       $variant_plugin_options = [];
       foreach ($this->variantManager->getDefinitions() as $plugin_id => $definition) {
+        // The following two variants are provided by Drupal Core. They are not
+        // configurable and therefore not compatible with Page Manager but have
+        // similar and confusing labels. Skip them so that they are not shown in
+        // the UI.
+        if (in_array($plugin_id, ['simple_page', 'block_page'])) {
+          continue;
+        }
+
         $variant_plugin_options[$plugin_id] = $definition['admin_label'];
       }
       $form['variant_plugin_id'] = [
@@ -101,9 +110,10 @@ class PageGeneralForm extends FormBase {
         '#title' => $this->t('Optional features'),
         '#description' => $this->t('Check any optional features you need to be presented with forms for configuring them. If you do not check them here you will still be able to utilize these features once the new page is created. If you are not sure, leave these unchecked.'),
         '#options' => [
-          'access' => $this->t('Access controls'),
-          'selection' => $this->t('Selection rules'),
-          'contexts' => $this->t('Contexts'),
+          'parameters' => $this->t('Page parameters'),
+          'access' => $this->t('Page acess'),
+          'contexts' => $this->t('Variant contexts'),
+          'selection' => $this->t('Variant selection criteria'),
         ],
         '#default_value' => !empty($cached_values['wizard_options']) ? $cached_values['wizard_options'] : [],
       ];
@@ -127,7 +137,8 @@ class PageGeneralForm extends FormBase {
       $page->set('label', $form_state->getValue('label'));
       if (empty($cached_values['variant_plugin_id'])) {
         $variant_plugin_id = $cached_values['variant_plugin_id'] = $form_state->getValue('variant_plugin_id');
-        $cached_values['page_variant'] = \Drupal::entityManager()
+        /* @var \Drupal\page_manager\PageVariantInterface $page_variant */
+        $page_variant = \Drupal::entityManager()
           ->getStorage('page_variant')
           ->create([
             'variant' => $form_state->getValue('variant_plugin_id'),
@@ -135,7 +146,9 @@ class PageGeneralForm extends FormBase {
             'id' => "{$page->id()}-{$variant_plugin_id}-0",
             'label' => $form['variant_plugin_id']['#options'][$variant_plugin_id],
           ]);
-        $page->addVariant($cached_values['page_variant']);
+        $page_variant->setPageEntity($page);
+        $page->addVariant($page_variant);
+        $cached_values['page_variant'] = $page_variant;
       }
       if ($cached_values['variant_plugin_id'] != $form_state->getValue('variant_plugin_id') && !empty($cached_values['page_variant'])) {
         $page_variant = $cached_values['page_variant'];

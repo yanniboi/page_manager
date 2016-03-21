@@ -49,7 +49,6 @@ class StaticContextTest extends WebTestBase {
     $this->assertTitle($node->label() . ' | Drupal');
 
     // Create a new page entity.
-    $this->drupalGet('admin/structure/page_manager/add');
     $edit_page = [
       'label' => 'Static node context',
       'id' => 'static_node_context',
@@ -57,7 +56,7 @@ class StaticContextTest extends WebTestBase {
       'variant_plugin_id' => 'block_display',
       'wizard_options[contexts]' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit_page, 'Next');
+    $this->drupalPostForm('admin/structure/page_manager/add', $edit_page, 'Next');
 
     // Add a static context for each node to the page variant.
     $contexts = array(

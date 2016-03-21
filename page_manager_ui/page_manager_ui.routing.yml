@@ -199,6 +199,11 @@ entity.page_variant.context.add:
     _title: 'Add custom context'
     op: add
     tempstore_id: page_manager.page
+    page: '{machine_name}'
+  options:
+    parameters:
+      page:
+        type: tempstore:page
   requirements:
     _permission: 'administer pages'
 

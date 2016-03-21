@@ -68,7 +68,7 @@ class StaticContextDeleteForm extends ConfirmFormBase {
   public function getQuestion() {
     $cached_values = $this->getTempstore();
     /** @var $page \Drupal\page_manager\PageInterface */
-    $page_variant = $cached_values['page_variant'];
+    $page_variant = $this->getPageVariant($cached_values);
     return $this->t('Are you sure you want to delete the static context %label?', ['%label' => $page_variant->getStaticContext($this->data_type)['label']]);
   }
 
@@ -87,7 +87,7 @@ class StaticContextDeleteForm extends ConfirmFormBase {
       ]);
     }
     else {
-      $page_variant = $cached_values['page_variant'];
+      $page_variant = $this->getPageVariant($cached_values);
       return new Url('entity.page.edit_form', [
         'machine_name' => $this->machine_name,
         'step' => 'page_variant__' . $page_variant->id() . '__contexts',

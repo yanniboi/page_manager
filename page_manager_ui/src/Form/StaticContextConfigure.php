@@ -37,6 +37,13 @@ class StaticContextConfigure extends FormBase {
    */
   protected $machine_name;
 
+  /**
+   * The machine-name of the variant.
+   *
+   * @var string
+   */
+  protected $variantMachineName;
+
   public static function create(ContainerInterface $container) {
     return new static($container->get('typed_data_manager'), $container->get('user.shared_tempstore'));
   }
@@ -58,12 +65,13 @@ class StaticContextConfigure extends FormBase {
     return 'page_manager_configure_static_context';
   }
 
-  public function buildForm(array $form, FormStateInterface $form_state, $op = 'edit', $data_type = NULL, $tempstore_id = NULL, $machine_name = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $op = 'edit', $data_type = NULL, $tempstore_id = NULL, $machine_name = NULL, $variant_machine_name = NULL) {
     $this->tempstore_id = $tempstore_id;
     $this->machine_name = $machine_name;
+    $this->variantMachineName = $variant_machine_name;
     $cached_values = $this->getTempstore();
     /** @var \Drupal\page_manager\PageInterface $page */
-    $page_variant = $cached_values['page_variant'];
+    $page_variant = $this->getPageVariant($cached_values);
     if ($op == 'edit') {
       $context = $page_variant->getStaticContext($data_type);
       $form['type'] = [
@@ -127,9 +135,9 @@ class StaticContextConfigure extends FormBase {
   }
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $cache_values = $this->getTempstore();
+    $cached_values = $this->getTempstore();
     /** @var \Drupal\page_manager\PageInterface $page */
-    $page_variant = $cache_values['page_variant'];
+    $page_variant = $this->getPageVariant($cached_values);
     $value = $form_state->getValue('value');
     $type = $form_state->getValue('type');
     if ((substr($type, 0, 7) == 'entity:') && ($value !== NULL))  {
@@ -142,8 +150,8 @@ class StaticContextConfigure extends FormBase {
       'value' => $value,
     ];
     $page_variant->setStaticContext($form_state->getValue('id'), $config);
-    $this->setTempstore($cache_values);
-    list($route_name, $route_parameters) = $this->getParentRouteInfo($cache_values);
+    $this->setTempstore($cached_values);
+    list($route_name, $route_parameters) = $this->getParentRouteInfo($cached_values);
     $form_state->setRedirect($route_name, $route_parameters);
   }
 
@@ -157,9 +165,9 @@ class StaticContextConfigure extends FormBase {
   }
 
   public function exists($key, $element, FormStateInterface $form_state) {
-    $cache_values = $this->getTempstore();
+    $cached_values = $this->getTempstore();
     /** @var \Drupal\page_manager\PageInterface $page */
-    $page = $cache_values['page'];
+    $page = $cached_values['page'];
     $contexts = $page->getContexts();
     return !empty($contexts[$key]);
   }
@@ -175,12 +183,30 @@ class StaticContextConfigure extends FormBase {
       ]];
     }
     else {
-      $page_variant = $cached_values['page_variant'];
+      $page_variant = $this->getPageVariant($cached_values);
       return ['entity.page.edit_form', [
         'machine_name' => $this->machine_name,
         'step' => 'page_variant__' . $page_variant->id() . '__contexts',
       ]];
     }
+  }
+
+  /**
+   * Returns the page variant.
+   *
+   * @param array $cached_values
+   *   The cached values from the wizard.
+   *
+   * @return \Drupal\page_manager\PageVariantInterface
+   */
+  protected function getPageVariant($cached_values) {
+    if (isset($cached_values['page_variant'])) {
+      return $cached_values['page_variant'];
+    }
+
+    /** @var $page \Drupal\page_manager\PageInterface */
+    $page = $cached_values['page'];
+    return $page->getVariant($this->variantMachineName);
   }
 
 }

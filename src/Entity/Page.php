@@ -365,6 +365,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function removeVariant($variant_id) {
     $this->getVariant($variant_id)->delete();
+    unset($this->variants[$variant_id]);
     return $this;
   }
 

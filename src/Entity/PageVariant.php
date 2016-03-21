@@ -87,6 +87,13 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   protected $variant;
 
   /**
+   * The loaded page entity this page variant entity belongs to.
+   *
+   * @var \Drupal\page_manager\PageInterface
+   */
+  protected $pageEntity;
+
+  /**
    * The plugin configuration for the variant plugin.
    *
    * @var array
@@ -117,9 +124,9 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   /**
    * An array of collected contexts.
    *
-   * @var \Drupal\Component\Plugin\Context\ContextInterface[]
+   * @var \Drupal\Component\Plugin\Context\ContextInterface[]|null
    */
-  protected $contexts = [];
+  protected $contexts = NULL;
 
   /**
    * Static context references.
@@ -254,44 +261,36 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * {@inheritdoc}
    */
   public function getPage() {
-    $page = Page::load($this->page);
-    if (!$page) {
-      throw new \UnexpectedValueException('The page variant has no associated page');
+    if (!$this->pageEntity) {
+      if (!$this->page) {
+        throw new \UnexpectedValueException('The page variant has no associated page');
+      }
+      $this->pageEntity = $this->getPageStorage()->load($this->page);
+      if (!$this->pageEntity) {
+        throw new \UnexpectedValueException(sprintf('The page %s could not be loaded.', $this->page));
+      }
     }
-    return $page;
+    return $this->pageEntity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPageEntity(PageInterface $page) {
+    $this->pageEntity = $page;
+    $this->page = $page->id();
+    return $this;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getContexts() {
-    try {
-      $page = $this->getPage();
+    if (is_null($this->contexts)) {
+      $page_contexts = $this->getPage()->getContexts();
+      $variant_contexts = $this->getContextMapper()->getContextValues($this->getStaticContexts());
+      $this->contexts = array_merge($variant_contexts, $page_contexts);
     }
-    catch (\UnexpectedValueException $e) {
-      // This can happen adding a new page - it may only exist in the tempstore.
-      // @todo Remove once contexts are stored only on the variant!
-      $cached_values = $this->getTempstoreFactory()->get('page_manager.page')->get($this->page);
-      if (!empty($cached_values) && !empty($cached_values['page'])) {
-        $page = $cached_values['page'];
-      }
-
-    }
-    return array_merge($page->getContexts(), $this->loadContexts());
-  }
-
-  /**
-   * Loads static contexts into objects.
-   *
-   * @return \Drupal\Component\Plugin\Context\ContextInterface[]
-   */
-  protected function loadContexts() {
-    if (!empty($this->contexts)) {
-      return $this->contexts;
-    }
-
-    $context_mapper = $this->getContextMapper();
-    $this->contexts = $context_mapper->getContextValues($this->static_context);
     return $this->contexts;
   }
 
@@ -301,7 +300,7 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * @return $this
    */
   protected function resetCollectedContexts() {
-    $this->contexts = [];
+    $this->contexts = NULL;
     return $this;
   }
 

@@ -91,7 +91,7 @@ class PageVariantAddForm extends FormBase {
       '#title' => $this->t('Optional features'),
       '#description' => $this->t('Check any optional features you need to be presented with forms for configuring them. If you do not check them here you will still be able to utilize these features once the new variant is created.'),
       '#options' => [
-        'selection' => $this->t('Selection Criteria'),
+        'selection' => $this->t('Selection criteria'),
         'contexts' => $this->t('Contexts'),
       ],
       '#default_value' => !empty($cached_values['wizard_options']) ? $cached_values['wizard_options'] : [],

@@ -65,7 +65,7 @@ class PageVariantAddWizard extends EntityFormWizardBase {
   public function getOperations($cached_values) {
     $operations = [];
     $operations['type'] = [
-      'title' => $this->t('Page Variant Type'),
+      'title' => $this->t('Page variant type'),
       'form' => '\Drupal\page_manager_ui\Form\PageVariantAddForm',
     ];
     $operations['contexts'] = [
@@ -73,11 +73,11 @@ class PageVariantAddWizard extends EntityFormWizardBase {
       'form' => '\Drupal\page_manager_ui\Form\PageVariantContextsForm',
     ];
     $operations['selection'] = [
-      'title' => $this->t('Selection Criteria'),
+      'title' => $this->t('Selection criteria'),
       'form' => '\Drupal\page_manager_ui\Form\PageVariantSelectionForm',
     ];
     $operations['configure'] = [
-      'title' => $this->t('Configure Variant'),
+      'title' => $this->t('Configure variant'),
       'form' => '\Drupal\page_manager_ui\Form\PageVariantConfigureForm',
     ];
 
@@ -101,7 +101,6 @@ class PageVariantAddWizard extends EntityFormWizardBase {
         $cached_values['plugin'] = $variant_plugin;
         foreach ($variant_plugin->getWizardOperations($cached_values) as $name => $operation) {
           $operation['values']['plugin'] = $variant_plugin;
-          $operation['submit'][] = '::submitVariantStep';
           $operations[$name] = $operation;
         }
       }
