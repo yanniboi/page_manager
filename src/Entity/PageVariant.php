@@ -70,7 +70,7 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    *
    * @var int
    */
-  protected $weight = 0;
+  public $weight = 0;
 
   /**
    * The UUID of the page variant entity.

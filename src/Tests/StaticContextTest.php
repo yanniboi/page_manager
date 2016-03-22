@@ -126,7 +126,7 @@ class StaticContextTest extends WebTestBase {
     $this->assertText($node2->get('body')->getValue()[0]['value']);
 
     // Change the second static context to the first node.
-    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/contexts');
+    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/page_variant__static_node_context-block_display-0__contexts');
     $this->clickLink('Edit', 1);
     $edit = [
       'label' => 'Static Node 2 edited',
@@ -145,7 +145,7 @@ class StaticContextTest extends WebTestBase {
     $this->assertNoText($node2->get('body')->getValue()[0]['value']);
 
     // Change the first static context to the second node.
-    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/contexts');
+    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/page_variant__static_node_context-block_display-0__contexts');
     $this->clickLink('Edit');
     $edit = array(
       'label' => 'Static Node edited',
@@ -168,8 +168,8 @@ class StaticContextTest extends WebTestBase {
     $this->assertText($node2->get('body')->getValue()[0]['value']);
 
     // Delete a static context and verify that it was deleted.
-    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/contexts');
-    $this->clickLink('Delete', 1);
+    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/page_variant__static_node_context-block_display-0__contexts');
+    $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], t('Delete'));
     $this->assertText("The static context Static Node edited has been removed.");
     // Reload the page to clear the message

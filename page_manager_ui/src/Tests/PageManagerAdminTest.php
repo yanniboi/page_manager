@@ -96,10 +96,6 @@ class PageManagerAdminTest extends WebTestBase {
     $edit += ['label' => 'Foo'];
     $this->drupalPostForm(NULL, $edit, 'Next');
 
-    // Parameters step
-    // @FIXME remove once parameters step is contextual.
-    $this->drupalPostForm(NULL, [], 'Next');
-
     // Test the 'Page access' step.
     $this->assertTitle('Page access | Drupal');
     $access_path = 'admin/structure/page_manager/add/foo/access';
@@ -340,10 +336,6 @@ class PageManagerAdminTest extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Next');
 
-    // Parameters step
-    // @FIXME remove once parameters step is contextual.
-    $this->drupalPostForm(NULL, [], 'Next');
-
     // Configure the variant.
     $edit = [
       'page_variant_label' => 'Second variant',
@@ -549,10 +541,6 @@ class PageManagerAdminTest extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Next');
 
-    // Parameters step
-    // @FIXME remove once parameters step is contextual.
-    $this->drupalPostForm(NULL, [], 'Next');
-
     // Configure the variant.
     $edit = [
       'page_variant_label' => 'Status Code',
@@ -599,10 +587,6 @@ class PageManagerAdminTest extends WebTestBase {
       'variant_plugin_id' => 'http_status_code',
     ];
     $this->drupalPostForm(NULL, $edit, 'Next');
-
-    // Parameters step
-    // @FIXME remove once parameters step is contextual.
-    $this->drupalPostForm(NULL, [], 'Next');
 
     $edit = [
       'variant_settings[status_code]' => 418,

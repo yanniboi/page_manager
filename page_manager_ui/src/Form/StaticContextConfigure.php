@@ -179,7 +179,7 @@ class StaticContextConfigure extends FormBase {
     if ($page->isNew()) {
       return ['entity.page.add_step_form', [
         'machine_name' => $this->machine_name,
-        'step' => 'selection',
+        'step' => 'contexts',
       ]];
     }
     else {
