@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\StaticContextTest.
+ * Contains \Drupal\page_manager_ui\Tests\StaticContextTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\page_manager_ui\Tests;
 
 use Drupal\simpletest\WebTestBase;
 

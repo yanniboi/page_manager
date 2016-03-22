@@ -66,6 +66,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestAddBlockWithAjax();
     $this->doTestEditBlock();
     $this->doTestExistingPathWithoutParameters();
+    $this->doTestUpdateSubmit();
     $this->doTestDeletePage();
   }
 
@@ -551,6 +552,52 @@ class PageManagerAdminTest extends WebTestBase {
     // Ensure the existing path leads to the new page.
     $this->drupalGet('admin');
     $this->assertResponse(404);
+  }
+
+  /**
+   * Tests the Update button on Variant forms.
+   */
+  protected function doTestUpdateSubmit() {
+    // Add a block variant.
+    $this->drupalGet('admin/structure/page_manager/manage/foo/general');
+
+    // Add a new variant.
+    $this->clickLink('Add variant');
+    $edit = [
+      'variant_plugin_id' => 'block_display',
+      'label' => 'First',
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Next');
+
+    // Set the page title.
+    $edit = [
+      'variant_settings[page_title]' => 'Example title',
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Next');
+
+    // Finish variant wizard without adding blocks.
+    $this->drupalPostForm(NULL, [], 'Finish');
+
+    // Update the description and click on Update.
+    $edit = [
+      'page_variant_label' => 'First updated',
+      'variant_settings[page_title]' => 'Example title updated',
+    ];
+    $this->drupalPostForm('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__general', $edit, 'Update');
+    $this->assertFieldByName('page_variant_label', 'First updated');
+    $this->assertFieldByName('variant_settings[page_title]', 'Example title updated');
+
+    // Click on Update at Contexts. Nothing should happen.
+    $this->drupalPostForm('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__contexts', [], 'Update');
+    $this->assertUrl('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__contexts');
+
+    // Click on Update at Selection criteria. Nothing should happen.
+    $this->drupalPostForm('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__selection', [], 'Update');
+    $this->assertUrl('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__selection');
+
+    // Click on Update at Content. Nothing should happen.
+    $this->drupalPostForm('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__content', [], 'Update');
+    $this->assertUrl('admin/structure/page_manager/manage/foo/page_variant__foo-block_display-0__content');
   }
 
   /**

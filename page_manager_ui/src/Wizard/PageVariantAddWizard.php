@@ -10,7 +10,7 @@ use Drupal\Core\Display\ContextAwareVariantInterface;
 use Drupal\ctools\Plugin\PluginWizardInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\page_manager\Access\PageManagerPluginAccess;
+use Drupal\page_manager_ui\Access\PageManagerPluginAccess;
 use Drupal\ctools\Wizard\EntityFormWizardBase;
 
 class PageVariantAddWizard extends EntityFormWizardBase {

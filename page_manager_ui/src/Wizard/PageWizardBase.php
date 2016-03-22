@@ -9,7 +9,7 @@ namespace Drupal\page_manager_ui\Wizard;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Wizard\EntityFormWizardBase;
-use Drupal\page_manager\Access\PageManagerPluginAccess;
+use Drupal\page_manager_ui\Access\PageManagerPluginAccess;
 
 class PageWizardBase extends EntityFormWizardBase {
 

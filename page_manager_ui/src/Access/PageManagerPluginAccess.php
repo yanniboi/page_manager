@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\page_manager\Access\PageManagerPluginAccess.
+ * Contains \Drupal\page_manager_ui\Access\PageManagerPluginAccess.
  */
 
-namespace Drupal\page_manager\Access;
+namespace Drupal\page_manager_ui\Access;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Session\AccountInterface;

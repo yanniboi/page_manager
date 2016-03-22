@@ -90,6 +90,8 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * The loaded page entity this page variant entity belongs to.
    *
    * @var \Drupal\page_manager\PageInterface
+   * @fixme remove the use of this property when
+   *        https://www.drupal.org/node/2690047 is fixed.
    */
   protected $pageEntity;
 
@@ -136,13 +138,6 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * @var array[]
    */
   protected $static_context = [];
-
-  /**
-   * The page object for the parent page.
-   *
-   * @var \Drupal\page_manager\PageInterface
-   */
-  protected $parentPage;
 
   /**
    * The plugin collection that holds the single variant plugin instance.
@@ -253,6 +248,7 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * {@inheritdoc}
    */
   public function setVariantPluginId($variant) {
+    // @fixme when https://www.drupal.org/node/2690205 is fixed.
     $this->variant = $variant;
     return $this;
   }
@@ -287,9 +283,9 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    */
   public function getContexts() {
     if (is_null($this->contexts)) {
+      $static_contexts = $this->getContextMapper()->getContextValues($this->getStaticContexts());
       $page_contexts = $this->getPage()->getContexts();
-      $variant_contexts = $this->getContextMapper()->getContextValues($this->getStaticContexts());
-      $this->contexts = array_merge($variant_contexts, $page_contexts);
+      $this->contexts = array_merge($static_contexts, $page_contexts);
     }
     return $this->contexts;
   }
