@@ -6,12 +6,9 @@
  */
 
 use Drupal\page_manager_ui\Entity\PageListBuilder;
-use Drupal\page_manager_ui\Form\PageAddForm;
 use Drupal\page_manager_ui\Form\PageDeleteForm;
-use Drupal\page_manager_ui\Form\PageEditForm;
-use Drupal\page_manager_ui\Form\PageVariantAddForm;
-use Drupal\page_manager_ui\Form\PageVariantDeleteForm;
-use Drupal\page_manager_ui\Form\PageVariantEditForm;
+use Drupal\page_manager_ui\ConfigTranslation\PageConfigMapper;
+use Drupal\page_manager_ui\ConfigTranslation\PageVariantConfigMapper;
 
 /**
  * Implements hook_entity_type_build().
@@ -33,9 +30,27 @@ function page_manager_ui_entity_type_build(array &$entity_types) {
     ]);
 
    $entity_types['page_variant']
+     // The edit-form template is required by config_translation.
+     ->setLinkTemplate('edit-form', '/admin/structure/page_manager/manage/{machine_name}/{step}')
      ->setHandlerClass('wizard', [
        'add_variant' => 'Drupal\page_manager_ui\Wizard\PageVariantAddWizard',
      ]);
+}
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function page_manager_ui_entity_type_alter(array &$entity_types) {
+  // Change the URL for page config translation overview to outside the wizard.
+  if ($entity_types['page']->hasLinkTemplate('config-translation-overview')) {
+    $entity_types['page']->setLinkTemplate('config-translation-overview', str_replace('manage/{machine_name}/{step}', '{page}', $entity_types['page']->getLinkTemplate('config-translation-overview')));
+  }
+
+  // Change the URL for page variant config translation overview to outside the
+  // wizard.
+  if ($entity_types['page_variant']->hasLinkTemplate('config-translation-overview')) {
+    $entity_types['page_variant']->setLinkTemplate('config-translation-overview', str_replace('manage/{machine_name}/{step}', '{page}/{page_variant}', $entity_types['page_variant']->getLinkTemplate('config-translation-overview')));
+  }
 }
 
 /**
@@ -96,4 +111,24 @@ function template_preprocess_page_manager_wizard_tree(&$variables) {
   }
 
   $variables['tree'] = $tree;
+}
+
+/**
+ * Implements hook_config_translation_info_alter().
+ */
+function page_manager_ui_config_translation_info_alter(&$info) {
+  // Alter page and page variant config translation classes.
+  $info['page']['class'] = PageConfigMapper::class;
+  $info['page_variant']['class'] = PageVariantConfigMapper::class;
+  $info['page_variant']['base_route_name'] = 'entity.page.edit_form';
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function page_manager_ui_local_tasks_alter(&$local_tasks) {
+  // Remove local tasks for page and page variant config translation overview
+  // routes.
+  unset($local_tasks['config_translation.local_tasks:entity.page.config_translation_overview']);
+  unset($local_tasks['config_translation.local_tasks:entity.page_variant.config_translation_overview']);
 }
