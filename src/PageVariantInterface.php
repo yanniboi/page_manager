@@ -58,6 +58,13 @@ interface PageVariantInterface extends ConfigEntityInterface, EntityWithPluginCo
   public function getContexts();
 
   /**
+   * Resets the collected contexts.
+   *
+   * @return $this
+   */
+  public function resetCollectedContexts();
+
+  /**
    * Gets the weight of this variant (compared to other variants on the page).
    *
    * @return int

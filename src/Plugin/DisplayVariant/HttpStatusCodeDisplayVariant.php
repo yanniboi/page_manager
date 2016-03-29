@@ -84,6 +84,9 @@ class HttpStatusCodeDisplayVariant extends VariantBase {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function __sleep() {
     $vars = parent::__sleep();
     $key = array_search('stringTranslation', $vars);

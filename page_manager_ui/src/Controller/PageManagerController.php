@@ -100,8 +100,10 @@ class PageManagerController extends ControllerBase {
   /**
    * Route title callback.
    *
-   * @param \Drupal\page_manager\PageInterface $page
-   *   The page entity.
+   * @param string $machine_name
+   *   The page's machine_name.
+   * @param string $tempstore_id
+   *   The temporary store identifier.
    *
    * @return string
    *   The title for the page edit form.
@@ -156,22 +158,6 @@ class PageManagerController extends ControllerBase {
   public function editSelectionConditionTitle(PageVariantInterface $page_variant, $condition_id) {
     $selection_condition = $page_variant->getSelectionCondition($condition_id);
     return $this->t('Edit %label selection condition', ['%label' => $selection_condition->getPluginDefinition()['label']]);
-  }
-
-  /**
-   * Route title callback.
-   *
-   * @param \Drupal\page_manager\PageVariantInterface $page_variant
-   *   The page variant entity.
-   * @param string $data_type
-   *   The static context name.
-   *
-   * @return string
-   *   The title for the static context edit form.
-   */
-  public function editStaticContextTitle(PageInterface $page, $data_type) {
-    $static_context = $page->getStaticContext($data_type);
-    return $this->t('Edit @label static context', ['@label' => $static_context['label']]);
   }
 
   /**
@@ -310,14 +296,16 @@ class PageManagerController extends ControllerBase {
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request.
-   * @param \Drupal\page_manager\PageVariantInterface $page_variant
-   *   The page entity.
+   * @param string $block_display
+   *   The identifier of the block display variant.
+   * @param string $tempstore_id
+   *   The identifier of the temporary store.
    *
    * @return array
    *   The block selection page.
    */
-  public function selectBlock(Request $request, $block_display) {
-    $cached_values = $this->tempstore->get('page_manager.block_display')->get($block_display);
+  public function selectBlock(Request $request, $block_display, $tempstore_id) {
+    $cached_values = $this->tempstore->get($tempstore_id)->get($block_display);
     /** @var \Drupal\page_manager\Plugin\DisplayVariant\PageBlockDisplayVariant $variant_plugin */
     $variant_plugin = $cached_values['plugin'];
 

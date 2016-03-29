@@ -314,10 +314,24 @@ class PageBlockDisplayVariant extends BlockDisplayVariant implements PluginWizar
     ];
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function __sleep() {
+    // These should be functionally identical, but the commented code below
+    // fails tests... :-S
+    /*
+    $vars = parent::__sleep();
+    $key = array_search('stringTranslation', $vars);
+    if ($key !== FALSE) {
+      unset($vars[$key]);
+    }
+    return $vars;
+    */
     $vars = parent::__sleep();
     unset($vars[array_search('stringTranslation', $vars)]);
     return $vars;
+
   }
 
 }

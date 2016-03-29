@@ -13,6 +13,8 @@ use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ctools\Ajax\OpenModalWizardCommand;
 use Drupal\ctools\Wizard\FormWizardBase;
+use Drupal\page_manager_ui\Form\ParameterAssignContextForm;
+use Drupal\page_manager_ui\Form\ParameterSettingsForm;
 
 class RouteParameters extends FormWizardBase {
 
@@ -30,11 +32,11 @@ class RouteParameters extends FormWizardBase {
     return [
       'assign' => [
         'title' => $this->t('Assign Parameter Context'),
-        'form' => 'Drupal\page_manager_ui\Form\ParameterAssignContextForm',
+        'form' => ParameterAssignContextForm::class,
       ],
       'settings' => [
         'title' => $this->t('Parameter Settings'),
-        'form' => 'Drupal\page_manager_ui\Form\ParameterSettingsForm',
+        'form' => ParameterSettingsForm::class,
       ],
     ];
   }

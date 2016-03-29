@@ -8,6 +8,9 @@ namespace Drupal\page_manager_ui\Wizard;
 
 use Drupal\Core\Display\ContextAwareVariantInterface;
 use Drupal\ctools\Plugin\PluginWizardInterface;
+use Drupal\page_manager_ui\Form\PageVariantContextsForm;
+use Drupal\page_manager_ui\Form\PageVariantConfigureForm;
+use Drupal\page_manager_ui\Form\PageVariantSelectionForm;
 
 class PageAddWizard extends PageWizardBase {
 
@@ -27,19 +30,24 @@ class PageAddWizard extends PageWizardBase {
     // Add steps for selection and creating the first variant.
     $operations['contexts'] = [
       'title' => $this->t('Contexts'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantContextsForm',
+      'form' => PageVariantContextsForm::class,
     ];
     $operations['selection'] = [
       'title' => $this->t('Selection criteria'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantSelectionForm',
+      'form' => PageVariantSelectionForm::class,
     ];
     $operations['display_variant'] = [
       'title' => $this->t('Configure variant'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantConfigureForm',
+      'form' => PageVariantConfigureForm::class,
     ];
 
+    // Hide the Parameters step if there aren't any path parameters.
+    if (isset($cached_values['page']) && !$cached_values['page']->getParameterNames()) {
+      unset($operations['parameters']);
+    }
+
     // Hide any optional steps that aren't selected.
-    $optional_steps = ['parameters', 'access', 'contexts', 'selection'];
+    $optional_steps = ['access', 'contexts', 'selection'];
     foreach ($optional_steps as $step_name) {
       if (empty($cached_values['wizard_options'][$step_name])) {
         unset($operations[$step_name]);

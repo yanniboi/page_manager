@@ -6,6 +6,7 @@
 
 namespace Drupal\page_manager_ui\Wizard;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Display\ContextAwareVariantInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormInterface;
@@ -14,6 +15,9 @@ use Drupal\Core\Url;
 use Drupal\ctools\Plugin\PluginWizardInterface;
 use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\PageVariantInterface;
+use Drupal\page_manager_ui\Form\PageVariantConfigureForm;
+use Drupal\page_manager_ui\Form\PageVariantContextsForm;
+use Drupal\page_manager_ui\Form\PageVariantSelectionForm;
 
 class PageEditWizard extends PageWizardBase {
 
@@ -39,6 +43,7 @@ class PageEditWizard extends PageWizardBase {
       @uasort($variants, '\Drupal\page_manager\Entity\PageVariant::sort');
 
       foreach ($variants as $page_variant) {
+        $page_variant->setPageEntity($page);
         foreach ($this->getVariantOperations($page_variant, $cached_values) as $name => $operation) {
           $operation['values']['page_variant'] = $page_variant;
           $operation['breadcrumbs'] = [
@@ -67,15 +72,15 @@ class PageEditWizard extends PageWizardBase {
     $operations = [];
     $operations['general'] = [
       'title' => $this->t('General'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantConfigureForm',
+      'form' => PageVariantConfigureForm::class,
     ];
     $operations['contexts'] = [
       'title' => $this->t('Contexts'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantContextsForm',
+      'form' => PageVariantContextsForm::class,
     ];
     $operations['selection'] = [
       'title' => $this->t('Selection criteria'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantSelectionForm',
+      'form' => PageVariantSelectionForm::class,
     ];
 
     // Add any wizard operations from the plugin itself.
@@ -151,6 +156,9 @@ class PageEditWizard extends PageWizardBase {
         'attributes' => [
           'class' => 'use-ajax',
           'data-dialog-type' => 'modal',
+          'data-dialog-options' => Json::encode([
+            'width' => 700,
+          ]),
         ],
       ];
     }

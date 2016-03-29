@@ -60,6 +60,13 @@ class ParameterEditForm extends FormBase {
   protected $tempstore_id;
 
   /**
+   * The machine name of the page being edited in tempstore.
+   *
+   * @var string
+   */
+  protected $machine_name;
+
+  /**
    * Constructs a new ParameterEditForm.
    *
    * @param \Drupal\Core\Entity\EntityTypeRepositoryInterface $entity_type_repository
@@ -199,6 +206,12 @@ class ParameterEditForm extends FormBase {
     $form_state->setRedirect($route_name, $route_parameters);
   }
 
+  /**
+   * Returns the parent route to redirect after form submission.
+   *
+   * @return array
+   *   Array containing the route name and its parameters.
+   */
   protected function getParentRouteInfo($cached_values) {
     /** @var $page \Drupal\page_manager\PageInterface */
     $page = $cached_values['page'];
@@ -206,7 +219,7 @@ class ParameterEditForm extends FormBase {
     if ($page->isNew()) {
       return ['entity.page.add_step_form', [
         'machine_name' => $this->machine_name,
-        'step' => 'selection',
+        'step' => 'parameters',
       ]];
     }
     else {

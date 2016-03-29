@@ -8,6 +8,7 @@ namespace Drupal\page_manager_ui\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ctools\Form\ManageConditions;
+use Drupal\page_manager_ui\Form\AccessConfigure;
 
 class PageAccessForm extends ManageConditions {
 
@@ -22,7 +23,7 @@ class PageAccessForm extends ManageConditions {
    * {@inheritdoc}
    */
   protected function getConditionClass() {
-    return 'Drupal\page_manager_ui\Form\AccessConfigure';
+    return AccessConfigure::class;
   }
 
   /**

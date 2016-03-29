@@ -145,6 +145,60 @@ entity.page_variant.add_step_form:
   requirements:
     _permission: 'administer pages'
 
+entity.page_variant.add_step_form.condition.add:
+  path: '/admin/structure/page_manager/manage/{page}/add_variant/{machine_name}/selection/add/{condition}'
+  defaults:
+    _form: '\Drupal\page_manager_ui\Form\AddVariantSelectionConfigure'
+    _title: 'Add new selection condition'
+    tempstore_id: page_manager.page_variant
+  requirements:
+    _permission: 'administer pages'
+
+entity.page_variant.add_step_form.condition.edit:
+  path: '/admin/structure/page_manager/manage/{page}/add_variant/{machine_name}/selection/edit/{condition}'
+  defaults:
+    _form: '\Drupal\page_manager_ui\Form\AddVariantSelectionConfigure'
+    _title: 'Add new selection condition'
+    tempstore_id: page_manager.page_variant
+  requirements:
+    _permission: 'administer pages'
+
+entity.page_variant.add_step_form.condition.delete:
+  path: '/admin/structure/page_manager/manage/{page}/add_variant/{machine_name}/selection/delete/{id}'
+  defaults:
+    _form: '\Drupal\page_manager_ui\Form\AddVariantSelectionDelete'
+    tempstore_id: page_manager.page_variant
+    _title: 'Delete selection condition'
+  requirements:
+    _permission: 'administer pages'
+
+entity.page_variant.add_step_form.context.add:
+  path: '/admin/structure/page_manager/manage/{page}/add_variant/{machine_name}/contexts/add/{context_id}'
+  defaults:
+    _form: '\Drupal\page_manager_ui\Form\AddVariantStaticContextConfigure'
+    _title: 'Add custom context'
+    tempstore_id: page_manager.page_variant
+  requirements:
+    _permission: 'administer pages'
+
+entity.page_variant.add_step_form.context.edit:
+  path: '/admin/structure/page_manager/manage/{page}/add_variant/{machine_name}/contexts/edit/{context_id}'
+  defaults:
+    _form: '\Drupal\page_manager_ui\Form\AddVariantStaticContextConfigure'
+    _title: 'Edit context'
+    tempstore_id: page_manager.page_variant
+  requirements:
+    _permission: 'administer pages'
+
+entity.page_variant.add_step_form.context.delete:
+  path: '/admin/structure/page_manager/manage/{page}/add_variant/{machine_name}/context/delete/{context_id}'
+  defaults:
+    _form: '\Drupal\page_manager_ui\Form\AddVariantStaticContextDeleteForm'
+    _title: 'Delete static context'
+    tempstore_id: page_manager.page_variant
+  requirements:
+    _permission: 'administer pages'
+
 entity.page_variant.delete_form:
   path: '/admin/structure/page_manager/manage/{machine_name}/variant/{variant_machine_name}/delete'
   defaults:
@@ -193,45 +247,29 @@ page_manager.block_display_delete_block:
 #### Static Contexts
 
 entity.page_variant.context.add:
-  path: '/admin/structure/page_manager/manage/{machine_name}/variant/{variant_machine_name}/contexts/add/{data_type}'
+  path: '/admin/structure/page_manager/manage/{machine_name}/variant/{variant_machine_name}/contexts/add/{context_id}'
   defaults:
     _form: '\Drupal\page_manager_ui\Form\StaticContextConfigure'
     _title: 'Add custom context'
-    op: add
     tempstore_id: page_manager.page
-    page: '{machine_name}'
-  options:
-    parameters:
-      page:
-        type: tempstore:page
   requirements:
     _permission: 'administer pages'
 
 entity.page_variant.context.edit:
-  path: '/admin/structure/page_manager/manage/{machine_name}/variant/{variant_machine_name}/contexts/edit/{data_type}'
+  path: '/admin/structure/page_manager/manage/{machine_name}/variant/{variant_machine_name}/contexts/edit/{context_id}'
   defaults:
     _form: '\Drupal\page_manager_ui\Form\StaticContextConfigure'
     _title: 'Edit context'
     tempstore_id: page_manager.page
-    page: '{machine_name}'
-  options:
-    parameters:
-      page:
-        type: tempstore:page
   requirements:
     _permission: 'administer pages'
 
 entity.page_variant.context.delete:
-  path: '/admin/structure/page_manager/manage/{machine_name}/variant/{variant_machine_name}/context/delete/{data_type}'
+  path: '/admin/structure/page_manager/manage/{machine_name}/variant/{variant_machine_name}/context/delete/{context_id}'
   defaults:
     _form: '\Drupal\page_manager_ui\Form\StaticContextDeleteForm'
     _title: 'Delete static context'
     tempstore_id: page_manager.page
-    page: '{machine_name}'
-  options:
-    parameters:
-      page:
-        type: tempstore:page
   requirements:
     _permission: 'administer pages'
 

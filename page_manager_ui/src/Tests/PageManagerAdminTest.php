@@ -52,6 +52,7 @@ class PageManagerAdminTest extends WebTestBase {
     $this->doTestAddPage();
     $this->doTestAccessConditions();
     $this->doTestSelectionCriteria();
+    $this->doTestSelectionCriteriaWithAjax();
     $this->doTestDisablePage();
     $this->doTestAddVariant();
     $this->doTestAddBlock();
@@ -232,6 +233,18 @@ class PageManagerAdminTest extends WebTestBase {
     $this->drupalPostForm(NULL, [], 'Delete');
     $this->assertRaw('No required conditions have been configured.');
     $this->assertUrl($path);
+  }
+
+  /**
+   * Tests the AJAX form for Selection Criteria.
+   */
+  protected function doTestSelectionCriteriaWithAjax() {
+    $this->drupalGet('admin/structure/page_manager/manage/foo/page_variant__foo-http_status_code-0__selection');
+    $edit = [
+      'conditions' => 'user_role',
+    ];
+    $response = $this->drupalPostAjaxForm(NULL, $edit, ['add' => 'Add Condition']);
+    $this->assertEqual($response[2]['dialogOptions']['title'], 'Configure Required Context');
   }
 
   /**

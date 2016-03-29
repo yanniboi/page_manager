@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Contains \Drupal\page_manager_ui\Form\PageVariantSelectionForm.
+ * Contains \Drupal\page_manager_ui\Form\AddVariantSelectionForm.
  */
 
 namespace Drupal\page_manager_ui\Form;
@@ -11,9 +12,9 @@ use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ctools\Form\ManageConditions;
-use Drupal\page_manager_ui\Form\SelectionConfigure;
+use Drupal\page_manager_ui\Form\AddVariantSelectionConfigure;
 
-class PageVariantSelectionForm extends ManageConditions {
+class AddVariantSelectionForm extends ManageConditions {
 
   /**
    * {@inheritdoc}
@@ -26,14 +27,14 @@ class PageVariantSelectionForm extends ManageConditions {
    * {@inheritdoc}
    */
   protected function getConditionClass() {
-    return SelectionConfigure::class;
+    return AddVariantSelectionConfigure::class;
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getTempstoreId() {
-    return 'page_manager.page';
+    return 'page_manager.page_variant';
   }
 
   /**
@@ -42,9 +43,9 @@ class PageVariantSelectionForm extends ManageConditions {
   protected function getOperationsRouteInfo($cached_values, $machine_name, $row) {
     /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
     $page_variant = $cached_values['page_variant'];
-    return ['entity.page_variant.condition', [
+    return ['entity.page_variant.add_step_form.condition', [
+      'page' => $page_variant->getPage()->id(),
       'machine_name' => $machine_name,
-      'variant_machine_name' => $page_variant->id(),
       'condition' => $row
     ]];
   }
@@ -71,7 +72,7 @@ class PageVariantSelectionForm extends ManageConditions {
    * {@inheritdoc}
    */
   protected function getAddRoute($cached_values) {
-    return 'entity.page_variant.condition.add';
+    return 'entity.page_variant.add_step_form.condition.add';
   }
 
   /**

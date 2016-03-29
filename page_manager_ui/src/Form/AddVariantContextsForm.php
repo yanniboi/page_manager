@@ -1,11 +1,11 @@
 <?php
+
 /**
  * @file
- * Contains \Drupal\page_manager_ui\Form\PageVariantContextForm.
+ * Contains \Drupal\page_manager_ui\Form\AddVariantContextsForm.
  */
 
 namespace Drupal\page_manager_ui\Form;
-
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ctools\Form\ManageContext;
 
-class PageVariantContextsForm extends ManageContext {
+class AddVariantContextsForm extends ManageContext {
 
   /**
    * We don't currently support relationships in PM, so don't use them.
@@ -52,35 +52,35 @@ class PageVariantContextsForm extends ManageContext {
    * {@inheritdoc}
    */
   protected function getContextClass($cached_values) {
-    return StaticContextConfigure::class;
+    return AddVariantStaticContextConfigure::class;
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getRelationshipClass($cached_values) {
-    //return VariantRelationshipConfigure::class;
+    //return AddVariantRelationshipConfigure::class;
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getContextAddRoute($cached_values) {
-    return 'entity.page_variant.context.add';
+    return 'entity.page_variant.add_step_form.context.add';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getRelationshipAddRoute($cached_values) {
-    return 'entity.page_variant.context.add';
+    return 'entity.page_variant.add_step_form.context.add';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getTempstoreId() {
-    return 'page_manager.page';
+    return 'page_manager.page_variant';
   }
 
   /**
@@ -98,9 +98,9 @@ class PageVariantContextsForm extends ManageContext {
   protected function getContextOperationsRouteInfo($cached_values, $machine_name, $row) {
     /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
     $page_variant = $cached_values['page_variant'];
-    return ['entity.page_variant.context', [
+    return ['entity.page_variant.add_step_form.context', [
+      'page' => $page_variant->getPage()->id(),
       'machine_name' => $machine_name,
-      'variant_machine_name' => $page_variant->id(),
       'context_id' => $row
     ]];
   }
@@ -111,18 +111,17 @@ class PageVariantContextsForm extends ManageContext {
   protected function getRelationshipOperationsRouteInfo($cached_values, $machine_name, $row) {
     /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
     $page_variant = $cached_values['page_variant'];
-    return ['entity.page_variant.relationship', [
+    return ['entity.page_variant.add_step_form.context', [
+      'page' => $page_variant->getPage()->id(),
       'machine_name' => $machine_name,
-      'variant_machine_name' => $page_variant->id(),
-      'relationship' => $row
+      'context_id' => $row
     ]];
   }
 
   protected function isEditableContext($cached_values, $row) {
-    /** @var \Drupal\page_manager\PageInterface $page */
-    $page = $cached_values['page'];
     /** @var \Drupal\page_manager\PageVariantInterface $page_variant */
     $page_variant = $cached_values['page_variant'];
+    $page = $page_variant->getPage();
     return empty($page->getContexts()[$row]) && !empty($page_variant->getContexts()[$row]);
   }
 

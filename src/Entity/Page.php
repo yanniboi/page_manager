@@ -8,6 +8,8 @@
 namespace Drupal\page_manager\Entity;
 
 use Drupal\Component\Plugin\Context\ContextInterface;
+use Drupal\Core\Plugin\Context\Context;
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
 use Drupal\page_manager\PageInterface;
@@ -154,13 +156,6 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
-
-    // Save the page variants just in case they were modified (or added) and
-    // not saved independently.
-    foreach ($this->getVariants() as $page_variant) {
-      $page_variant->save();
-    }
-
     static::routeBuilder()->setRebuildNeeded();
   }
 
@@ -245,7 +240,11 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function getParameters() {
-    return $this->parameters;
+    $names = $this->getParameterNames();
+    if ($names) {
+      return array_intersect_key($this->parameters, array_flip($names));
+    }
+    return [];
   }
 
   /**
@@ -267,6 +266,12 @@ class Page extends ConfigEntityBase implements PageInterface {
       'type' => $type,
       'label' => $label,
     ];
+    // Reset contexts when a parameter is added or changed.
+    $this->contexts = [];
+    // Reset the contexts of every variant.
+    foreach ($this->getVariants() as $page_variant) {
+      $page_variant->resetCollectedContexts();
+    }
     return $this;
   }
 
@@ -275,6 +280,12 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function removeParameter($name) {
     unset($this->parameters[$name]);
+    // Reset contexts when a parameter is removed.
+    $this->contexts = [];
+    // Reset the contexts of every variant.
+    foreach ($this->getVariants() as $page_variant) {
+      $page_variant->resetCollectedContexts();
+    }
     return $this;
   }
 
@@ -303,8 +314,10 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @return $this
    */
   protected function filterParameters() {
-    foreach ($this->getParameters() as $name => $parameter) {
-      if (empty($parameter['type'])) {
+    $names = $this->getParameterNames();
+    foreach ($this->get('parameters') as $name => $parameter) {
+      // Remove parameters without any type, or which are no longer valid.
+      if (empty($parameter['type']) || !in_array($name, $names)) {
         $this->removeParameter($name);
       }
     }
@@ -322,8 +335,26 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function getContexts() {
+    // @todo add the other global contexts here as they are added
+    // @todo maybe come up with a non-hardcoded way of doing this?
+    $global_contexts = [
+      'current_user'
+    ];
     if (!$this->contexts) {
       $this->eventDispatcher()->dispatch(PageManagerEvents::PAGE_CONTEXT, new PageManagerContextEvent($this));
+      foreach ($this->getParameters() as $machine_name => $configuration) {
+        // Parameters can be updated in the UI, so unless it's a global context
+        // we'll need to rely on the current settings in the tempstore instead
+        // of the ones cached in the router.
+        if (!isset($global_contexts[$machine_name])) {
+          $value = NULL;
+          if (isset($this->contexts[$machine_name])) {
+            $value = $this->contexts[$machine_name]->getContextValue();
+          }
+          $context_definition = new ContextDefinition($configuration['type'], $configuration['label']);
+          $this->contexts[$machine_name] = new Context($context_definition, $value);
+        }
+      }
     }
     return $this->contexts;
   }
@@ -332,13 +363,7 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function addVariant(PageVariantInterface $variant) {
-    // If variants hasn't been initialized, we initialize it before adding the
-    // new variant.
-    if ($this->variants === NULL) {
-      $this->getVariants();
-    }
     $this->variants[$variant->id()] = $variant;
-    $this->sortVariants();
     return $this;
   }
 
@@ -358,7 +383,6 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function removeVariant($variant_id) {
     $this->getVariant($variant_id)->delete();
-    unset($this->variants[$variant_id]);
     return $this;
   }
 
@@ -372,19 +396,23 @@ class Page extends ConfigEntityBase implements PageInterface {
       foreach ($this->variantStorage()->loadByProperties(['page' => $this->id()]) as $variant) {
         $this->variants[$variant->id()] = $variant;
       }
-      $this->sortVariants();
+      // Suppress errors because of https://bugs.php.net/bug.php?id=50688.
+      @uasort($this->variants, [$this, 'variantSortHelper']);
     }
     return $this->variants;
   }
 
   /**
-   * Sort variants.
+   * {@inheritdoc}
    */
-  protected function sortVariants() {
-    if (isset($this->variants)) {
-      // Suppress errors because of https://bugs.php.net/bug.php?id=50688.
-      @uasort($this->variants, '\Drupal\page_manager\Entity\PageVariant::sort');
+  public function variantSortHelper($a, $b) {
+    $a_weight = $a->getWeight();
+    $b_weight = $b->getWeight();
+    if ($a_weight == $b_weight) {
+      return 0;
     }
+
+    return ($a_weight < $b_weight) ? -1 : 1;
   }
 
   /**
@@ -395,21 +423,6 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   protected function eventDispatcher() {
     return \Drupal::service('event_dispatcher');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __sleep() {
-    $vars = parent::__sleep();
-
-    // Avoid serializing the page executable as it represents runtime state.
-    $key = array_search('executable', $vars);
-    if ($key !== FALSE) {
-      unset($vars[$key]);
-    }
-
-    return $vars;
   }
 
   /**

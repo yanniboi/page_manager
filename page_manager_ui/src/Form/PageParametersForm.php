@@ -44,7 +44,12 @@ class PageParametersForm extends FormBase {
       '#prefix' => '<div id="available-parameters">',
       '#suffix' => '</div>',
       '#theme' => 'table',
-      '#header' => [$this->t('Label'), $this->t('Type'), $this->t('Operations')],
+      '#header' => [
+        $this->t('Machine name'),
+        $this->t('Label'),
+        $this->t('Type'),
+        $this->t('Operations'),
+      ],
       '#rows' => $this->renderRows($cached_values),
       '#empty' => $this->t('There are no parameters defined for this page.')
     ];
@@ -52,35 +57,34 @@ class PageParametersForm extends FormBase {
   }
 
   protected function renderRows($cached_values) {
-    $parameters = [];
+    $rows = [];
     /** @var $page \Drupal\page_manager\Entity\Page */
     $page = $cached_values['page'];
     /**
      * @var string $parameter
-     * @var \Drupal\Core\Plugin\Context\ContextInterface $context
      */
-    foreach ($page->getContexts() as $parameter => $context) {
-      // @todo this list should be replaced with some sort of context type check.
-      if (!in_array($parameter, ['current_user'])) {
-        list($route_partial, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $cached_values['id'], $parameter);
-        $build = [
-          '#type' => 'operations',
-          '#links' => $this->getOperations($route_partial, $route_parameters),
-        ];
+    foreach ($page->getParameterNames() as $parameter_name) {
+      $parameter = $page->getParameter($parameter_name);
+      $row = [];
+      $row['machine_name'] = $parameter['machine_name'];
+      if ($label = $parameter['label']) {
+        $row['label'] = $label;
       }
       else {
-        $build = [];
+        $row['type']['colspan'] = 2;
       }
+      $row['type']['data'] = $parameter['type'] ?: $this->t('<em>No context assigned</em>');
 
-      $contexts[$parameter] = [
-        $context->getContextDefinition()->getLabel(),
-        $context->getContextDefinition()->getDataType(),
-        'operations' => [
-          'data' => $build,
-        ],
+      list($route_partial, $route_parameters) = $this->getOperationsRouteInfo($cached_values, $cached_values['id'], $parameter_name);
+      $build = [
+        '#type' => 'operations',
+        '#links' => $this->getOperations($route_partial, $route_parameters),
       ];
+      $row['operations']['data'] = $build;
+      $rows[$parameter_name] = $row;
     }
-    return $contexts;
+
+    return $rows;
   }
 
   /**

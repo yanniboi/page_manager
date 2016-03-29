@@ -7,11 +7,15 @@
 namespace Drupal\page_manager_ui\Wizard;
 
 use Drupal\Core\Display\ContextAwareVariantInterface;
-use Drupal\ctools\Plugin\PluginWizardInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\page_manager_ui\Access\PageManagerPluginAccess;
+use Drupal\ctools\Plugin\PluginWizardInterface;
 use Drupal\ctools\Wizard\EntityFormWizardBase;
+use Drupal\page_manager_ui\Access\PageManagerPluginAccess;
+use Drupal\page_manager_ui\Form\PageVariantAddForm;
+use Drupal\page_manager_ui\Form\PageVariantConfigureForm;
+use Drupal\page_manager_ui\Form\AddVariantContextsForm;
+use Drupal\page_manager_ui\Form\AddVariantSelectionForm;
 
 class PageVariantAddWizard extends EntityFormWizardBase {
 
@@ -66,19 +70,19 @@ class PageVariantAddWizard extends EntityFormWizardBase {
     $operations = [];
     $operations['type'] = [
       'title' => $this->t('Page variant type'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantAddForm',
+      'form' => PageVariantAddForm::class,
     ];
     $operations['contexts'] = [
       'title' => $this->t('Contexts'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantContextsForm',
+      'form' => AddVariantContextsForm::class,
     ];
     $operations['selection'] = [
       'title' => $this->t('Selection criteria'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantSelectionForm',
+      'form' => AddVariantSelectionForm::class,
     ];
     $operations['configure'] = [
       'title' => $this->t('Configure variant'),
-      'form' => '\Drupal\page_manager_ui\Form\PageVariantConfigureForm',
+      'form' => PageVariantConfigureForm::class,
     ];
 
     // Hide any optional steps that aren't selected.

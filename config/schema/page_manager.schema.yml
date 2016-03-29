@@ -1,3 +1,4 @@
+# @fixme: Remove page_manager.page.description when https://www.drupal.org/node/2692325 is fixed
 page_manager.page.*:
   type: config_entity
   label: 'Page'
@@ -81,18 +82,8 @@ page_manager.page_variant.*:
       type: sequence
       label: Static context list
       sequence:
-        - type: mapping
+        - type: ctools.context
           label: 'Static context'
-          mapping:
-            label:
-              type: label
-              label: 'Label of the context'
-            type:
-              type: string
-              label: 'Context type'
-            value:
-              type: string
-              label: 'Context value'
 
 page_manager.block_plugin.*:
   type: block.settings.[id]
@@ -111,14 +102,6 @@ page_manager.block_plugin.*:
       label: 'Context assignments'
       sequence:
         - type: string
-
-display_variant.plugin.block_page:
-  type: display_variant.plugin
-  label: 'Page with blocks'
-
-display_variant.plugin.simple_page:
-  type: display_variant.plugin
-  label: 'Simple page'
 
 display_variant.plugin.block_display:
   type: display_variant.plugin

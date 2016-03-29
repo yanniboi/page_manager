@@ -10,6 +10,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Wizard\EntityFormWizardBase;
 use Drupal\page_manager_ui\Access\PageManagerPluginAccess;
+use Drupal\page_manager_ui\Form\PageGeneralForm;
+use Drupal\page_manager_ui\Form\PageParametersForm;
+use Drupal\page_manager_ui\Form\PageAccessForm;
 
 class PageWizardBase extends EntityFormWizardBase {
 
@@ -55,15 +58,24 @@ class PageWizardBase extends EntityFormWizardBase {
     $operations = [];
     $operations['general'] = [
       'title' => $this->t('Page information'),
-      'form' => '\Drupal\page_manager_ui\Form\PageGeneralForm',
+      'form' => PageGeneralForm::class,
     ];
-    $operations['parameters'] = [
-      'title' => $this->t('Page parameters'),
-      'form' => '\Drupal\page_manager_ui\Form\PageParametersForm',
-    ];
+    /** @var $page \Drupal\page_manager\Entity\Page */
+    $page = $cached_values['page'];
+
+    if ($page) {
+      $matches = [];
+      preg_match_all('|\{\w+\}|', $page->getPath(), $matches);
+      if (array_filter($matches)) {
+        $operations['parameters'] = [
+          'title' => $this->t('Page parameters'),
+          'form' => PageParametersForm::class,
+        ];
+      }
+    }
     $operations['access'] = [
       'title' => $this->t('Page access'),
-      'form' => '\Drupal\page_manager_ui\Form\PageAccessForm',
+      'form' => PageAccessForm::class,
     ];
 
     return $operations;

@@ -88,9 +88,8 @@ class SelectionDelete extends ConditionDelete {
    * {@inheritdoc}
    */
   protected function getContexts($cached_values) {
-    /** @var $page \Drupal\page_manager\Entity\Page */
-    $page = $cached_values['page'];
-    return $page->getContexts();
+    $page_variant = $this->getPageVariant($cached_values);
+    return $page_variant->getContexts();
   }
 
 }

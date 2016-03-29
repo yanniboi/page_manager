@@ -70,7 +70,7 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    *
    * @var int
    */
-  public $weight = 0;
+  protected $weight = 0;
 
   /**
    * The UUID of the page variant entity.
@@ -285,17 +285,15 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
     if (is_null($this->contexts)) {
       $static_contexts = $this->getContextMapper()->getContextValues($this->getStaticContexts());
       $page_contexts = $this->getPage()->getContexts();
-      $this->contexts = array_merge($static_contexts, $page_contexts);
+      $this->contexts = array_reverse(array_merge(array_reverse($static_contexts), array_reverse($page_contexts)));
     }
     return $this->contexts;
   }
 
   /**
-   * Resets the collected contexts.
-   *
-   * @return $this
+   * {@inheritdoc}
    */
-  protected function resetCollectedContexts() {
+  public function resetCollectedContexts() {
     $this->contexts = NULL;
     return $this;
   }
@@ -471,15 +469,6 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
       unset($vars[$key]);
     }
     return $vars;
-  }
-
-  /**
-   * Wraps the shared tempstore factory.
-   *
-   * @return \Drupal\user\SharedTempStoreFactory
-   */
-  protected function getTempstoreFactory() {
-    return \Drupal::service('user.shared_tempstore');
   }
 
 }

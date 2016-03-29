@@ -63,23 +63,26 @@ class StaticContextTest extends WebTestBase {
       array(
         'title' => 'Static Node',
         'machine_name' => 'static_node',
+        'description' => 'Static node 1',
         'node' => $node,
       ),
       array(
         'title' => 'Static Node 2',
         'machine_name' => 'static_node_2',
+        'description' => 'Static node 2',
         'node' => $node2,
       ),
     );
     foreach ($contexts as $context) {
       $edit = [
-        'types' => 'entity:node',
+        'context' => 'entity:node',
       ];
       $this->drupalPostForm(NULL, $edit, 'Add new context');
       $edit = [
         'label' => $context['title'],
-        'id' => $context['machine_name'],
-        'value' => $context['node']->getTitle() . ' (' . $context['node']->id() . ')',
+        'machine_name' => $context['machine_name'],
+        'description' => $context['description'],
+        'context_value' => $context['node']->getTitle() . ' (' . $context['node']->id() . ')',
       ];
       $this->drupalPostForm(NULL, $edit, 'Save');
       $this->assertText($context['title']);
@@ -130,7 +133,7 @@ class StaticContextTest extends WebTestBase {
     $this->clickLink('Edit', 1);
     $edit = [
       'label' => 'Static Node 2 edited',
-      'value' => $node->getTitle(),
+      'context_value' => $node->getTitle(),
     ];
     $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertText("Static Node 2 edited");
@@ -149,7 +152,7 @@ class StaticContextTest extends WebTestBase {
     $this->clickLink('Edit');
     $edit = array(
       'label' => 'Static Node edited',
-      'value' => $node2->getTitle(),
+      'context_value' => $node2->getTitle(),
     );
     $this->drupalPostForm(NULL, $edit, 'Save');
     $this->assertText("Static Node 2 edited");

@@ -110,7 +110,6 @@ class PageGeneralForm extends FormBase {
         '#title' => $this->t('Optional features'),
         '#description' => $this->t('Check any optional features you need to be presented with forms for configuring them. If you do not check them here you will still be able to utilize these features once the new page is created. If you are not sure, leave these unchecked.'),
         '#options' => [
-          'parameters' => $this->t('Page parameters'),
           'access' => $this->t('Page acess'),
           'contexts' => $this->t('Variant contexts'),
           'selection' => $this->t('Variant selection criteria'),
