@@ -21,6 +21,8 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\ctools\Plugin\DisplayVariant\BlockDisplayVariant;
+use Drupal\ctools\Plugin\PluginWizardInterface;
+use Drupal\page_manager_ui\Form\VariantPluginContentForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -31,7 +33,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   admin_label = @Translation("Block page")
  * )
  */
-class PageBlockDisplayVariant extends BlockDisplayVariant {
+class PageBlockDisplayVariant extends BlockDisplayVariant implements PluginWizardInterface {
 
   /**
    * The module handler.
@@ -248,6 +250,18 @@ class PageBlockDisplayVariant extends BlockDisplayVariant {
   /**
    * {@inheritdoc}
    */
+  public function getWizardOperations($cached_values) {
+    return [
+      'content' => [
+        'title' => $this->t('Content'),
+        'form' => VariantPluginContentForm::class,
+      ],
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function defaultConfiguration() {
     return parent::defaultConfiguration() + [
       'page_title' => '',
@@ -298,6 +312,26 @@ class PageBlockDisplayVariant extends BlockDisplayVariant {
       'top' => 'Top',
       'bottom' => 'Bottom',
     ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __sleep() {
+    // These should be functionally identical, but the commented code below
+    // fails tests... :-S
+    /*
+    $vars = parent::__sleep();
+    $key = array_search('stringTranslation', $vars);
+    if ($key !== FALSE) {
+      unset($vars[$key]);
+    }
+    return $vars;
+    */
+    $vars = parent::__sleep();
+    unset($vars[array_search('stringTranslation', $vars)]);
+    return $vars;
+
   }
 
 }

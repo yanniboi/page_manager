@@ -1,3 +1,4 @@
+# @fixme: Remove page_manager.page.description when https://www.drupal.org/node/2692325 is fixed
 page_manager.page.*:
   type: config_entity
   label: 'Page'
@@ -8,6 +9,9 @@ page_manager.page.*:
     label:
       type: label
       label: 'Label'
+    description:
+      type: text
+      label: 'Description'
     use_admin_theme:
       type: boolean
       label: 'Whether the page is displayed using the admin theme or not'
@@ -61,6 +65,7 @@ page_manager.page_variant.*:
       label: 'Display variant'
     variant_settings:
       type: display_variant.plugin.[%parent.variant]
+      label: 'Variant settings'
     page:
       type: string
       label: 'Parent page'
@@ -77,18 +82,8 @@ page_manager.page_variant.*:
       type: sequence
       label: Static context list
       sequence:
-        - type: mapping
+        - type: ctools.context
           label: 'Static context'
-          mapping:
-            label:
-              type: label
-              label: 'Label of the context'
-            type:
-              type: string
-              label: 'Context type'
-            value:
-              type: string
-              label: 'Context value'
 
 page_manager.block_plugin.*:
   type: block.settings.[id]

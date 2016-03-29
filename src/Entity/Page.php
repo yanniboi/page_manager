@@ -8,6 +8,8 @@
 namespace Drupal\page_manager\Entity;
 
 use Drupal\Component\Plugin\Context\ContextInterface;
+use Drupal\Core\Plugin\Context\Context;
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\page_manager\Event\PageManagerContextEvent;
 use Drupal\page_manager\Event\PageManagerEvents;
 use Drupal\page_manager\PageInterface;
@@ -34,6 +36,7 @@ use Drupal\page_manager\PageVariantInterface;
  *   config_export = {
  *     "id",
  *     "label",
+ *     "description",
  *     "use_admin_theme",
  *     "path",
  *     "access_logic",
@@ -57,6 +60,13 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @var string
    */
   protected $label;
+
+  /**
+   * The description of the page entity.
+   *
+   * @var string
+   */
+  protected $description;
 
   /**
    * The path of the page entity.
@@ -119,6 +129,13 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @var array[]
    */
   protected $parameters = [];
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDescription() {
+    return $this->description;
+  }
 
   /**
    * {@inheritdoc}
@@ -223,7 +240,11 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function getParameters() {
-    return $this->parameters;
+    $names = $this->getParameterNames();
+    if ($names) {
+      return array_intersect_key($this->parameters, array_flip($names));
+    }
+    return [];
   }
 
   /**
@@ -245,6 +266,12 @@ class Page extends ConfigEntityBase implements PageInterface {
       'type' => $type,
       'label' => $label,
     ];
+    // Reset contexts when a parameter is added or changed.
+    $this->contexts = [];
+    // Reset the contexts of every variant.
+    foreach ($this->getVariants() as $page_variant) {
+      $page_variant->resetCollectedContexts();
+    }
     return $this;
   }
 
@@ -253,6 +280,12 @@ class Page extends ConfigEntityBase implements PageInterface {
    */
   public function removeParameter($name) {
     unset($this->parameters[$name]);
+    // Reset contexts when a parameter is removed.
+    $this->contexts = [];
+    // Reset the contexts of every variant.
+    foreach ($this->getVariants() as $page_variant) {
+      $page_variant->resetCollectedContexts();
+    }
     return $this;
   }
 
@@ -281,8 +314,10 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @return $this
    */
   protected function filterParameters() {
-    foreach ($this->getParameters() as $name => $parameter) {
-      if (empty($parameter['type'])) {
+    $names = $this->getParameterNames();
+    foreach ($this->get('parameters') as $name => $parameter) {
+      // Remove parameters without any type, or which are no longer valid.
+      if (empty($parameter['type']) || !in_array($name, $names)) {
         $this->removeParameter($name);
       }
     }
@@ -300,8 +335,26 @@ class Page extends ConfigEntityBase implements PageInterface {
    * {@inheritdoc}
    */
   public function getContexts() {
+    // @todo add the other global contexts here as they are added
+    // @todo maybe come up with a non-hardcoded way of doing this?
+    $global_contexts = [
+      'current_user'
+    ];
     if (!$this->contexts) {
       $this->eventDispatcher()->dispatch(PageManagerEvents::PAGE_CONTEXT, new PageManagerContextEvent($this));
+      foreach ($this->getParameters() as $machine_name => $configuration) {
+        // Parameters can be updated in the UI, so unless it's a global context
+        // we'll need to rely on the current settings in the tempstore instead
+        // of the ones cached in the router.
+        if (!isset($global_contexts[$machine_name])) {
+          $value = NULL;
+          if (isset($this->contexts[$machine_name])) {
+            $value = $this->contexts[$machine_name]->getContextValue();
+          }
+          $context_definition = new ContextDefinition($configuration['type'], $configuration['label']);
+          $this->contexts[$machine_name] = new Context($context_definition, $value);
+        }
+      }
     }
     return $this->contexts;
   }
@@ -375,28 +428,15 @@ class Page extends ConfigEntityBase implements PageInterface {
   /**
    * {@inheritdoc}
    */
-  public function __sleep() {
-    $vars = parent::__sleep();
-
-    // Ensure any plugin collections are stored correctly before serializing.
-    // @todo Let https://www.drupal.org/node/2650588 handle this instead.
-    foreach ($this->getPluginCollections() as $plugin_config_key => $plugin_collection) {
-      $this->set($plugin_config_key, $plugin_collection->getConfiguration());
+  protected function urlRouteParameters($rel) {
+    // @fixme Remove when https://www.drupal.org/node/2690211 gets fixed.
+    if ($rel == 'edit-form') {
+      $uri_route_parameters = [];
+      $uri_route_parameters['machine_name'] = $this->id();
+      $uri_route_parameters['step'] = 'general';
+      return $uri_route_parameters;
     }
 
-    // Avoid serializing plugin collections and entities as they might contain
-    // references to a lot of objects including the container.
-    $unset_vars = [
-      'variants',
-      'accessConditionCollection',
-    ];
-    foreach ($unset_vars as $unset_var) {
-      if (!empty($this->{$unset_var})) {
-        unset($vars[array_search($unset_var, $vars)]);
-      }
-    }
-
-    return $vars;
+    return parent::urlRouteParameters($rel);
   }
-
 }

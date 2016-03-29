@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager\Tests\StaticContextTest.
+ * Contains \Drupal\page_manager_ui\Tests\StaticContextTest.
  */
 
-namespace Drupal\page_manager\Tests;
+namespace Drupal\page_manager_ui\Tests;
 
 use Drupal\simpletest\WebTestBase;
 
@@ -53,43 +53,47 @@ class StaticContextTest extends WebTestBase {
       'label' => 'Static node context',
       'id' => 'static_node_context',
       'path' => 'static-context',
+      'variant_plugin_id' => 'block_display',
+      'wizard_options[contexts]' => TRUE,
     ];
-    $this->drupalPostForm('admin/structure/page_manager/add', $edit_page, 'Save');
-
-    // Add a new variant.
-    $this->clickLink('Add new variant');
-    $this->clickLink('Block page');
-    $variant_edit = [
-      'label' => 'Static context blocks',
-      'id' => 'block_page',
-      'variant_settings[page_title]' => 'Static context test page',
-    ];
-    $this->drupalPostForm(NULL, $variant_edit, 'Save');
+    $this->drupalPostForm('admin/structure/page_manager/add', $edit_page, 'Next');
 
     // Add a static context for each node to the page variant.
     $contexts = array(
       array(
         'title' => 'Static Node',
         'machine_name' => 'static_node',
+        'description' => 'Static node 1',
         'node' => $node,
       ),
       array(
         'title' => 'Static Node 2',
         'machine_name' => 'static_node_2',
+        'description' => 'Static node 2',
         'node' => $node2,
       ),
     );
     foreach ($contexts as $context) {
-      $this->clickLink('Add new static context');
-      $edit = array(
+      $edit = [
+        'context' => 'entity:node',
+      ];
+      $this->drupalPostForm(NULL, $edit, 'Add new context');
+      $edit = [
         'label' => $context['title'],
         'machine_name' => $context['machine_name'],
-        'entity_type' => 'node',
-        'selection' => $context['node']->getTitle(),
-      );
-      $this->drupalPostForm(NULL, $edit, 'Add Static Context');
-      $this->assertText('The ' . $edit['label'] . ' static context has been added.');
+        'description' => $context['description'],
+        'context_value' => $context['node']->getTitle() . ' (' . $context['node']->id() . ')',
+      ];
+      $this->drupalPostForm(NULL, $edit, 'Save');
+      $this->assertText($context['title']);
     }
+    $this->drupalPostForm(NULL, [], 'Next');
+
+    // Add a new variant.
+    $variant_edit = [
+      'variant_settings[page_title]' => 'Static context test page',
+    ];
+    $this->drupalPostForm(NULL, $variant_edit, 'Next');
 
     // Add a block that renders the node from the first static context.
     $this->clickLink('Add new block');
@@ -115,6 +119,7 @@ class StaticContextTest extends WebTestBase {
     ];
     $this->drupalPostForm(NULL, $edit, 'Add block');
     $this->assertText($edit['settings[label]']);
++    $this->drupalPostForm(NULL, [], 'Finish');
 
     // Open the page and verify that the node from the static context is there.
     $this->drupalGet($edit_page['path']);
@@ -124,16 +129,15 @@ class StaticContextTest extends WebTestBase {
     $this->assertText($node2->get('body')->getValue()[0]['value']);
 
     // Change the second static context to the first node.
-    $this->drupalGet('admin/structure/page_manager/manage/' . $edit_page['id']);
-    $this->clickLink('Edit');
-    $this->clickLink('Edit', 3);
-    $edit = array(
+    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/page_variant__static_node_context-block_display-0__contexts');
+    $this->clickLink('Edit', 1);
+    $edit = [
       'label' => 'Static Node 2 edited',
-      'entity_type' => 'node',
-      'selection' => $node->getTitle(),
-    );
-    $this->drupalPostForm(NULL, $edit, t('Update Static Context'));
-    $this->assertText('The ' . $edit['label'] . ' static context has been updated.');
+      'context_value' => $node->getTitle(),
+    ];
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->assertText("Static Node 2 edited");
+    $this->drupalPostForm(NULL, [], 'Update and save');
 
     // Open the page and verify that the node from the static context is there.
     $this->drupalGet($edit_page['path']);
@@ -144,20 +148,20 @@ class StaticContextTest extends WebTestBase {
     $this->assertNoText($node2->get('body')->getValue()[0]['value']);
 
     // Change the first static context to the second node.
-    $this->drupalGet('admin/structure/page_manager/manage/' . $edit_page['id']);
+    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/page_variant__static_node_context-block_display-0__contexts');
     $this->clickLink('Edit');
-    $this->clickLink('Edit', 2);
     $edit = array(
       'label' => 'Static Node edited',
-      'entity_type' => 'node',
-      'selection' => $node2->getTitle(),
+      'context_value' => $node2->getTitle(),
     );
-    $this->drupalPostForm(NULL, $edit, t('Update Static Context'));
-    $this->assertText('The ' . $edit['label'] . ' static context has been updated.');
+    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->assertText("Static Node 2 edited");
 
     // Remove the second static context view block from the variant.
+    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/page_variant__static_node_context-block_display-0__content');
     $this->clickLink('Delete', 1);
-    $this->drupalPostForm(NULL, NULL, t('Delete'));
+    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->drupalPostForm(NULL, [], 'Update and save');
 
     // Make sure only the second static context's node is rendered on the page.
     $this->drupalGet($edit_page['path']);
@@ -167,12 +171,12 @@ class StaticContextTest extends WebTestBase {
     $this->assertText($node2->get('body')->getValue()[0]['value']);
 
     // Delete a static context and verify that it was deleted.
-    $this->drupalGet('admin/structure/page_manager/manage/' . $edit_page['id']);
-    $this->clickLink('Edit');
-    $this->clickLink('Delete', 1);
-    $this->drupalPostForm(NULL, NULL, t('Delete'));
-    $this->assertText('The static context ' . $edit['label'] . ' has been removed.');
-    $this->drupalGet('admin/structure/page_manager/manage/' . $edit_page['id']);
+    $this->drupalGet('admin/structure/page_manager/manage/static_node_context/page_variant__static_node_context-block_display-0__contexts');
+    $this->clickLink('Delete');
+    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->assertText("The static context Static Node edited has been removed.");
+    // Reload the page to clear the message
+    $this->drupalGet($this->getUrl());
     $this->assertNoText($edit['label']);
   }
 
