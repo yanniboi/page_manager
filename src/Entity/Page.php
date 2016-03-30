@@ -34,6 +34,7 @@ use Drupal\page_manager\PageVariantInterface;
  *   config_export = {
  *     "id",
  *     "label",
+ *     "description",
  *     "use_admin_theme",
  *     "path",
  *     "access_logic",
@@ -57,6 +58,13 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @var string
    */
   protected $label;
+
+  /**
+   * The description of the page entity.
+   *
+   * @var string
+   */
+  protected $description;
 
   /**
    * The path of the page entity.
@@ -119,6 +127,13 @@ class Page extends ConfigEntityBase implements PageInterface {
    * @var array[]
    */
   protected $parameters = [];
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDescription() {
+    return $this->description;
+  }
 
   /**
    * {@inheritdoc}
