@@ -37,6 +37,19 @@ interface PageVariantInterface extends ConfigEntityInterface, EntityWithPluginCo
   public function getPage();
 
   /**
+   * Sets the page with a full entity object.
+   *
+   * This is mainly useful for setting an unsaved page on a page variant so you
+   * can continue to work with it prior to saving.
+   *
+   * @param \Drupal\page_manager\PageInterface $page
+   *   The page entity object this variant is associated with.
+   *
+   * @return $this
+   */
+  public function setPageEntity(PageInterface $page);
+
+  /**
    * Gets the values for all defined contexts.
    *
    * @return \Drupal\Core\Plugin\Context\ContextInterface[]

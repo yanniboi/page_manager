@@ -13,6 +13,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
+use Drupal\page_manager\PageInterface;
 use Drupal\page_manager\PageVariantInterface;
 
 /**
@@ -98,6 +99,13 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * @var string
    */
   protected $page;
+
+  /**
+   * The loaded page entity this page variant entity belongs to.
+   *
+   * @var \Drupal\page_manager\PageInterface
+   */
+  protected $pageEntity;
 
   /**
    * The plugin configuration for the selection criteria condition plugins.
@@ -235,10 +243,26 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    * {@inheritdoc}
    */
   public function getPage() {
-    if (!$this->page) {
-      throw new \UnexpectedValueException('The page variant has no associated page');
+    if (!$this->pageEntity) {
+      if (!$this->page) {
+        throw new \UnexpectedValueException('The page variant has no associated page');
+      }
+      $this->pageEntity = $this->getPageStorage()->load($this->page);
+      if (!$this->pageEntity) {
+        throw new \UnexpectedValueException(sprintf('The page %s could not be loaded', $this->page));
+      }
     }
-    return $this->getPageStorage()->load($this->page);
+
+    return $this->pageEntity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPageEntity(PageInterface $page) {
+    $this->pageEntity = $page;
+    $this->page = $page->id();
+    return $this;
   }
 
   /**
