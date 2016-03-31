@@ -220,6 +220,9 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
    */
   protected function getVariantPluginCollection() {
     if (!$this->variantPluginCollection) {
+      if (empty($this->variant_settings['uuid'])) {
+        $this->variant_settings['uuid'] = $this->uuidGenerator()->generate();
+      }
       $this->variantPluginCollection = new DefaultSingleLazyPluginCollection(\Drupal::service('plugin.manager.display_variant'), $this->variant, $this->variant_settings);
     }
     return $this->variantPluginCollection;
@@ -286,11 +289,9 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   }
 
   /**
-   * Resets the collected contexts.
-   *
-   * @return $this
+   * {@inheritdoc}
    */
-  protected function resetCollectedContexts() {
+  public function resetCollectedContexts() {
     $this->contexts = NULL;
     return $this;
   }
@@ -457,11 +458,17 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * @fixme: Remove changes when https://www.drupal.org/node/2696283 is fixed.
    */
   public function __sleep() {
     $vars = parent::__sleep();
+
     // Gathered contexts objects should not be serialized.
-    unset($vars[array_search('contexts', $vars)]);
+    if (($key = array_search('contexts', $vars)) !== FALSE) {
+      unset($vars[$key]);
+    }
+
     return $vars;
   }
 

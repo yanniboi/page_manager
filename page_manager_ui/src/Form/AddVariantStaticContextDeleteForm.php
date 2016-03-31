@@ -2,26 +2,17 @@
 
 /**
  * @file
- * Contains \Drupal\page_manager_ui\Form\StaticContextDeleteForm.
+ * Contains \Drupal\page_manager_ui\Form\AddVariantStaticContextDeleteForm.
  */
 
 namespace Drupal\page_manager_ui\Form;
+
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\ctools\Form\ContextDelete;
 
-/**
- * Provides a form for deleting an access condition.
- */
-class StaticContextDeleteForm extends ContextDelete {
-
-  /**
-   * The machine-name of the variant.
-   *
-   * @var string
-   */
-  protected $variantMachineName;
+class AddVariantStaticContextDeleteForm extends ContextDelete {
 
   /**
    * {@inheritdoc}
@@ -45,30 +36,12 @@ class StaticContextDeleteForm extends ContextDelete {
    */
   public function getCancelUrl() {
     $cached_values = $this->getTempstore();
-    /** @var $page \Drupal\page_manager\PageInterface */
-    $page = $cached_values['page'];
-
-    if ($page->isNew()) {
-      return new Url('entity.page.add_step_form', [
-        'machine_name' => $this->machine_name,
-        'step' => 'contexts',
-      ]);
-    }
-    else {
-      $page_variant = $this->getPageVariant($cached_values);
-      return new Url('entity.page.edit_form', [
-        'machine_name' => $this->machine_name,
-        'step' => 'page_variant__' . $page_variant->id() . '__contexts',
-      ]);
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildForm(array $form, FormStateInterface $form_state, $tempstore_id = NULL, $machine_name = NULL, $context_id = NULL, $variant_machine_name = NULL) {
-    $this->variantMachineName = $variant_machine_name;
-    return parent::buildForm($form, $form_state, $tempstore_id, $machine_name, $context_id);
+    $page_variant = $this->getPageVariant($cached_values);
+    return new Url('entity.page_variant.add_step_form', [
+      'page' => $page_variant->getPage()->id(),
+      'machine_name' => $this->machine_name,
+      'step' => 'contexts',
+    ]);
   }
 
   /**
@@ -93,13 +66,7 @@ class StaticContextDeleteForm extends ContextDelete {
    * @return \Drupal\page_manager\PageVariantInterface
    */
   protected function getPageVariant($cached_values) {
-    if (isset($cached_values['page_variant'])) {
-      return $cached_values['page_variant'];
-    }
-
-    /** @var $page \Drupal\page_manager\PageInterface */
-    $page = $cached_values['page'];
-    return $page->getVariant($this->variantMachineName);
+    return $cached_values['page_variant'];
   }
 
 }
