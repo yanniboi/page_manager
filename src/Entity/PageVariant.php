@@ -242,6 +242,14 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
   /**
    * {@inheritdoc}
    */
+  public function setVariantPluginId($variant) {
+    $this->variant = $variant;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getPage() {
     if (!$this->pageEntity) {
       if (!$this->page) {
