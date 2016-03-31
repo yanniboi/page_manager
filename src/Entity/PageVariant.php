@@ -280,7 +280,7 @@ class PageVariant extends ConfigEntityBase implements PageVariantInterface {
     if (is_null($this->contexts)) {
       $static_contexts = $this->getContextMapper()->getContextValues($this->getStaticContexts());
       $page_contexts = $this->getPage()->getContexts();
-      $this->contexts = array_merge($static_contexts, $page_contexts);
+      $this->contexts = $page_contexts + $static_contexts;
     }
     return $this->contexts;
   }
