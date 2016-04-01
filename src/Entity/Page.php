@@ -8,6 +8,7 @@
 namespace Drupal\page_manager\Entity;
 
 use Drupal\Component\Plugin\Context\ContextInterface;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Plugin\Context\Context;
 use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\page_manager\Event\PageManagerContextEvent;
@@ -347,12 +348,8 @@ class Page extends ConfigEntityBase implements PageInterface {
         // we'll need to rely on the current settings in the tempstore instead
         // of the ones cached in the router.
         if (!isset($global_contexts[$machine_name])) {
-          $value = NULL;
-          if (isset($this->contexts[$machine_name])) {
-            $value = $this->contexts[$machine_name]->getContextValue();
-          }
-          $context_definition = new ContextDefinition($configuration['type'], $configuration['label']);
-          $this->contexts[$machine_name] = new Context($context_definition, $value);
+          $this->contexts[$machine_name]->getContextDefinition()->setDataType($configuration['type']);
+          $this->contexts[$machine_name]->getContextDefinition()->setLabel($configuration['label']);
         }
       }
     }
