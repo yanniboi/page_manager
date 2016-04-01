@@ -348,8 +348,20 @@ class Page extends ConfigEntityBase implements PageInterface {
         // we'll need to rely on the current settings in the tempstore instead
         // of the ones cached in the router.
         if (!isset($global_contexts[$machine_name])) {
-          $this->contexts[$machine_name]->getContextDefinition()->setDataType($configuration['type']);
-          $this->contexts[$machine_name]->getContextDefinition()->setLabel($configuration['label']);
+          // First time through, parameters will not be defined by the route.
+          if (!isset($this->contexts[$machine_name])) {
+            $cacheability = new CacheableMetadata();
+            $cacheability->setCacheContexts(['route']);
+
+            $context_definition = new ContextDefinition($configuration['type'], $configuration['label']);
+            $context = new Context($context_definition);
+            $context->addCacheableDependency($cacheability);
+            $this->contexts[$machine_name] = $context;
+          }
+          else {
+            $this->contexts[$machine_name]->getContextDefinition()->setDataType($configuration['type']);
+            $this->contexts[$machine_name]->getContextDefinition()->setLabel($configuration['label']);
+          }
         }
       }
     }
