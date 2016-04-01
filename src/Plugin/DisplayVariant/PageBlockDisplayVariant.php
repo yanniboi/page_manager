@@ -316,8 +316,6 @@ class PageBlockDisplayVariant extends BlockDisplayVariant implements PluginWizar
 
   /**
    * {@inheritdoc}
-   *
-   * @fixme: Remove changes when https://www.drupal.org/node/2696283 is fixed.
    */
   public function __sleep() {
     $vars = parent::__sleep();
